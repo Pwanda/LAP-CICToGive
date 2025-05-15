@@ -24,7 +24,7 @@ export default function Home() {
       <Navbar />
       
       {/* Hero Section */}
-      <div className="bg-gradient-to-r from-green-500 to-green-700 text-white" style={{ backgroundColor: 'var(--primary)', backgroundImage: 'linear-gradient(to right, var(--primary), var(--primary-dark))' }}>
+      <div className="bg-gradient-to-r from-green-500 to-green-700 text-black" style={{ backgroundColor: 'var(--primary)', backgroundImage: 'linear-gradient(to right, var(--primary), var(--primary-dark))' }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-20">
           <div className="md:flex md:items-center md:justify-between">
             <div className="md:w-1/2 mb-8 md:mb-0">
@@ -45,7 +45,7 @@ export default function Home() {
                 {isLoggedIn ? (
                   <Link 
                     href="/items/new" 
-                    className="bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-lg font-semibold text-lg shadow-md border border-green-400 transition duration-300"
+                    className="bg-green-500 hover:bg-green-600 text-black px-6 py-3 rounded-lg font-semibold text-lg shadow-md border border-green-400 transition duration-300"
                     style={{ backgroundColor: 'var(--primary-dark)', borderColor: 'var(--primary)' }}
                   >
                     Give an Item
@@ -53,7 +53,7 @@ export default function Home() {
                 ) : (
                   <Link 
                     href="/login" 
-                    className="bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-lg font-semibold text-lg shadow-md border border-green-400 transition duration-300"
+                    className="bg-green-500 hover:bg-green-600 text-black px-6 py-3 rounded-lg font-semibold text-lg shadow-md border border-green-400 transition duration-300"
                     style={{ backgroundColor: 'var(--primary-dark)', borderColor: 'var(--primary)' }}
                   >
                     Login to Give
@@ -178,7 +178,7 @@ export default function Home() {
                     </p>
                     <Link 
                       href="/login" 
-                      className="block w-full text-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+                      className="block w-full text-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-black bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
                       style={{ backgroundColor: 'var(--primary)', borderColor: 'var(--primary)' }}
                     >
                       Login
@@ -241,11 +241,11 @@ export default function Home() {
         </div>
       </main>
       
-      <footer className="bg-gray-800 text-white py-12 mt-12">
+      <footer className="bg-gray-800 text-black py-12 mt-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div>
-              <h3 className="text-lg font-semibold mb-4">CIC to Give</h3>
+              <h3 className="text-lg font-semibold mb-4">LapCIC</h3>
               <p className="text-gray-400 text-sm">
                 Your one-stop platform for giving away and receiving items for free.
               </p>
@@ -253,32 +253,32 @@ export default function Home() {
             <div>
               <h3 className="text-lg font-semibold mb-4">Quick Links</h3>
               <ul className="space-y-2">
-                <li><Link href="/" className="text-gray-400 hover:text-white">Home</Link></li>
-                <li><Link href="/items" className="text-gray-400 hover:text-white">Browse Items</Link></li>
-                <li><Link href="/items/new" className="text-gray-400 hover:text-white">Give an Item</Link></li>
+                <li><Link href="/" className="text-gray-400 hover:text-black">Home</Link></li>
+                <li><Link href="/items" className="text-gray-400 hover:text-black">Browse Items</Link></li>
+                <li><Link href="/items/new" className="text-gray-400 hover:text-black">Give an Item</Link></li>
               </ul>
             </div>
             <div>
               <h3 className="text-lg font-semibold mb-4">Categories</h3>
               <ul className="space-y-2">
-                <li><Link href="/items?category=Electronics" className="text-gray-400 hover:text-white">Electronics</Link></li>
-                <li><Link href="/items?category=Furniture" className="text-gray-400 hover:text-white">Furniture</Link></li>
-                <li><Link href="/items?category=Clothing" className="text-gray-400 hover:text-white">Clothing</Link></li>
-                <li><Link href="/items?category=Vehicles" className="text-gray-400 hover:text-white">Vehicles</Link></li>
+                <li><Link href="/items?category=Electronics" className="text-gray-400 hover:text-black">Electronics</Link></li>
+                <li><Link href="/items?category=Furniture" className="text-gray-400 hover:text-black">Furniture</Link></li>
+                <li><Link href="/items?category=Clothing" className="text-gray-400 hover:text-black">Clothing</Link></li>
+                <li><Link href="/items?category=Vehicles" className="text-gray-400 hover:text-black">Vehicles</Link></li>
               </ul>
             </div>
             <div>
               <h3 className="text-lg font-semibold mb-4">Account</h3>
               <ul className="space-y-2">
-                <li><Link href="/login" className="text-gray-400 hover:text-white">Login</Link></li>
-                <li><Link href="/register" className="text-gray-400 hover:text-white">Register</Link></li>
-                <li><Link href="/items/my-items" className="text-gray-400 hover:text-white">My Items</Link></li>
+                <li><Link href="/login" className="text-gray-400 hover:text-black">Login</Link></li>
+                <li><Link href="/register" className="text-gray-400 hover:text-black">Register</Link></li>
+                <li><Link href="/items/my-items" className="text-gray-400 hover:text-black">My Items</Link></li>
               </ul>
             </div>
           </div>
           <div className="border-t border-gray-700 mt-8 pt-8 text-center">
             <p className="text-gray-400 text-sm">
-              &copy; {new Date().getFullYear()} CIC to Give - Next.js Frontend + Spring Boot Backend
+              &copy; {new Date().getFullYear()} LapCIC - Free Item Exchange Platform
             </p>
           </div>
         </div>

@@ -105,7 +105,6 @@ public class ItemController {
             Item item = new Item();
             item.setName(itemRequest.getName());
             item.setDescription(itemRequest.getDescription());
-            item.setPrice(itemRequest.getPrice());
             item.setCategory(itemRequest.getCategory());
             item.setLocation(itemRequest.getLocation());
             item.setUser(user);
@@ -144,7 +143,6 @@ public class ItemController {
                     // Update item details
                     existingItem.setName(itemRequest.getName());
                     existingItem.setDescription(itemRequest.getDescription());
-                    existingItem.setPrice(itemRequest.getPrice());
                     existingItem.setCategory(itemRequest.getCategory());
                     existingItem.setLocation(itemRequest.getLocation());
                     existingItem.setUpdatedAt(LocalDateTime.now());
@@ -198,7 +196,7 @@ public class ItemController {
     public static class ItemRequest {
         private String name;
         private String description;
-        private BigDecimal price;
+        // Price field removed as all items are now free
         private String category;
         private String location;
         private List<String> imageUrls;
@@ -219,13 +217,7 @@ public class ItemController {
             this.description = description;
         }
         
-        public BigDecimal getPrice() {
-            return price;
-        }
-        
-        public void setPrice(BigDecimal price) {
-            this.price = price;
-        }
+        // Price getters and setters removed
         
         public String getCategory() {
             return category;

@@ -61,7 +61,7 @@ export default function ItemDetailPage() {
               <p className="mt-2 text-gray-500 mb-6">You need to login to view item details.</p>
               <Link
                 href="/login"
-                className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+                className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-black bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
                 style={{ backgroundColor: 'var(--primary)', borderColor: 'var(--primary)' }}
               >
                 Go to Login

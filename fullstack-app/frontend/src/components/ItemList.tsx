@@ -83,12 +83,6 @@ export default function ItemList() {
     } else if (value === 'oldest') {
       setSortBy('createdAt');
       setSortDir('asc');
-    } else if (value === 'priceAsc') {
-      setSortBy('price');
-      setSortDir('asc');
-    } else if (value === 'priceDesc') {
-      setSortBy('price');
-      setSortDir('desc');
     }
     
     setCurrentPage(0);
@@ -103,13 +97,7 @@ export default function ItemList() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
   
-  // Format price
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('de-AT', {
-      style: 'currency',
-      currency: 'EUR'
-    }).format(price);
-  };
+  // Price formatting removed as all items are now free
   
   // Format date
   const formatDate = (dateString?: string) => {
@@ -170,8 +158,6 @@ export default function ItemList() {
             >
               <option value="newest">Newest first</option>
               <option value="oldest">Oldest first</option>
-              <option value="priceAsc">Price: Low to High</option>
-              <option value="priceDesc">Price: High to Low</option>
             </select>
           </div>
         </div>
@@ -184,7 +170,7 @@ export default function ItemList() {
               onClick={() => handleCategoryChange(category)}
               className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
                 selectedCategory === category
-                  ? 'bg-green-600 text-white shadow-md'
+                  ? 'bg-green-600 text-black shadow-md'
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
               }`}
             >
@@ -245,11 +231,11 @@ export default function ItemList() {
                     </svg>
                   </div>
                 )}
-                <div className="absolute top-3 right-3 bg-green-600 text-white px-3 py-1 rounded-full text-xs font-bold shadow-md" style={{ backgroundColor: 'var(--primary)' }}>
+                <div className="absolute top-3 right-3 bg-green-600 text-black px-3 py-1 rounded-full text-xs font-bold shadow-md" style={{ backgroundColor: 'var(--primary)' }}>
                   {item.category}
                 </div>
                 {item.imageUrls && item.imageUrls.length > 1 && (
-                  <div className="absolute bottom-3 right-3 bg-black bg-opacity-60 text-white px-2 py-1 rounded-md text-xs font-medium">
+                  <div className="absolute bottom-3 right-3 bg-black bg-opacity-60 text-black px-2 py-1 rounded-md text-xs font-medium">
                     <span className="flex items-center">
                       <svg className="h-3 w-3 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                         <path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd" />
@@ -262,7 +248,7 @@ export default function ItemList() {
               
               <div className="p-5">
                 <h3 className="text-lg font-semibold text-gray-900 truncate group-hover:text-green-600 transition-colors duration-200" style={{ color: 'var(--primary)' }}>{item.name}</h3>
-                <p className="mt-2 text-xl font-bold text-green-600" style={{ color: 'var(--primary)' }}>{formatPrice(item.price || 0)}</p>
+                <p className="mt-2 text-xl font-bold text-green-600" style={{ color: 'var(--primary)' }}>Free</p>
                 <p className="mt-2 text-sm text-gray-600 line-clamp-2">{item.description}</p>
                 
                 <div className="mt-4 pt-3 border-t border-gray-100 flex justify-between items-center">

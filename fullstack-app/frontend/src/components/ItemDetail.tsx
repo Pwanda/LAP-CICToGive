@@ -34,13 +34,7 @@ export default function ItemDetail({ itemId }: ItemDetailProps) {
     fetchItem();
   }, [itemId]);
   
-  // Format price
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('de-AT', {
-      style: 'currency',
-      currency: 'EUR'
-    }).format(price);
-  };
+  // Price formatting removed as all items are now free
   
   // Format date
   const formatDate = (dateString?: string) => {
@@ -130,7 +124,7 @@ export default function ItemDetail({ itemId }: ItemDetailProps) {
                 {/* Image counter */}
                 {item.imageUrls.length > 1 && (
                   <div className="absolute bottom-4 left-0 right-0 flex justify-center">
-                    <div className="bg-black bg-opacity-60 text-white px-3 py-1 rounded-full text-sm font-medium">
+                    <div className="bg-black bg-opacity-60 text-black px-3 py-1 rounded-full text-sm font-medium">
                       {currentImageIndex + 1} / {item.imageUrls.length}
                     </div>
                   </div>
@@ -180,7 +174,7 @@ export default function ItemDetail({ itemId }: ItemDetailProps) {
             </div>
             
             <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">{item.name}</h1>
-            <p className="text-3xl sm:text-4xl font-bold text-green-600 mb-6" style={{ color: 'var(--primary)' }}>{formatPrice(item.price || 0)}</p>
+            <p className="text-xl sm:text-2xl font-bold text-green-600 mb-6" style={{ color: 'var(--primary)' }}>Free</p>
             
             {item.location && (
               <div className="flex items-center text-gray-600 mb-6">
@@ -219,7 +213,7 @@ export default function ItemDetail({ itemId }: ItemDetailProps) {
                 <>
                   <Link
                     href={`/items/${item.id}/edit`}
-                    className="flex-1 bg-green-600 text-white py-3 px-6 rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 text-center font-medium transition-colors duration-200"
+                    className="flex-1 bg-green-600 text-black py-3 px-6 rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 text-center font-medium transition-colors duration-200"
                     style={{ backgroundColor: 'var(--primary)', borderColor: 'var(--primary)' }}
                   >
                     Edit Item
@@ -235,7 +229,7 @@ export default function ItemDetail({ itemId }: ItemDetailProps) {
                 <>
                   <Link
                     href={`mailto:${item.user?.email || ''}`}
-                    className="flex-1 bg-green-600 text-white py-3 px-6 rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 text-center font-medium transition-colors duration-200 flex items-center justify-center"
+                    className="flex-1 bg-green-600 text-black py-3 px-6 rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 text-center font-medium transition-colors duration-200 flex items-center justify-center"
                     style={{ backgroundColor: 'var(--primary)', borderColor: 'var(--primary)' }}
                   >
                     <svg className="h-5 w-5 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">

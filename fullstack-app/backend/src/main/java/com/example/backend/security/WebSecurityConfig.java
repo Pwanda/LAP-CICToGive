@@ -53,6 +53,7 @@ public class WebSecurityConfig {
                 auth.requestMatchers("/api/auth/**").permitAll()
                     .requestMatchers("/h2-console/**").permitAll()
                     .requestMatchers("/api/items").permitAll()
+                    .requestMatchers("/api/items/{id}").permitAll() // Allow viewing individual items without login
                     .anyRequest().authenticated()
             );
         

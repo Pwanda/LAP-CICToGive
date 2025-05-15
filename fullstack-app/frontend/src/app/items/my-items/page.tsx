@@ -98,7 +98,7 @@ export default function MyItemsPage() {
             <h1 className="text-3xl font-bold text-gray-900">My Items</h1>
             <Link 
               href="/items/new" 
-              className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="bg-blue-600 text-black px-4 py-2 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               Add New Item
             </Link>
@@ -120,7 +120,7 @@ export default function MyItemsPage() {
               <div className="mt-6">
                 <Link 
                   href="/items/new" 
-                  className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                  className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-black bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                 >
                   Add Item
                 </Link>

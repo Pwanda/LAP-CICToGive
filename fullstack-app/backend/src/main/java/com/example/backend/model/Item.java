@@ -19,8 +19,7 @@ public class Item {
     @Column(length = 2000)
     private String description;
     
-    @Column(precision = 10, scale = 2)
-    private BigDecimal price;
+    // Price field removed as all items are now free
     
     @Column(name = "created_at")
     private LocalDateTime createdAt;
@@ -48,10 +47,9 @@ public class Item {
         this.updatedAt = LocalDateTime.now();
     }
     
-    public Item(String name, String description, BigDecimal price, String category) {
+    public Item(String name, String description, String category) {
         this.name = name;
         this.description = description;
-        this.price = price;
         this.category = category;
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
@@ -82,13 +80,7 @@ public class Item {
         this.description = description;
     }
     
-    public BigDecimal getPrice() {
-        return price;
-    }
-    
-    public void setPrice(BigDecimal price) {
-        this.price = price;
-    }
+    // Price getters and setters removed
     
     public LocalDateTime getCreatedAt() {
         return createdAt;

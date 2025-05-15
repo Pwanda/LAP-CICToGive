@@ -12,7 +12,6 @@ export interface Item {
   id?: number;
   name: string;
   description: string;
-  price: number;
   category: string;
   location?: string;
   imageUrls?: string[];
@@ -48,8 +47,9 @@ export interface PaginatedResponse<T> {
 
 // Helper function to get auth header
 const getAuthHeader = (): HeadersInit => {
-  const token = localStorage.getItem('token');
-  return token ? { 'Authorization': `Bearer ${token}` } : {};
+  // We're using HTTP-only cookies for authentication now
+  // The JWT will be automatically included in requests
+  return {};
 };
 
 // Auth API service
@@ -62,6 +62,7 @@ export const authApi = {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(loginRequest),
+      credentials: 'include', // Include cookies in the request
     });
     
     if (!response.ok) {
@@ -70,13 +71,15 @@ export const authApi = {
     
     const data = await response.json();
     
-    // Store token in localStorage
-    localStorage.setItem('token', data.token);
+    // Store user info in localStorage (but not the token, which is in HTTP-only cookie)
     localStorage.setItem('user', JSON.stringify({
       id: data.id,
       username: data.username,
       email: data.email,
     }));
+    
+    // Set a flag to indicate the user is logged in
+    localStorage.setItem('isLoggedIn', 'true');
     
     return data;
   },
@@ -100,14 +103,29 @@ export const authApi = {
   },
   
   // Logout
-  logout: (): void => {
-    localStorage.removeItem('token');
+  logout: async (): Promise<void> => {
+    // Call logout endpoint to clear the cookie
+    try {
+      await fetch(`${API_BASE_URL}/auth/logout`, {
+        method: 'POST',
+        credentials: 'include',
+      });
+    } catch (error) {
+      console.error('Logout API error:', error);
+    }
+    
+    // Clear local storage
     localStorage.removeItem('user');
+    localStorage.removeItem('isLoggedIn');
   },
   
   // Check if user is logged in
   isLoggedIn: (): boolean => {
-    return !!localStorage.getItem('token');
+    // In the browser, check if the user is logged in
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('isLoggedIn') === 'true';
+    }
+    return false;
   },
   
   // Get current user

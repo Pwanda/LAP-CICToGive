@@ -29,7 +29,6 @@ export default function AddItemForm({ editItem, onItemAdded }: AddItemFormProps)
   
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
-  const [price, setPrice] = useState('');
   const [category, setCategory] = useState(CATEGORIES[0]);
   const [location, setLocation] = useState('');
   const [images, setImages] = useState<File[]>([]);
@@ -46,7 +45,6 @@ export default function AddItemForm({ editItem, onItemAdded }: AddItemFormProps)
     if (editItem) {
       setName(editItem.name || '');
       setDescription(editItem.description || '');
-      setPrice(editItem.price?.toString() || '');
       setCategory(editItem.category || CATEGORIES[0]);
       setLocation(editItem.location || '');
       setImageUrls(editItem.imageUrls || []);
@@ -190,15 +188,8 @@ export default function AddItemForm({ editItem, onItemAdded }: AddItemFormProps)
     e.preventDefault();
     
     // Validate form
-    if (!name || !description || !price || !category) {
+    if (!name || !description || !category) {
       setError('Please fill in all required fields');
-      return;
-    }
-    
-    // Validate price
-    const priceValue = parseFloat(price);
-    if (isNaN(priceValue) || priceValue <= 0) {
-      setError('Please enter a valid price');
       return;
     }
     
@@ -213,7 +204,6 @@ export default function AddItemForm({ editItem, onItemAdded }: AddItemFormProps)
       const itemData: Item = {
         name,
         description,
-        price: priceValue,
         category,
         location: location || undefined,
         imageUrls: allImageUrls.length > 0 ? allImageUrls : undefined,
@@ -236,7 +226,6 @@ export default function AddItemForm({ editItem, onItemAdded }: AddItemFormProps)
       if (!editItem) {
         setName('');
         setDescription('');
-        setPrice('');
         setCategory(CATEGORIES[0]);
         setLocation('');
         setImages([]);
@@ -268,7 +257,7 @@ export default function AddItemForm({ editItem, onItemAdded }: AddItemFormProps)
   return (
     <div className="bg-white shadow-lg rounded-lg overflow-hidden">
       <div className="bg-gradient-to-r from-green-600 to-green-800 px-6 py-4" style={{ backgroundColor: 'var(--primary)', backgroundImage: 'linear-gradient(to right, var(--primary), var(--primary-dark))' }}>
-        <h2 className="text-xl font-bold text-white">
+        <h2 className="text-xl font-bold text-black">
           {editItem ? 'Edit Your Item' : 'Give Your Item'}
         </h2>
         <p className="text-green-100 text-sm mt-1">
@@ -378,14 +367,14 @@ export default function AddItemForm({ editItem, onItemAdded }: AddItemFormProps)
                       <button
                         type="button"
                         onClick={() => handleRemoveImage(index, 'existing')}
-                        className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 hover:bg-red-600 focus:outline-none shadow-md opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                        className="absolute top-1 right-1 bg-red-500 text-black rounded-full p-1 hover:bg-red-600 focus:outline-none shadow-md opacity-0 group-hover:opacity-100 transition-opacity duration-200"
                         aria-label="Remove image"
                       >
                         <svg className="h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                         </svg>
                       </button>
-                      <div className="absolute bottom-1 left-1 bg-black bg-opacity-50 text-white text-xs px-2 py-1 rounded">
+                      <div className="absolute bottom-1 left-1 bg-black bg-opacity-50 text-black text-xs px-2 py-1 rounded">
                         Image {index + 1}
                       </div>
                     </div>
@@ -404,14 +393,14 @@ export default function AddItemForm({ editItem, onItemAdded }: AddItemFormProps)
                       <button
                         type="button"
                         onClick={() => handleRemoveImage(index, 'new')}
-                        className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 hover:bg-red-600 focus:outline-none shadow-md opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                        className="absolute top-1 right-1 bg-red-500 text-black rounded-full p-1 hover:bg-red-600 focus:outline-none shadow-md opacity-0 group-hover:opacity-100 transition-opacity duration-200"
                         aria-label="Remove image"
                       >
                         <svg className="h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                         </svg>
                       </button>
-                      <div className="absolute bottom-1 left-1 bg-green-600 bg-opacity-70 text-white text-xs px-2 py-1 rounded" style={{ backgroundColor: 'var(--primary)', opacity: 0.7 }}>
+                      <div className="absolute bottom-1 left-1 bg-green-600 bg-opacity-70 text-black text-xs px-2 py-1 rounded" style={{ backgroundColor: 'var(--primary)', opacity: 0.7 }}>
                         New {index + 1}
                       </div>
                     </div>
@@ -465,28 +454,6 @@ export default function AddItemForm({ editItem, onItemAdded }: AddItemFormProps)
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-              {/* Price */}
-              <div className="mb-5">
-                <label htmlFor="price" className="block text-sm font-medium text-gray-700 mb-1">
-                  Price (€) <span className="text-red-500">*</span>
-                </label>
-                <div className="mt-1 relative rounded-md shadow-sm">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <span className="text-gray-500 sm:text-sm">€</span>
-                  </div>
-                  <input
-                    type="number"
-                    id="price"
-                    min="0.01"
-                    step="0.01"
-                    value={price}
-                    onChange={(e) => setPrice(e.target.value)}
-                className="block w-full pl-7 pr-12 border border-gray-300 rounded-lg shadow-sm py-3 px-4 focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm"
-                    placeholder="0.00"
-                    required
-                  />
-                </div>
-              </div>
               
               {/* Category */}
               <div className="mb-5">
@@ -540,12 +507,12 @@ export default function AddItemForm({ editItem, onItemAdded }: AddItemFormProps)
             <button
               type="submit"
               disabled={loading || uploadingImages}
-              className="w-full flex justify-center items-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-base font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
+              className="w-full flex justify-center items-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-base font-medium text-black bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
               style={{ backgroundColor: 'var(--primary)', borderColor: 'var(--primary)' }}
             >
               {loading || uploadingImages ? (
                 <>
-                  <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-black" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                   </svg>

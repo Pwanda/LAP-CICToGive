@@ -1,20 +1,9 @@
 "use client";
 
-import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
 import LoginForm from '@/components/LoginForm';
 import Navbar from '@/components/Navbar';
-import { authApi } from '@/services/api';
 
 export default function LoginPage() {
-  const router = useRouter();
-  
-  useEffect(() => {
-    // If user is already logged in, redirect to home page
-    if (authApi.isLoggedIn()) {
-      router.push('/');
-    }
-  }, [router]);
   
   return (
     <div className="min-h-screen bg-gray-50">
@@ -29,7 +18,7 @@ export default function LoginPage() {
       <footer className="bg-white shadow mt-8 py-4">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <p className="text-center text-gray-500 text-sm">
-            Willhaben Clone - Next.js Frontend + Spring Boot Backend
+            LapCIC - Free Item Exchange Platform
           </p>
         </div>
       </footer>

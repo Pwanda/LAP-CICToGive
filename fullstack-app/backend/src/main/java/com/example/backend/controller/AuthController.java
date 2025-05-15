@@ -5,6 +5,9 @@ import com.example.backend.repository.UserRepository;
 import com.example.backend.security.JwtUtils;
 import com.example.backend.security.UserDetailsImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpCookie;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -41,13 +44,38 @@ public class AuthController {
         
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
         
+        // Create HTTP-only cookie with the JWT
+        ResponseCookie jwtCookie = ResponseCookie.from("token", jwt)
+                .httpOnly(true)
+                .secure(false) // Set to true in production with HTTPS
+                .path("/")
+                .maxAge(24 * 60 * 60) // 1 day
+                .build();
+        
         Map<String, Object> response = new HashMap<>();
-        response.put("token", jwt);
+        response.put("token", jwt); // Still include token in response for compatibility
         response.put("id", userDetails.getId());
         response.put("username", userDetails.getUsername());
         response.put("email", userDetails.getEmail());
         
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE, jwtCookie.toString())
+                .body(response);
+    }
+    
+    @PostMapping("/logout")
+    public ResponseEntity<?> logoutUser() {
+        // Clear the JWT cookie
+        ResponseCookie jwtCookie = ResponseCookie.from("token", "")
+                .httpOnly(true)
+                .secure(false) // Set to true in production with HTTPS
+                .path("/")
+                .maxAge(0) // Expire immediately
+                .build();
+        
+        return ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE, jwtCookie.toString())
+                .body("Logged out successfully");
     }
 
     @PostMapping("/register")
