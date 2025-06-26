@@ -1,5 +1,7 @@
 package com.example.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -7,6 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Item {
     
     @Id
@@ -34,6 +38,7 @@ public class Item {
     
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
+    @JsonIgnoreProperties({"password", "items"}) 
     private User user;
     
     @Column(nullable = false)

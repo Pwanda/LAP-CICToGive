@@ -1,5 +1,5 @@
 // API base URL
-const API_BASE_URL = 'http://localhost:8080/api';
+const API_BASE_URL = "http://localhost:8080/api";
 
 // Type definitions
 export interface User {
@@ -18,6 +18,7 @@ export interface Item {
   createdAt?: string;
   updatedAt?: string;
   user?: User;
+  price?: number; // Optional price field for frontend compatibility
 }
 
 export interface LoginRequest {
@@ -47,215 +48,306 @@ export interface PaginatedResponse<T> {
 
 // Helper function to get auth header
 const getAuthHeader = (): HeadersInit => {
-  // We're using HTTP-only cookies for authentication now
-  // The JWT will be automatically included in requests
-  return {};
+  const token = localStorage.getItem("authToken");
+  return token ? { Authorization: `Bearer ${token}` } : {};
 };
+
+// Default fetch options for consistency
+const getDefaultFetchOptions = (): RequestInit => ({
+  credentials: "include", // Für HTTP-only cookies
+  headers: {
+    "Content-Type": "application/json",
+    ...getAuthHeader(),
+  },
+});
 
 // Auth API service
 export const authApi = {
   // Login
   login: async (loginRequest: LoginRequest): Promise<LoginResponse> => {
-    const response = await fetch(`${API_BASE_URL}/auth/login`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(loginRequest),
-      credentials: 'include', // Include cookies in the request
-    });
-    
-    if (!response.ok) {
-      throw new Error('Login failed');
+    try {
+      console.log("Attempting login to:", `${API_BASE_URL}/auth/login`);
+
+      const response = await fetch(`${API_BASE_URL}/auth/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        credentials: "include", // Wichtig für Cookies
+        body: JSON.stringify(loginRequest),
+      });
+
+      console.log("Login response status:", response.status);
+      console.log(
+        "Login response headers:",
+        Object.fromEntries(response.headers.entries()),
+      );
+
+      if (response.status === 307) {
+        console.error(
+          "307 Redirect detected. Check your backend URL configuration.",
+        );
+        throw new Error(
+          "Server configuration error (307 redirect). Please check backend settings.",
+        );
+      }
+
+      const responseText = await response.text();
+      console.log("Login response body:", responseText);
+
+      if (!response.ok) {
+        throw new Error(
+          responseText || `HTTP ${response.status}: Login failed`,
+        );
+      }
+
+      try {
+        const data = JSON.parse(responseText);
+
+        // Validierung der Antwort
+        if (!data.id || !data.username || !data.email) {
+          console.error("Invalid response format:", data);
+          throw new Error("Invalid response format from server");
+        }
+
+        // Store user info und token
+        const userData = {
+          id: data.id,
+          username: data.username,
+          email: data.email,
+        };
+
+        localStorage.setItem("user", JSON.stringify(userData));
+        localStorage.setItem("isLoggedIn", "true");
+
+        // Falls ein token zurückgegeben wird, speichere ihn auch
+        if (data.token) {
+          localStorage.setItem("authToken", data.token);
+        }
+
+        console.log("Login successful, user data stored");
+        return data;
+      } catch (parseError) {
+        console.error("Failed to parse response:", parseError);
+        throw new Error("Failed to parse server response");
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+      throw error;
     }
-    
-    const data = await response.json();
-    
-    // Store user info in localStorage (but not the token, which is in HTTP-only cookie)
-    localStorage.setItem('user', JSON.stringify({
-      id: data.id,
-      username: data.username,
-      email: data.email,
-    }));
-    
-    // Set a flag to indicate the user is logged in
-    localStorage.setItem('isLoggedIn', 'true');
-    
-    return data;
   },
-  
+
   // Register
   register: async (registerRequest: RegisterRequest): Promise<string> => {
-    const response = await fetch(`${API_BASE_URL}/auth/register`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(registerRequest),
-    });
-    
-    if (!response.ok) {
-      const errorData = await response.text();
-      throw new Error(errorData || 'Registration failed');
+    try {
+      console.log(
+        "Attempting registration to:",
+        `${API_BASE_URL}/auth/register`,
+      );
+
+      const response = await fetch(`${API_BASE_URL}/auth/register`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify(registerRequest),
+      });
+
+      console.log("Register response status:", response.status);
+
+      if (response.status === 307) {
+        console.error("307 Redirect detected during registration.");
+        throw new Error(
+          "Server configuration error (307 redirect). Please check backend settings.",
+        );
+      }
+
+      const responseText = await response.text();
+      console.log("Register response body:", responseText);
+
+      if (!response.ok) {
+        throw new Error(
+          responseText || `HTTP ${response.status}: Registration failed`,
+        );
+      }
+
+      try {
+        return JSON.parse(responseText);
+      } catch {
+        return responseText;
+      }
+    } catch (error) {
+      console.error("Registration error:", error);
+      throw error;
     }
-    
-    return response.text();
   },
-  
+
   // Logout
   logout: async (): Promise<void> => {
-    // Call logout endpoint to clear the cookie
     try {
       await fetch(`${API_BASE_URL}/auth/logout`, {
-        method: 'POST',
-        credentials: 'include',
+        method: "POST",
+        credentials: "include",
+        headers: getAuthHeader(),
       });
     } catch (error) {
-      console.error('Logout API error:', error);
+      console.error("Logout API error:", error);
     }
-    
+
     // Clear local storage
-    localStorage.removeItem('user');
-    localStorage.removeItem('isLoggedIn');
+    localStorage.removeItem("user");
+    localStorage.removeItem("isLoggedIn");
+    localStorage.removeItem("authToken");
+
+    console.log("Logout completed, localStorage cleared");
   },
-  
+
   // Check if user is logged in
   isLoggedIn: (): boolean => {
-    // In the browser, check if the user is logged in
-    if (typeof window !== 'undefined') {
-      return localStorage.getItem('isLoggedIn') === 'true';
+    if (typeof window !== "undefined") {
+      const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
+      const hasUser = !!localStorage.getItem("user");
+      return isLoggedIn && hasUser;
     }
     return false;
   },
-  
+
   // Get current user
   getCurrentUser: (): User | null => {
-    const userStr = localStorage.getItem('user');
+    if (typeof window === "undefined") return null;
+    const userStr = localStorage.getItem("user");
     return userStr ? JSON.parse(userStr) : null;
   },
 };
 
 // File upload API service
 export const uploadApi = {
-  // Upload images
   uploadImages: async (files: File[]): Promise<string[]> => {
     const formData = new FormData();
-    files.forEach(file => {
-      formData.append('files', file);
+    files.forEach((file: File) => {
+      formData.append("files", file);
     });
-    
+
     const response = await fetch(`${API_BASE_URL}/upload/images`, {
-      method: 'POST',
-      headers: {
-        ...getAuthHeader(),
-      },
+      method: "POST",
+      credentials: "include",
+      headers: getAuthHeader(), // Kein Content-Type für FormData
       body: formData,
     });
-    
+
     if (!response.ok) {
-      throw new Error('Failed to upload images');
+      throw new Error("Failed to upload images");
     }
-    
+
     return response.json();
   },
 };
 
 // Items API service
 export const itemsApi = {
-  // Get all items with pagination and filtering
   getAll: async (
     page: number = 0,
     size: number = 10,
     category?: string,
     search?: string,
-    sortBy: string = 'createdAt',
-    sortDir: string = 'desc'
+    sortBy: string = "createdAt",
+    sortDir: string = "desc",
   ): Promise<PaginatedResponse<Item>> => {
     let url = `${API_BASE_URL}/items?page=${page}&size=${size}&sortBy=${sortBy}&sortDir=${sortDir}`;
-    
+
     if (category) {
       url += `&category=${encodeURIComponent(category)}`;
     }
-    
+
     if (search) {
       url += `&search=${encodeURIComponent(search)}`;
     }
-    
-    const response = await fetch(url);
+
+    const response = await fetch(url, {
+      credentials: "include",
+      headers: getAuthHeader(),
+    });
+
     if (!response.ok) {
-      throw new Error('Failed to fetch items');
+      throw new Error("Failed to fetch items");
     }
-    
+
     return response.json();
   },
 
-  // Get item by ID
   getById: async (id: number): Promise<Item> => {
-    const response = await fetch(`${API_BASE_URL}/items/${id}`);
+    const response = await fetch(`${API_BASE_URL}/items/${id}`, {
+      credentials: "include",
+      headers: getAuthHeader(),
+    });
+
     if (!response.ok) {
       throw new Error(`Failed to fetch item with ID ${id}`);
     }
     return response.json();
   },
 
-  // Create a new item
   create: async (item: Item): Promise<Item> => {
     const response = await fetch(`${API_BASE_URL}/items`, {
-      method: 'POST',
+      method: "POST",
+      credentials: "include",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
         ...getAuthHeader(),
       },
       body: JSON.stringify(item),
     });
-    
+
     if (!response.ok) {
-      throw new Error('Failed to create item');
+      throw new Error("Failed to create item");
     }
-    
+
     return response.json();
   },
 
-  // Update an existing item
   update: async (id: number, item: Item): Promise<Item> => {
     const response = await fetch(`${API_BASE_URL}/items/${id}`, {
-      method: 'PUT',
+      method: "PUT",
+      credentials: "include",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
         ...getAuthHeader(),
       },
       body: JSON.stringify(item),
     });
-    
+
     if (!response.ok) {
       throw new Error(`Failed to update item with ID ${id}`);
     }
-    
+
     return response.json();
   },
 
-  // Delete an item
   delete: async (id: number): Promise<void> => {
     const response = await fetch(`${API_BASE_URL}/items/${id}`, {
-      method: 'DELETE',
+      method: "DELETE",
+      credentials: "include",
       headers: getAuthHeader(),
     });
-    
+
     if (!response.ok) {
       throw new Error(`Failed to delete item with ID ${id}`);
     }
   },
-  
-  // Get current user's items
+
   getMyItems: async (): Promise<Item[]> => {
     const response = await fetch(`${API_BASE_URL}/items/my-items`, {
+      credentials: "include",
       headers: getAuthHeader(),
     });
-    
+
     if (!response.ok) {
-      throw new Error('Failed to fetch your items');
+      throw new Error("Failed to fetch your items");
     }
-    
+
     return response.json();
   },
 };

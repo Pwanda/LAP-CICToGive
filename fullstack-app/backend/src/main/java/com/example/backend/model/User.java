@@ -1,6 +1,8 @@
 package com.example.backend.model;
 
 import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -10,6 +12,7 @@ import java.util.Set;
            @UniqueConstraint(columnNames = "username"),
            @UniqueConstraint(columnNames = "email")
        })
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class User {
     
     @Id
@@ -26,6 +29,7 @@ public class User {
     private String password;
     
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
     private Set<Item> items = new HashSet<>();
     
     // Default constructor required by JPA
