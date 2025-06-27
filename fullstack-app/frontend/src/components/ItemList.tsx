@@ -289,24 +289,28 @@ export default function ItemList() {
             <Link
               href={`/items/${item.id}`}
               key={item.id}
-              className="group bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
+              className="group bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100"
             >
-              <div className="relative h-56 bg-gray-200 overflow-hidden">
+              <div className="relative h-64 bg-gradient-to-br from-gray-100 to-gray-200 overflow-hidden">
                 {item.reserved && (
-                  <div className="absolute top-3 left-3 z-20 bg-yellow-300 text-yellow-900 px-3 py-1 rounded-full text-xs font-bold shadow-md border border-yellow-500">
-                    Reserviert
+                  <div className="absolute top-3 left-3 z-20 bg-yellow-400 text-yellow-900 px-3 py-1.5 rounded-full text-xs font-bold shadow-lg border border-yellow-500">
+                    🔒 Reserviert
                   </div>
                 )}
                 {item.imageUrls && item.imageUrls.length > 0 ? (
                   <img
                     src={`http://localhost:8080${item.imageUrls[0]}`}
                     alt={item.name}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src =
+                        "/placeholder-image.jpg";
+                    }}
                   />
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center bg-gray-200 text-black ">
+                  <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200 text-gray-400">
                     <svg
-                      className="h-16 w-16"
+                      className="h-20 w-20 mb-2"
                       xmlns="http://www.w3.org/2000/svg"
                       fill="none"
                       viewBox="0 0 24 24"
@@ -315,20 +319,18 @@ export default function ItemList() {
                       <path
                         strokeLinecap="round"
                         strokeLinejoin="round"
-                        strokeWidth={2}
+                        strokeWidth={1.5}
                         d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
                       />
                     </svg>
+                    <span className="text-sm font-medium">Kein Bild</span>
                   </div>
                 )}
-                <div
-                  className="absolute top-3 right-3 bg-green-600 text-black  px-3 py-1 rounded-full text-xs font-bold shadow-md"
-                  style={{ backgroundColor: "var(--primary)" }}
-                >
+                <div className="absolute top-3 right-3 bg-green-600 text-white px-3 py-1.5 rounded-full text-xs font-bold shadow-lg backdrop-blur-sm">
                   {item.category}
                 </div>
                 {item.imageUrls && item.imageUrls.length > 1 && (
-                  <div className="absolute bottom-3 right-3 bg-black bg-opacity-60 text-white  px-2 py-1 rounded-md text-xs font-medium">
+                  <div className="absolute bottom-3 right-3 bg-black bg-opacity-70 text-white px-2.5 py-1.5 rounded-lg text-xs font-medium backdrop-blur-sm">
                     <span className="flex items-center">
                       <svg
                         className="h-3 w-3 mr-1"
@@ -346,54 +348,68 @@ export default function ItemList() {
                     </span>
                   </div>
                 )}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               </div>
 
-              <div className="p-5">
-                <div className="flex items-center space-x-2">
-                  <h3
-                    className="text-lg font-semibold text-black  truncate group-hover:text-green-600 transition-colors duration-200"
-                    style={{ color: "var(--primary)" }}
-                  >
+              <div className="p-6">
+                <div className="flex items-start justify-between mb-3">
+                  <h3 className="text-lg font-bold text-gray-900 group-hover:text-green-600 transition-colors duration-200 leading-tight line-clamp-2">
                     {item.name}
                   </h3>
                   {item.reserved && (
-                    <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold bg-yellow-200 text-yellow-800 border border-yellow-400">
+                    <span className="ml-2 inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-800 border border-yellow-300 flex-shrink-0">
                       Reserviert
                     </span>
                   )}
                 </div>
-                <p
-                  className="mt-2 text-xl font-bold text-green-600"
-                  style={{ color: "var(--primary)" }}
-                >
-                  Free
-                </p>
-                <p className="mt-2 text-sm text-black  line-clamp-2">
-                  {item.description}
+
+                <div className="mb-4">
+                  <span className="inline-flex items-center px-3 py-1.5 rounded-full text-lg font-bold text-white bg-green-600 shadow-md">
+                    ✨ Kostenlos
+                  </span>
+                </div>
+
+                <p className="text-sm text-gray-600 line-clamp-3 mb-4 leading-relaxed">
+                  {item.description || "Keine Beschreibung verfügbar."}
                 </p>
 
-                <div className="mt-4 pt-3 border-t border-gray-100 flex justify-between items-center">
-                  <div className="text-xs text-black ">
-                    {item.location && (
-                      <span className="flex items-center">
-                        <svg
-                          className="h-3 w-3 mr-1"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fillRule="evenodd"
-                            d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
-                            clipRule="evenodd"
-                          />
-                        </svg>
-                        {item.location}
-                      </span>
-                    )}
-                  </div>
-                  <div className="text-xs font-medium text-black ">
-                    {formatDate(item.createdAt)}
+                <div className="pt-4 border-t border-gray-100 space-y-2">
+                  {item.location && (
+                    <div className="flex items-center text-xs text-gray-500">
+                      <svg
+                        className="h-4 w-4 mr-2 text-gray-400"
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                      <span className="font-medium">{item.location}</span>
+                    </div>
+                  )}
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center text-xs text-gray-500">
+                      <svg
+                        className="h-4 w-4 mr-2 text-gray-400"
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                      <span>{formatDate(item.createdAt)}</span>
+                    </div>
+                    <div className="text-xs font-medium text-green-600 bg-green-50 px-2 py-1 rounded-full">
+                      Details →
+                    </div>
                   </div>
                 </div>
               </div>

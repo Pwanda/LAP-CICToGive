@@ -196,7 +196,7 @@ export default function Home() {
                         </div>
                       </div>
                       <div className="p-4 flex-1 flex flex-col">
-                        <div className="flex items-center space-x-2">
+                        <div className="flex items-center space-x-2 ">
                           <h3 className="text-lg font-semibold text-black truncate group-hover:text-green-600 transition-colors duration-200">
                             {item.name}
                           </h3>

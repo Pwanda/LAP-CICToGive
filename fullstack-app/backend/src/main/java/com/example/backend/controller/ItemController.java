@@ -5,7 +5,6 @@ import com.example.backend.model.User;
 import com.example.backend.repository.ItemRepository;
 import com.example.backend.repository.UserRepository;
 import com.example.backend.security.UserDetailsImpl;
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
