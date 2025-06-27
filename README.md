@@ -238,6 +238,6 @@ Die Implementierung erfüllt alle Anforderungen einer LAP im Bereich Applikation
 
 ---
 
-**Entwickelt für die Lehrabschlussprüfung Applikationsentwicklung - Coding 2024**
+**Entwickelt für die Lehrabschlussprüfung Applikationsentwicklung - Coding 2025**
 
 *CIC to Give - Eine moderne Plattform für kostenloses Teilen*
