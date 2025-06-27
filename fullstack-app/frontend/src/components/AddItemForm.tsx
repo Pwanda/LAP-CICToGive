@@ -37,6 +37,7 @@ export default function AddItemForm({
   const [images, setImages] = useState<File[]>([]);
   const [imageUrls, setImageUrls] = useState<string[]>([]);
   const [imagePreviewUrls, setImagePreviewUrls] = useState<string[]>([]);
+  const [reserved, setReserved] = useState(false);
 
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -51,6 +52,7 @@ export default function AddItemForm({
       setCategory(editItem.category || CATEGORIES[0]);
       setLocation(editItem.location || "");
       setImageUrls(editItem.imageUrls || []);
+      setReserved(editItem.reserved || false);
     }
   }, [editItem]);
 
@@ -212,6 +214,7 @@ export default function AddItemForm({
         category,
         location: location || undefined,
         imageUrls: allImageUrls.length > 0 ? allImageUrls : undefined,
+        reserved,
       };
 
       let savedItem: Item;
@@ -233,9 +236,10 @@ export default function AddItemForm({
         setDescription("");
         setCategory(CATEGORIES[0]);
         setLocation("");
-        setImages([]);
         setImageUrls([]);
+        setImages([]);
         setImagePreviewUrls([]);
+        setReserved(false);
 
         if (fileInputRef.current) {
           fileInputRef.current.value = "";
@@ -496,6 +500,23 @@ export default function AddItemForm({
               Item Details
             </h3>
 
+            {/* Reserviert Checkbox */}
+            <div className="mb-5 flex items-center">
+              <input
+                id="reserved"
+                type="checkbox"
+                checked={reserved}
+                onChange={(e) => setReserved(e.target.checked)}
+                className="h-4 w-4 text-green-600 border-gray-300 rounded focus:ring-green-500"
+              />
+              <label
+                htmlFor="reserved"
+                className="ml-2 block text-sm font-medium text-black"
+              >
+                Reserviert (Angebot ist reserviert)
+              </label>
+            </div>
+
             {/* Item Name */}
             <div className="mb-5">
               <label
@@ -509,8 +530,7 @@ export default function AddItemForm({
                 id="name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="block w-full border border-gray-300 rounded-lg shadow-sm py-3 px-4 focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm text-black"
-                placeholder="What are you giving away?"
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 text-black "
                 required
               />
             </div>

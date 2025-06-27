@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
 import { authApi } from "@/services/api";
@@ -18,6 +18,20 @@ export default function Navbar() {
   const [showDropdown, setShowDropdown] = useState<boolean>(false);
   const [loadingSuggestions, setLoadingSuggestions] = useState<boolean>(false);
   const [dropdownFocused, setDropdownFocused] = useState<boolean>(false);
+  const [showUserMenu, setShowUserMenu] = useState<boolean>(false);
+  const userMenuTimeout = React.useRef<NodeJS.Timeout | null>(null);
+
+  const handleUserMenuEnter = () => {
+    if (userMenuTimeout.current) clearTimeout(userMenuTimeout.current);
+    setShowUserMenu(true);
+  };
+
+  const handleUserMenuLeave = () => {
+    if (userMenuTimeout.current) clearTimeout(userMenuTimeout.current);
+    userMenuTimeout.current = setTimeout(() => {
+      setShowUserMenu(false);
+    }, 200); // 0.2 Sekunden
+  };
 
   useEffect(() => {
     // Check if user is logged in
@@ -50,7 +64,7 @@ export default function Navbar() {
     window.dispatchEvent(new Event("auth-change"));
 
     // Use Next.js router for navigation
-    router.push("/login");
+    router.push("/");
   };
 
   const toggleMobileMenu = () => {
@@ -263,8 +277,18 @@ export default function Navbar() {
             <div className="hidden md:flex items-center space-x-4">
               {isLoggedIn ? (
                 <div className="flex items-center space-x-4">
-                  <div className="relative group">
-                    <button className="flex items-center text-black hover:text-green-100 focus:outline-none">
+                  <div
+                    className="relative"
+                    onMouseEnter={handleUserMenuEnter}
+                    onMouseLeave={handleUserMenuLeave}
+                  >
+                    <button
+                      className="flex items-center text-black hover:text-green-100 focus:outline-none"
+                      onClick={() => setShowUserMenu((v) => !v)}
+                      aria-haspopup="true"
+                      aria-expanded={showUserMenu}
+                      type="button"
+                    >
                       <span className="mr-1">Hi, {username}</span>
                       <svg
                         className="h-4 w-4"
@@ -279,20 +303,29 @@ export default function Navbar() {
                         />
                       </svg>
                     </button>
-                    <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10 hidden group-hover:block">
-                      <Link
-                        href="/items/my-items"
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    {showUserMenu && (
+                      <div
+                        className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10"
+                        onClick={() => setShowUserMenu(false)}
+                        onMouseEnter={handleUserMenuEnter}
+                        onMouseLeave={handleUserMenuLeave}
                       >
-                        My Items
-                      </Link>
-                      <button
-                        onClick={handleLogout}
-                        className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                      >
-                        Logout
-                      </button>
-                    </div>
+                        <Link
+                          href="/items/my-items"
+                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                        >
+                          My Items
+                        </Link>
+                        <button
+                          onClick={handleLogout}
+                          className="block w-full text-left px-4 py-2 text-sm hover:bg-red-100 hover:text-red-700 text-gray-700 transition-colors duration-150 rounded cursor-pointer"
+                          style={{ width: "100%" }}
+                          type="button"
+                        >
+                          Logout
+                        </button>
+                      </div>
+                    )}
                   </div>
                   <Link
                     href="/items/new"

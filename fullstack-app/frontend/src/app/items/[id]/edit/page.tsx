@@ -74,7 +74,7 @@ export default function EditItemPage() {
         <footer className="bg-white shadow py-4">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <p className="text-center text-black  text-sm">
-              Willhaben Clone - Next.js Frontend + Spring Boot Backend
+              WNext.js Frontend + Spring Boot Backend
             </p>
           </div>
         </footer>
@@ -96,7 +96,7 @@ export default function EditItemPage() {
         <footer className="bg-white shadow py-4">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <p className="text-center text-black  text-sm">
-              Willhaben Clone - Next.js Frontend + Spring Boot Backend
+              Next.js Frontend + Spring Boot Backend
             </p>
           </div>
         </footer>
@@ -123,7 +123,7 @@ export default function EditItemPage() {
       <footer className="bg-white shadow py-4">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <p className="text-center text-black  text-sm">
-            Willhaben Clone - Next.js Frontend + Spring Boot Backend
+            Next.js Frontend + Spring Boot Backend
           </p>
         </div>
       </footer>

@@ -5,9 +5,12 @@
 /home/pj/Documents/LapCIC/fullstack-app/backend/src/main/java/com/example/backend/security/UserDetailsServiceImpl.java
 /home/pj/Documents/LapCIC/fullstack-app/backend/src/main/java/com/example/backend/BackendApplication.java
 /home/pj/Documents/LapCIC/fullstack-app/backend/src/main/java/com/example/backend/model/Item.java
+/home/pj/Documents/LapCIC/fullstack-app/backend/src/main/java/com/example/backend/model/Comment.java
 /home/pj/Documents/LapCIC/fullstack-app/backend/src/main/java/com/example/backend/model/User.java
 /home/pj/Documents/LapCIC/fullstack-app/backend/src/main/java/com/example/backend/controller/ItemController.java
 /home/pj/Documents/LapCIC/fullstack-app/backend/src/main/java/com/example/backend/security/JwtAuthenticationFilter.java
+/home/pj/Documents/LapCIC/fullstack-app/backend/src/main/java/com/example/backend/repository/CommentRepository.java
 /home/pj/Documents/LapCIC/fullstack-app/backend/src/main/java/com/example/backend/security/UserDetailsImpl.java
 /home/pj/Documents/LapCIC/fullstack-app/backend/src/main/java/com/example/backend/security/WebSecurityConfig.java
+/home/pj/Documents/LapCIC/fullstack-app/backend/src/main/java/com/example/backend/controller/CommentController.java
 /home/pj/Documents/LapCIC/fullstack-app/backend/src/main/java/com/example/backend/repository/ItemRepository.java

@@ -19,6 +19,7 @@ export interface Item {
   updatedAt?: string;
   user?: User;
   price?: number; // Optional price field for frontend compatibility
+  reserved?: boolean; // Optional reserved field for reserviert support
 }
 
 export interface LoginRequest {

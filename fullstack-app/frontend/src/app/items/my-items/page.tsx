@@ -269,9 +269,16 @@ export default function MyItemsPage() {
                         </div>
                         <div className="ml-4 flex-1">
                           <div className="flex items-center justify-between">
-                            <p className="text-lg font-medium text-blue-600 truncate">
-                              {item.name}
-                            </p>
+                            <div className="flex items-center space-x-2">
+                              <p className="text-lg font-medium text-blue-600 truncate">
+                                {item.name}
+                              </p>
+                              {item.reserved && (
+                                <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold bg-yellow-200 text-yellow-800 border border-yellow-400">
+                                  Reserviert
+                                </span>
+                              )}
+                            </div>
                             <p className="ml-2 flex-shrink-0 font-semibold text-green-600">
                               {formatPrice(item.price || 0)}
                             </p>
@@ -292,14 +299,43 @@ export default function MyItemsPage() {
                       <div className="ml-5 flex-shrink-0 flex space-x-2">
                         <Link
                           href={`/items/${item.id}/edit`}
-                          className="text-blue-600 hover:text-blue-900 font-medium"
+                          className="inline-flex items-center px-3 py-1 rounded-md bg-blue-100 hover:bg-blue-600 text-blue-700 hover:text-white font-semibold text-xs transition-colors duration-150 shadow-sm border border-blue-200 hover:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                          title="Bearbeiten"
                         >
+                          <svg
+                            className="h-4 w-4 mr-1"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth={2}
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M15.232 5.232l3.536 3.536M9 13l6.586-6.586a2 2 0 112.828 2.828L11.828 15.828a2 2 0 01-2.828 0L9 13zm-6 6h6"
+                            />
+                          </svg>
                           Edit
                         </Link>
                         <button
                           onClick={() => item.id && handleDeleteItem(item.id)}
-                          className="text-red-600 hover:text-red-900 font-medium"
+                          className="inline-flex items-center px-3 py-1 rounded-md bg-red-100 hover:bg-red-600 text-red-700 hover:text-white font-semibold text-xs transition-colors duration-150 shadow-sm border border-red-200 hover:border-red-600 focus:outline-none focus:ring-2 focus:ring-red-400"
+                          title="Löschen"
+                          type="button"
                         >
+                          <svg
+                            className="h-4 w-4 mr-1"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth={2}
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M6 18L18 6M6 6l12 12"
+                            />
+                          </svg>
                           Delete
                         </button>
                       </div>

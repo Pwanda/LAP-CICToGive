@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Item, itemsApi, authApi } from "@/services/api";
 import Link from "next/link";
+import CommentSection from "@/components/CommentSection";
 
 interface ItemDetailProps {
   itemId: number;
@@ -91,18 +92,18 @@ export default function ItemDetail({ itemId }: ItemDetailProps) {
       <div className="lg:flex">
         {/* Image gallery */}
         <div className="lg:w-3/5">
-          <div className="relative h-72 sm:h-96 lg:h-[500px] bg-gray-100">
+          <div className="relative h-72 w-full sm:h-96 lg:h-[500px] bg-gray-100">
             {item.imageUrls && item.imageUrls.length > 0 ? (
               <>
                 <img
                   src={`http://localhost:8080${item.imageUrls[currentImageIndex]}`}
                   alt={item.name}
-                  className="w-full h-full object-contain"
+                  className="w-full h-full object-cover"
                 />
 
                 {/* Image navigation */}
                 {item.imageUrls.length > 1 && (
-                  <div className="absolute inset-0 flex items-center justify-between p-4">
+                  <div className="absolute inset-0 flex items-center justify-between p-4 ">
                     <button
                       onClick={prevImage}
                       disabled={currentImageIndex === 0}
@@ -191,7 +192,7 @@ export default function ItemDetail({ itemId }: ItemDetailProps) {
                   <img
                     src={`http://localhost:8080${url}`}
                     alt={`Thumbnail ${index + 1}`}
-                    className="h-full w-full object-cover"
+                    className="h-full w-max object-fill"
                   />
                 </button>
               ))}
@@ -215,9 +216,16 @@ export default function ItemDetail({ itemId }: ItemDetailProps) {
               <div className="text-sm text-black ">ID: {item.id}</div>
             </div>
 
-            <h1 className="text-2xl sm:text-3xl font-bold text-black  mb-2">
-              {item.name}
-            </h1>
+            <div className="flex items-center space-x-2 mb-2">
+              <h1 className="text-2xl sm:text-3xl font-bold text-black">
+                {item.name}
+              </h1>
+              {item.reserved && (
+                <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-yellow-300 text-yellow-900 border border-yellow-500 shadow-md">
+                  Reserviert
+                </span>
+              )}
+            </div>
             <p
               className="text-xl sm:text-2xl font-bold text-green-600 mb-6"
               style={{ color: "var(--primary)" }}
@@ -357,35 +365,8 @@ export default function ItemDetail({ itemId }: ItemDetailProps) {
         </div>
       </div>
 
-      {/* Similar items section */}
-      <div className="border-t border-gray-200 mt-8 pt-8 px-6 pb-8">
-        <h2 className="text-2xl font-bold text-black  mb-6">
-          You might also like
-        </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {/* This would be populated with similar items in a real implementation */}
-          <div className="bg-gray-50 rounded-lg p-8 text-center">
-            <svg
-              className="h-12 w-12 text-black  mx-auto mb-4"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
-            <p className="text-black ">
-              Similar items would appear here based on category and other
-              factors.
-            </p>
-          </div>
-        </div>
-      </div>
+      {/* Kommentarbereich */}
+      <CommentSection />
     </div>
   );
 }

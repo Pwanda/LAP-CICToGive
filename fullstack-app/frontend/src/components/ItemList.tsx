@@ -292,6 +292,11 @@ export default function ItemList() {
               className="group bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
             >
               <div className="relative h-56 bg-gray-200 overflow-hidden">
+                {item.reserved && (
+                  <div className="absolute top-3 left-3 z-20 bg-yellow-300 text-yellow-900 px-3 py-1 rounded-full text-xs font-bold shadow-md border border-yellow-500">
+                    Reserviert
+                  </div>
+                )}
                 {item.imageUrls && item.imageUrls.length > 0 ? (
                   <img
                     src={`http://localhost:8080${item.imageUrls[0]}`}
@@ -344,12 +349,19 @@ export default function ItemList() {
               </div>
 
               <div className="p-5">
-                <h3
-                  className="text-lg font-semibold text-black  truncate group-hover:text-green-600 transition-colors duration-200"
-                  style={{ color: "var(--primary)" }}
-                >
-                  {item.name}
-                </h3>
+                <div className="flex items-center space-x-2">
+                  <h3
+                    className="text-lg font-semibold text-black  truncate group-hover:text-green-600 transition-colors duration-200"
+                    style={{ color: "var(--primary)" }}
+                  >
+                    {item.name}
+                  </h3>
+                  {item.reserved && (
+                    <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold bg-yellow-200 text-yellow-800 border border-yellow-400">
+                      Reserviert
+                    </span>
+                  )}
+                </div>
                 <p
                   className="mt-2 text-xl font-bold text-green-600"
                   style={{ color: "var(--primary)" }}
