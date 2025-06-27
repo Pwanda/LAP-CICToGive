@@ -15,7 +15,7 @@ const CATEGORIES = [
   "Books",
   "Toys",
   "Vehicles",
-  "Real Estate",
+  "Beauty",
   "Services",
   "Other",
 ];
