@@ -1,3 +1,4 @@
+com/example/backend/config/DatabaseInitializer.class
 com/example/backend/controller/AuthController.class
 com/example/backend/controller/ItemController.class
 com/example/backend/controller/AuthController$RegisterRequest.class

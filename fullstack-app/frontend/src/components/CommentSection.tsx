@@ -1,35 +1,48 @@
 "use client";
 
-import { useState } from "react";
-import { authApi } from "@/services/api";
-
-interface Comment {
-  text: string;
-  date: Date;
-  username: string;
-  avatarUrl?: string;
-}
+import { useState, useEffect } from "react";
+import { authApi, commentsApi, Comment } from "@/services/api";
 
 function getAvatarUrl(username: string) {
-  // Simple avatar generator using dicebear (or use your own logic)
-  return `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(username)}&backgroundType=gradientLinear&fontSize=38`;
+  return `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(
+    username,
+  )}&backgroundType=gradientLinear&fontSize=38`;
 }
 
-export default function CommentSection() {
+export default function CommentSection({ itemId }: { itemId: number }) {
   const [comments, setComments] = useState<Comment[]>([]);
   const [input, setInput] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // Kommentare laden
+  useEffect(() => {
+    const fetchComments = async () => {
+      try {
+        setLoading(true);
+        const data = await commentsApi.getByItemId(itemId);
+        setComments(data);
+        setError(null);
+      } catch (err) {
+        setError("Failed to load comments");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchComments();
+  }, [itemId]);
+
+  // Kommentar absenden
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (input.trim().length === 0) return;
-    const user = authApi.getCurrentUser();
-    const username = user?.username || "Anonym";
-    const avatarUrl = getAvatarUrl(username);
-    setComments([
-      { text: input.trim(), date: new Date(), username, avatarUrl },
-      ...comments,
-    ]);
-    setInput("");
+    try {
+      const newComment = await commentsApi.add(itemId, input.trim());
+      setComments([newComment, ...comments]);
+      setInput("");
+    } catch (err) {
+      setError("Failed to add comment");
+    }
   };
 
   return (
@@ -46,35 +59,44 @@ export default function CommentSection() {
         <button
           type="submit"
           className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+          disabled={loading}
         >
           Absenden
         </button>
       </form>
+      {error && <div className="text-red-600 mb-2">{error}</div>}
       <div className="space-y-2">
-        {comments.length === 0 && (
+        {loading ? (
+          <div className="text-gray-500">Lade Kommentare...</div>
+        ) : comments.length === 0 ? (
           <div className="text-gray-500">Noch keine Kommentare.</div>
-        )}
-        {comments.map((c, i) => (
-          <div
-            key={i}
-            className="border-b border-gray-100 pb-2 flex items-start gap-3"
-          >
-            <img
-              src={c.avatarUrl}
-              alt={c.username}
-              className="h-8 w-8 rounded-full border border-gray-200 mt-1"
-            />
-            <div className="flex-1">
-              <div className="flex items-center gap-2">
-                <span className="font-semibold text-black">{c.username}</span>
-                <span className="text-xs text-gray-400">
-                  {c.date.toLocaleString("de-AT")}
-                </span>
+        ) : (
+          comments.map((c, i) => (
+            <div
+              key={c.id || i}
+              className="border-b border-gray-100 pb-2 flex items-start gap-3"
+            >
+              <img
+                src={getAvatarUrl(c.user?.username || "Anonym")}
+                alt={c.user?.username || "Anonym"}
+                className="h-8 w-8 rounded-full border border-gray-200 mt-1"
+              />
+              <div className="flex-1">
+                <div className="flex items-center gap-2">
+                  <span className="font-semibold text-black">
+                    {c.user?.username || "Anonym"}
+                  </span>
+                  <span className="text-xs text-gray-400">
+                    {c.createdAt
+                      ? new Date(c.createdAt).toLocaleString("de-AT")
+                      : ""}
+                  </span>
+                </div>
+                <div className="text-black">{c.text}</div>
               </div>
-              <div className="text-black">{c.text}</div>
             </div>
-          </div>
-        ))}
+          ))
+        )}
       </div>
     </div>
   );

@@ -22,6 +22,14 @@ export interface Item {
   reserved?: boolean; // Optional reserved field for reserviert support
 }
 
+// Kommentar-Typdefinition
+export interface Comment {
+  id?: number;
+  text: string;
+  createdAt?: string;
+  user?: User;
+}
+
 export interface LoginRequest {
   username: string;
   password: string;
@@ -243,6 +251,34 @@ export const uploadApi = {
       throw new Error("Failed to upload images");
     }
 
+    return response.json();
+  },
+};
+
+// Kommentare API-Service
+export const commentsApi = {
+  // Alle Kommentare zu einem Item laden
+  getByItemId: async (itemId: number): Promise<Comment[]> => {
+    const response = await fetch(`${API_BASE_URL}/items/${itemId}/comments`, {
+      credentials: "include",
+      headers: getAuthHeader(),
+    });
+    if (!response.ok) throw new Error("Failed to fetch comments");
+    return response.json();
+  },
+
+  // Kommentar zu einem Item hinzufügen
+  add: async (itemId: number, text: string): Promise<Comment> => {
+    const response = await fetch(`${API_BASE_URL}/items/${itemId}/comments`, {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+        ...getAuthHeader(),
+      },
+      body: JSON.stringify({ text }),
+    });
+    if (!response.ok) throw new Error("Failed to add comment");
     return response.json();
   },
 };

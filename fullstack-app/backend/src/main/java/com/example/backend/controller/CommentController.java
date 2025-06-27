@@ -41,14 +41,8 @@ public class CommentController {
     public ResponseEntity<List<Comment>> getComments(
         @PathVariable Long itemId
     ) {
-        Optional<Item> itemOptional = itemRepository.findById(itemId);
-        if (!itemOptional.isPresent()) {
-            return ResponseEntity.badRequest().build();
-        }
         List<Comment> comments =
-            commentRepository.findByItemOrderByCreatedAtDesc(
-                itemOptional.get()
-            );
+            commentRepository.findByItemIdOrderByCreatedAtDesc(itemId);
         return ResponseEntity.ok(comments);
     }
 

@@ -1,0 +1,1378 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[german]{babel}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{fancyhdr}
+\usepackage{enumitem}
+\usepackage{listings}
+\usepackage{tikz}
+\usepackage{pgfgantt}
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+\geometry{margin=2.5cm}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt}
+
+% Code-Listing Konfiguration
+\lstset{
+    backgroundcolor=\color{gray!10},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,
+    breaklines=true,
+    captionpos=b,
+    commentstyle=\color{green!50!black},
+    frame=single,
+    keywordstyle=\color{blue},
+    language=Java,
+    numbers=left,
+    numberstyle=\tiny\color{gray},
+    showspaces=false,
+    showstringspaces=false,
+    stringstyle=\color{red},
+    tabsize=2,
+    xleftmargin=2em,
+    framexleftmargin=2em
+}
+
+% Header and Footer
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{CIC to Give - LAP Dokumentation}
+\fancyhead[R]{\today}
+\fancyfoot[C]{\thepage}
+
+% Title page setup
+\title{\Huge\textbf{Lehrabschlussprüfung}\\[0.5cm]\LARGE Dokumentation\\[0.3cm]\large CIC to Give - Fullstack Webanwendung\\[0.5cm]\normalsize Kostenlose Tauschbörse mit Spring Boot \& Next.js}
+\author{Kandidat: [Dein Name]\\Lehrberuf: Applikationsentwicklung - Coding\\Prüfungsjahr: 2024}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+\newpage
+
+\tableofcontents
+\newpage
+
+\section{Einleitung und Projektübersicht}
+
+\subsection{Was ist ein Lasten- vs. Pflichtenheft?}
+
+\textbf{Lastenheft:} Beschreibt \textit{WAS} der Auftraggeber möchte. Es definiert die Anforderungen aus Sicht des Kunden.
+
+\textbf{Pflichtenheft:} Beschreibt \textit{WIE} der Auftragnehmer (Entwickler) die Anforderungen technisch umsetzt.
+
+Dieses Dokument kombiniert beide Aspekte für die Lehrabschlussprüfung.
+
+\subsection{Projektbeschreibung}
+CIC to Give ist eine vollständige Fullstack-Webanwendung, die als kostenlose Tauschbörse fungiert. Benutzer können Items einstellen, die sie verschenken möchten, und nach Items suchen, die sie benötigen.
+
+\subsection{Warum diese Technologien?}
+
+\textbf{Java mit Spring Boot:}
+\begin{itemize}
+    \item Typsicher und robust
+    \item Große Enterprise-Unterstützung
+    \item Viele vorgefertigte Lösungen (Spring Security, Spring Data)
+    \item Gute Performance für Backend-Services
+\end{itemize}
+
+\textbf{Next.js mit React:}
+\begin{itemize}
+    \item Server-Side Rendering für bessere SEO
+    \item Moderne Frontend-Architektur
+    \item TypeScript-Unterstützung
+    \item Große Community und Dokumentation
+\end{itemize}
+
+\section{Technische Architektur}
+
+\subsection{System-Architektur}
+
+\begin{center}
+\begin{tikzpicture}[node distance=2cm]
+    \node[rectangle, draw, fill=blue!20] (frontend) {Next.js Frontend\\(Port 3000)};
+    \node[rectangle, draw, fill=green!20, below of=frontend] (backend) {Spring Boot Backend\\(Port 8080)};
+    \node[rectangle, draw, fill=yellow!20, below of=backend] (database) {PostgreSQL Database\\(Port 5432)};
+
+    \draw[->] (frontend) -- (backend) node[midway, right] {HTTP/REST API};
+    \draw[->] (backend) -- (database) node[midway, right] {JDBC};
+\end{tikzpicture}
+\end{center}
+
+\subsection{Warum diese Architektur?}
+
+\textbf{Drei-Schichten-Architektur:}
+\begin{enumerate}
+    \item \textbf{Präsentationsschicht:} Next.js Frontend
+    \item \textbf{Anwendungsschicht:} Spring Boot Backend
+    \item \textbf{Datenschicht:} PostgreSQL Database
+\end{enumerate}
+
+\textbf{Vorteile:}
+\begin{itemize}
+    \item Klare Trennung der Verantwortlichkeiten
+    \item Skalierbarkeit (jede Schicht kann separat skaliert werden)
+    \item Wartbarkeit (Änderungen in einer Schicht betreffen andere nicht)
+    \item Testbarkeit (jede Schicht kann isoliert getestet werden)
+\end{itemize}
+
+\section{Backend-Implementierung mit Spring Boot}
+
+\subsection{Warum Spring Boot?}
+
+Spring Boot ist ein Framework für Java, das die Entwicklung von Enterprise-Anwendungen vereinfacht:
+
+\begin{itemize}
+    \item \textbf{Auto-Configuration:} Automatische Konfiguration basierend auf Classpath
+    \item \textbf{Embedded Server:} Tomcat ist bereits integriert
+    \item \textbf{Starter Dependencies:} Vorgefertigte Dependency-Pakete
+    \item \textbf{Production-Ready:} Metrics, Health Checks, etc. sind bereits implementiert
+\end{itemize}
+
+\subsection{Maven Konfiguration}
+
+\begin{lstlisting}[language=XML, caption=pom.xml - Maven Dependencies]
+<dependencies>
+    <!-- Spring Boot Web Starter -->
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-web</artifactId>
+    </dependency>
+
+    <!-- Spring Boot Data JPA -->
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-data-jpa</artifactId>
+    </dependency>
+
+    <!-- Spring Security -->
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-security</artifactId>
+    </dependency>
+
+    <!-- JWT Token Support -->
+    <dependency>
+        <groupId>io.jsonwebtoken</groupId>
+        <artifactId>jjwt-api</artifactId>
+        <version>0.11.5</version>
+    </dependency>
+</dependencies>
+\end{lstlisting}
+
+\textbf{Warum diese Dependencies?}
+\begin{itemize}
+    \item \textbf{spring-boot-starter-web:} Enthält Spring MVC, Tomcat, Jackson für JSON
+    \item \textbf{spring-boot-starter-data-jpa:} Hibernate ORM, Spring Data JPA
+    \item \textbf{spring-boot-starter-security:} Authentifizierung und Autorisierung
+    \item \textbf{jjwt:} JWT Token-Generierung und -Validierung
+\end{itemize}
+
+\subsection{Datenmodell (JPA Entities)}
+
+\subsubsection{User Entity}
+
+\begin{lstlisting}[language=Java, caption=User.java - Benutzer-Entität]
+@Entity
+@Table(name = "users",
+       uniqueConstraints = {
+           @UniqueConstraint(columnNames = "username"),
+           @UniqueConstraint(columnNames = "email")
+       })
+public class User {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable = false, length = 50)
+    private String username;
+
+    @Column(nullable = false, length = 100)
+    private String email;
+
+    @Column(nullable = false)
+    private String password; // BCrypt gehashed
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
+    private Set<Item> items = new HashSet<>();
+
+    // Konstruktoren, Getter, Setter...
+}
+\end{lstlisting}
+
+\textbf{Erklärung der Annotationen:}
+\begin{itemize}
+    \item \textbf{@Entity:} Markiert die Klasse als JPA-Entität
+    \item \textbf{@Table:} Definiert Tabellennamen und Constraints
+    \item \textbf{@Id:} Primärschlüssel
+    \item \textbf{@GeneratedValue:} Auto-Increment für ID
+    \item \textbf{@Column:} Spaltendefinition (nullable, length)
+    \item \textbf{@OneToMany:} Ein User kann viele Items haben
+    \item \textbf{@UniqueConstraint:} Username und Email müssen einzigartig sein
+\end{itemize}
+
+\subsubsection{Item Entity}
+
+\begin{lstlisting}[language=Java, caption=Item.java - Item-Entität]
+@Entity
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+public class Item {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable = false)
+    private String name;
+
+    @Column(length = 2000)
+    private String description;
+
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
+
+    @ElementCollection
+    @CollectionTable(
+        name = "item_images",
+        joinColumns = @JoinColumn(name = "item_id")
+    )
+    @Column(name = "image_url")
+    private List<String> imageUrls = new ArrayList<>();
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    @JsonIgnoreProperties({"password", "items"})
+    private User user;
+
+    @Column(nullable = false)
+    private String category;
+
+    @Column(nullable = false)
+    private boolean reserved = false;
+
+    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnoreProperties({"item"})
+    private List<Comment> comments = new ArrayList<>();
+
+    @PreUpdate
+    public void preUpdate() {
+        this.updatedAt = LocalDateTime.now();
+    }
+}
+\end{lstlisting}
+
+\textbf{Komplexere Annotationen erklärt:}
+\begin{itemize}
+    \item \textbf{@ElementCollection:} Für die Liste von Bild-URLs
+    \item \textbf{@CollectionTable:} Definiert separate Tabelle für Bilder
+    \item \textbf{@ManyToOne:} Viele Items gehören zu einem User
+    \item \textbf{@OneToMany:} Ein Item kann viele Kommentare haben
+    \item \textbf{@PreUpdate:} Wird vor jedem Update ausgeführt
+    \item \textbf{@JsonIgnoreProperties:} Verhindert JSON-Serialisierung bestimmter Felder
+\end{itemize}
+
+\subsection{Passwort-Hashing mit BCrypt}
+
+\subsubsection{Warum BCrypt?}
+
+\textbf{Problem:} Passwörter dürfen niemals im Klartext gespeichert werden!
+
+\textbf{Lösung:} BCrypt ist ein sicherer Hashing-Algorithmus:
+\begin{itemize}
+    \item \textbf{Salzung:} Jedes Passwort bekommt einen zufälligen Salt
+    \item \textbf{Adaptive Hashing:} Rechenaufwand kann erhöht werden
+    \item \textbf{Einweg-Funktion:} Aus dem Hash kann nicht das Original-Passwort berechnet werden
+\end{itemize}
+
+\subsubsection{Technische Implementierung}
+
+\begin{lstlisting}[language=Java, caption=Passwort-Hashing in Spring Security]
+@Configuration
+@EnableWebSecurity
+public class WebSecurityConfig {
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    // Passwort beim Registrieren hashen
+    public String hashPassword(String plainPassword) {
+        return passwordEncoder().encode(plainPassword);
+    }
+
+    // Passwort beim Login prüfen
+    public boolean checkPassword(String plainPassword, String hashedPassword) {
+        return passwordEncoder().matches(plainPassword, hashedPassword);
+    }
+}
+\end{lstlisting}
+
+\textbf{Wie funktioniert BCrypt?}
+\begin{enumerate}
+    \item \textbf{Salt generieren:} Zufällige 128-bit Zeichenkette
+    \item \textbf{Passwort + Salt:} Kombiniert das Passwort mit dem Salt
+    \item \textbf{Hashing:} Verwendet Blowfish-Algorithmus mit konfigurierbaren Runden
+    \item \textbf{Speichern:} Salt und Hash werden zusammen gespeichert
+\end{enumerate}
+
+\textbf{Beispiel:}
+\begin{itemize}
+    \item \textbf{Original:} "meinPasswort123"
+    \item \textbf{BCrypt Hash:} "\$2a\$10\$N9qo8uLOickgx2ZMRZoMye6FaQJdFfhWO/FdJwF7dWQbN8A5JzNQK"
+    \item \textbf{Enthält:} Algorithmus-Info, Kosten-Parameter, Salt und Hash
+\end{itemize}
+
+\subsection{JWT (JSON Web Token) Authentifizierung}
+
+\subsubsection{Warum JWT statt Sessions?}
+
+\textbf{Traditionelle Sessions:}
+\begin{itemize}
+    \item Server speichert Session-Daten im Speicher
+    \item Session-ID wird als Cookie übertragen
+    \item Problem: Nicht skalierbar bei mehreren Servern
+\end{itemize}
+
+\textbf{JWT Vorteile:}
+\begin{itemize}
+    \item \textbf{Stateless:} Server muss keine Session-Daten speichern
+    \item \textbf{Skalierbar:} Funktioniert mit Load Balancern
+    \item \textbf{Cross-Domain:} Kann zwischen verschiedenen Domains verwendet werden
+    \item \textbf{Selbst-validierend:} Token enthält alle nötigen Informationen
+\end{itemize}
+
+\subsubsection{JWT Struktur}
+
+Ein JWT besteht aus drei Teilen, getrennt durch Punkte:
+\textbf{Header.Payload.Signature}
+
+\begin{lstlisting}[language=JSON, caption=JWT Header (Base64 encoded)]
+{
+  "alg": "HS256",
+  "typ": "JWT"
+}
+\end{lstlisting}
+
+\begin{lstlisting}[language=JSON, caption=JWT Payload (Base64 encoded)]
+{
+  "sub": "1234567890",
+  "username": "john_doe",
+  "iat": 1516239022,
+  "exp": 1516325422
+}
+\end{lstlisting}
+
+\textbf{Signature:} HMACSHA256(base64UrlEncode(header) + "." + base64UrlEncode(payload), secret)
+
+\subsubsection{JWT Implementierung}
+
+\begin{lstlisting}[language=Java, caption=JwtUtils.java - JWT Token-Generierung]
+@Component
+public class JwtUtils {
+
+    private String jwtSecret = "mySecretKey";
+    private int jwtExpirationMs = 86400000; // 24 Stunden
+
+    public String generateJwtToken(UserDetailsImpl userPrincipal) {
+        return generateTokenFromUsername(userPrincipal.getUsername());
+    }
+
+    public String generateTokenFromUsername(String username) {
+        return Jwts.builder()
+                .setSubject(username)
+                .setIssuedAt(new Date())
+                .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
+                .signWith(SignatureAlgorithm.HS512, jwtSecret)
+                .compact();
+    }
+
+    public String getUserNameFromJwtToken(String token) {
+        return Jwts.parser()
+                .setSigningKey(jwtSecret)
+                .parseClaimsJws(token)
+                .getBody()
+                .getSubject();
+    }
+
+    public boolean validateJwtToken(String authToken) {
+        try {
+            Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(authToken);
+            return true;
+        } catch (SignatureException e) {
+            logger.error("Invalid JWT signature: {}", e.getMessage());
+        } catch (MalformedJwtException e) {
+            logger.error("Invalid JWT token: {}", e.getMessage());
+        } catch (ExpiredJwtException e) {
+            logger.error("JWT token is expired: {}", e.getMessage());
+        }
+        return false;
+    }
+}
+\end{lstlisting}
+
+\subsection{Spring Security Konfiguration}
+
+\subsubsection{Warum Spring Security?}
+
+Spring Security ist das De-facto-Standard-Framework für Sicherheit in Java-Anwendungen:
+\begin{itemize}
+    \item \textbf{Authentifizierung:} Wer ist der Benutzer?
+    \item \textbf{Autorisierung:} Was darf der Benutzer?
+    \item \textbf{Schutz vor Angriffen:} CSRF, XSS, Session Fixation
+\end{itemize}
+
+\begin{lstlisting}[language=Java, caption=WebSecurityConfig.java - Security-Konfiguration]
+@Configuration
+@EnableWebSecurity
+public class WebSecurityConfig {
+
+    @Autowired
+    private JwtAuthenticationEntryPoint unauthorizedHandler;
+
+    @Bean
+    public JwtAuthenticationFilter authenticationJwtTokenFilter() {
+        return new JwtAuthenticationFilter();
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http.cors().and().csrf().disable()
+            .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
+            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+            .authorizeHttpRequests()
+                .requestMatchers("/api/auth/**").permitAll()
+                .requestMatchers("/api/items/**").authenticated()
+                .anyRequest().authenticated();
+
+        http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+
+        return http.build();
+    }
+}
+\end{lstlisting}
+
+\textbf{Konfiguration erklärt:}
+\begin{itemize}
+    \item \textbf{cors().and().csrf().disable():} CORS aktivieren, CSRF deaktivieren (für APIs)
+    \item \textbf{sessionManagement().sessionCreationPolicy(STATELESS):} Keine Sessions verwenden
+    \item \textbf{authorizeHttpRequests():} Definiert welche URLs geschützt sind
+    \item \textbf{addFilterBefore():} JWT-Filter vor Standard-Filter einfügen
+\end{itemize}
+
+\subsection{REST API Design}
+
+\subsubsection{Was ist REST?}
+
+REST (Representational State Transfer) ist ein Architekturstil für APIs:
+\begin{itemize}
+    \item \textbf{Stateless:} Jede Anfrage enthält alle nötigen Informationen
+    \item \textbf{HTTP-Verben:} GET, POST, PUT, DELETE für verschiedene Operationen
+    \item \textbf{Ressourcen:} URLs repräsentieren Objekte
+    \item \textbf{JSON:} Standardformat für Datenübertragung
+\end{itemize}
+
+\subsubsection{ItemController Implementierung}
+
+\begin{lstlisting}[language=Java, caption=ItemController.java - REST-Controller]
+@RestController
+@RequestMapping("/api/items")
+@CrossOrigin(origins = "http://localhost:3000")
+public class ItemController {
+
+    @Autowired
+    private ItemRepository itemRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @GetMapping
+    public ResponseEntity<Map<String, Object>> getAllItems(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "createdAt") String sortBy,
+            @RequestParam(defaultValue = "desc") String sortDir,
+            @RequestParam(required = false) String category,
+            @RequestParam(required = false) String search) {
+
+        Sort sort = sortDir.equalsIgnoreCase("desc") ?
+            Sort.by(sortBy).descending() :
+            Sort.by(sortBy).ascending();
+
+        Pageable pageable = PageRequest.of(page, size, sort);
+        Page<Item> itemPage = itemRepository.findItemsWithFilters(category, search, pageable);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("items", itemPage.getContent());
+        response.put("currentPage", itemPage.getNumber());
+        response.put("totalItems", itemPage.getTotalElements());
+        response.put("totalPages", itemPage.getTotalPages());
+
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping
+    public ResponseEntity<Item> createItem(@RequestBody Item item, Authentication authentication) {
+        String username = authentication.getName();
+        User user = userRepository.findByUsername(username)
+            .orElseThrow(() -> new RuntimeException("User not found"));
+
+        item.setUser(user);
+        Item savedItem = itemRepository.save(item);
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedItem);
+    }
+}
+\end{lstlisting}
+
+\textbf{Annotationen erklärt:}
+\begin{itemize}
+    \item \textbf{@RestController:} Kombiniert @Controller und @ResponseBody
+    \item \textbf{@RequestMapping:} Basis-URL für alle Methoden
+    \item \textbf{@GetMapping:} HTTP GET-Requests
+    \item \textbf{@PostMapping:} HTTP POST-Requests
+    \item \textbf{@RequestParam:} URL-Parameter
+    \item \textbf{@RequestBody:} JSON-Body in Java-Objekt konvertieren
+\end{itemize}
+
+\subsection{Datenbankzugriff mit Spring Data JPA}
+
+\subsubsection{Warum JPA?}
+
+JPA (Java Persistence API) ist der Standard für Object-Relational Mapping in Java:
+\begin{itemize}
+    \item \textbf{Objektrelational:} Java-Objekte werden auf Datenbanktabellen gemappt
+    \item \textbf{Provider-unabhängig:} Funktioniert mit verschiedenen Datenbanken
+    \item \textbf{Hibernate:} Meist verwendete JPA-Implementierung
+\end{itemize}
+
+\begin{lstlisting}[language=Java, caption=ItemRepository.java - Datenbankzugriff]
+@Repository
+public interface ItemRepository extends JpaRepository<Item, Long> {
+
+    @Query("SELECT i FROM Item i WHERE " +
+           "(:category IS NULL OR i.category = :category) AND " +
+           "(:search IS NULL OR LOWER(i.name) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
+           "LOWER(i.description) LIKE LOWER(CONCAT('%', :search, '%')))")
+    Page<Item> findItemsWithFilters(@Param("category") String category,
+                                   @Param("search") String search,
+                                   Pageable pageable);
+
+    List<Item> findByUserOrderByCreatedAtDesc(User user);
+
+    @Query("SELECT i FROM Item i WHERE i.user.id = :userId")
+    List<Item> findByUserId(@Param("userId") Long userId);
+}
+\end{lstlisting}
+
+\textbf{Spring Data JPA Features:}
+\begin{itemize}
+    \item \textbf{Automatische Implementierung:} Spring erstellt die Implementierung zur Laufzeit
+    \item \textbf{Query Methods:} Methodennamen werden zu SQL-Queries
+    \item \textbf{@Query:} Eigene JPQL-Queries definieren
+    \item \textbf{Paginierung:} Pageable für große Datenmengen
+\end{itemize}
+
+\section{Frontend-Implementierung mit Next.js}
+
+\subsection{Warum Next.js?}
+
+Next.js ist ein React-Framework mit zusätzlichen Features:
+\begin{itemize}
+    \item \textbf{Server-Side Rendering:} Bessere Performance und SEO
+    \item \textbf{File-based Routing:} Ordnerstruktur definiert URLs
+    \item \textbf{API Routes:} Backend-Funktionalität im Frontend-Projekt
+    \item \textbf{Automatic Code Splitting:} Optimierte Bundle-Größen
+\end{itemize}
+
+\subsection{TypeScript Integration}
+
+\subsubsection{Warum TypeScript?}
+
+TypeScript ist JavaScript mit Typen:
+\begin{itemize}
+    \item \textbf{Typsicherheit:} Fehler werden zur Compile-Zeit erkannt
+    \item \textbf{Bessere IDE-Unterstützung:} Autocompletion, Refactoring
+    \item \textbf{Selbstdokumentierend:} Typen sind Dokumentation
+    \item \textbf{Großprojekt-tauglich:} Bessere Wartbarkeit bei vielen Entwicklern
+\end{itemize}
+
+\begin{lstlisting}[language=TypeScript, caption=api.ts - TypeScript-Interfaces]
+// Type definitions
+export interface User {
+  id: number;
+  username: string;
+  email: string;
+}
+
+export interface Item {
+  id?: number;
+  name: string;
+  description: string;
+  category: string;
+  location?: string;
+  imageUrls?: string[];
+  createdAt?: string;
+  updatedAt?: string;
+  user?: User;
+  reserved?: boolean;
+}
+
+export interface LoginRequest {
+  username: string;
+  password: string;
+}
+
+export interface PaginatedResponse<T> {
+  items: T[];
+  currentPage: number;
+  totalItems: number;
+  totalPages: number;
+}
+\end{lstlisting}
+
+\subsection{API-Service Implementierung}
+
+\begin{lstlisting}[language=TypeScript, caption=API-Service für Backend-Kommunikation]
+const API_BASE_URL = "http://localhost:8080/api";
+
+// Helper function to get auth header
+const getAuthHeader = (): HeadersInit => {
+  const token = localStorage.getItem("authToken");
+  return token ? { Authorization: `Bearer ${token}` } : {};
+};
+
+export const authApi = {
+  login: async (loginRequest: LoginRequest): Promise<LoginResponse> => {
+    const response = await fetch(`${API_BASE_URL}/auth/login`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify(loginRequest),
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: Login failed`);
+    }
+
+    const data = await response.json();
+
+    // Store user info und token
+    localStorage.setItem("user", JSON.stringify(data));
+    localStorage.setItem("isLoggedIn", "true");
+
+    if (data.token) {
+      localStorage.setItem("authToken", data.token);
+    }
+
+    return data;
+  },
+
+  isLoggedIn: (): boolean => {
+    if (typeof window !== "undefined") {
+      const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
+      const hasUser = !!localStorage.getItem("user");
+      return isLoggedIn && hasUser;
+    }
+    return false;
+  }
+};
+\end{lstlisting}
+
+\textbf{Frontend-Backend-Kommunikation:}
+\begin{itemize}
+    \item \textbf{Fetch API:} Moderne Alternative zu XMLHttpRequest
+    \item \textbf{localStorage:} Client-seitige Speicherung von Tokens
+    \item \textbf{Authorization Header:} JWT-Token in jedem Request
+    \item \textbf{Error Handling:} Strukturierte Fehlerbehandlung
+\end{itemize}
+
+\subsection{React Komponenten-Architektur}
+
+\begin{lstlisting}[language=TypeScript, caption=ItemList.tsx - React-Komponente]
+"use client";
+import { useEffect, useState } from "react";
+import { itemsApi, Item } from "@/services/api";
+
+interface ItemListProps {
+  category?: string;
+  search?: string;
+}
+
+export default function ItemList({ category, search }: ItemListProps) {
+  const [items, setItems] = useState<Item[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchItems = async () => {
+      setLoading(true);
+      setError(null);
+
+      try {
+        const response = await itemsApi.getAll(0, 10, category, search);
+        setItems(response.items);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "Fehler beim Laden");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchItems();
+  }, [category, search]);
+
+  if (loading) return <div>Laden...</div>;
+  if (error) return <div>Fehler: {error}</div>;
+
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      {items.map((item) => (
+        <div key={item.id} className="border rounded-lg p-4">
+          <h3 className="font-bold">{item.name}</h3>
+          <p className="text-gray-600">{item.description}</p>
+          <div className="mt-2">
+            <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded">
+              {item.category}
+            </span>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+\end{lstlisting}
+
+\textbf{React Konzepte erklärt:}
+\begin{itemize}
+    \item \textbf{useState:} Hook für lokalen Komponenten-State
+    \item \textbf{useEffect:} Hook für Side Effects (API-Calls, Event Listener)
+    \item \textbf{Props:} Parameter, die zwischen Komponenten übergeben werden
+    \item \textbf{JSX:} JavaScript mit HTML-ähnlicher Syntax
+    \item \textbf{Component Lifecycle:} Mount, Update, Unmount
+\end{itemize}
+
+\subsection{Styling mit Tailwind CSS}
+
+\subsubsection{Warum Tailwind CSS?}
+
+Tailwind ist ein Utility-First CSS-Framework:
+\begin{itemize}
+    \item \textbf{Utility-Classes:} Vordefinierte CSS-Klassen für alle Properties
+    \item \textbf{Responsive Design:} Breakpoints sind integriert
+    \item \textbf{Konsistenz:} Design-System ist vorgegeben
+    \item \textbf{Performance:} Nur verwendete CSS-Klassen werden gebündelt
+\end{itemize}
+
+\begin{lstlisting}[language=HTML, caption=Tailwind CSS Beispiel]
+<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-6">
+  <div className="bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition-shadow">
+    <h3 className="text-lg font-bold text-gray-900 mb-2">Titel</h3>
+    <p className="text-gray-600 text-sm line-clamp-3">Beschreibung...</p>
+    <div className="mt-4 flex items-center justify-between">
+      <span className="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs">
+        Kategorie
+      </span>
+      <button className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">
+        Details
+      </button>
+    </div>
+  </div>
+</div>
+\end{lstlisting}
+
+\textbf{Tailwind-Klassen erklärt:}
+\begin{itemize}
+    \item \textbf{grid grid-cols-1:} CSS Grid mit 1 Spalte
+    \item \textbf{md:grid-cols-2:} 2 Spalten ab Medium-Breakpoint
+    \item \textbf{bg-white:} Weißer Hintergrund
+    \item \textbf{rounded-lg:} Abgerundete Ecken
+    \item \textbf{shadow-md:} Mittelstarker Schatten
+    \item \textbf{hover:shadow-lg:} Stärkerer Schatten beim Hover
+    \item \textbf{transition-shadow:} Animierte Schatten-Übergänge
+\end{itemize}
+
+\section{Datenbank-Design}
+
+\subsection{Warum PostgreSQL?}
+
+PostgreSQL ist eine objektrelationale Datenbank:
+\begin{itemize}
+    \item \textbf{ACID-Eigenschaften:} Atomarität, Konsistenz, Isolation, Dauerhaftigkeit
+    \item \textbf{Skalierbarkeit:} Horizontal und vertikal skalierbar
+    \item \textbf{JSON-Unterstützung:} Native JSON/JSONB Datentypen
+    \item \textbf{Open Source:} Kostenlos und community-supported
+    \item \textbf{Erweiterbarkeit:} Custom Functions, Trigger, Extensions
+\end{itemize}
+
+\subsection{Datenbankschema}
+
+\begin{center}
+\begin{tikzpicture}[scale=0.8]
+    % Users Table
+    \node[rectangle, draw, fill=blue!20] (users) at (0, 0) {
+        \begin{tabular}{l}
+        \textbf{users} \\
+        \hline
+        id (PK) \\
+        username \\
+        email \\
+        password \\
+        created\_at
+        \end{tabular}
+    };
+
+    % Items Table
+    \node[rectangle, draw, fill=green!20] (items) at (6, 0) {
+        \begin{tabular}{l}
+        \textbf{items} \\
+        \hline
+        id (PK) \\
+        name \\
+        description \\
+        category \\
+        location \\
+        reserved \\
+        user\_id (FK) \\
+        created\_at \\
+        updated\_at
+        \end{tabular}
+    };
+
+    % Comments Table
+    \node[rectangle, draw, fill=yellow!20] (comments) at (3, -4) {
+        \begin{tabular}{l}
+        \textbf{comments} \\
+        \hline
+        id (PK) \\
+        text \\
+        user\_id (FK) \\
+        item\_id (FK) \\
+        created\_at
+        \end{tabular}
+    };
+
+    % Item Images Table
+    \node[rectangle, draw, fill=red!20] (images) at (6, -2.5) {
+        \begin{tabular}{l}
+        \textbf{item\_images} \\
+        \hline
+        item\_id (FK) \\
+        image\_url
+        \end{tabular}
+    };
+
+    % Relationships
+    \draw[->] (users) -- (items) node[midway, above] {1:n};
+    \draw[->] (users) -- (comments) node[midway, left] {1:n};
+    \draw[->] (items) -- (comments) node[midway, right] {1:n};
+    \draw[->] (items) -- (images) node[midway, right] {1:n};
+\end{tikzpicture}
+\end{center}
+
+\subsection{Datenbank-Konfiguration}
+
+\begin{lstlisting}[language=Properties, caption=application.properties - Datenbankkonfiguration]
+# H2 Database (Development)
+spring.h2.console.enabled=true
+spring.datasource.url=jdbc:h2:mem:testdb
+spring.datasource.username=sa
+spring.datasource.password=password
+
+# PostgreSQL (Production)
+spring.datasource.url=jdbc:postgresql://localhost:5432/cictogive
+spring.datasource.username=${DB_USERNAME:postgres}
+spring.datasource.password=${DB_PASSWORD:password}
+
+# JPA Configuration
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
+
+# File Upload Configuration
+spring.servlet.multipart.max-file-size=10MB
+spring.servlet.multipart.max-request-size=50MB
+\end{lstlisting}
+
+\textbf{Konfiguration erklärt:}
+\begin{itemize}
+    \item \textbf{ddl-auto=update:} Hibernate erstellt/aktualisiert Tabellen automatisch
+    \item \textbf{show-sql=true:} SQL-Queries werden in der Konsole angezeigt
+    \item \textbf{Environment Variables:} \${DB\_USERNAME:postgres} mit Fallback
+    \item \textbf{Multipart:} Konfiguration für Datei-Upload
+\end{itemize}
+
+\section{Sicherheitskonzepte}
+
+\subsection{Authentication vs. Authorization}
+
+\textbf{Authentication (Authentifizierung):} \textit{Wer ist der Benutzer?}
+\begin{itemize}
+    \item Login mit Username/Passwort
+    \item JWT-Token-Validierung
+    \item Session-Management
+\end{itemize}
+
+\textbf{Authorization (Autorisierung):} \textit{Was darf der Benutzer?}
+\begin{itemize}
+    \item Benutzer darf nur eigene Items bearbeiten
+    \item Bestimmte Endpoints sind nur für eingeloggte Benutzer
+    \item Admin-Funktionen (falls vorhanden)
+\end{itemize}
+
+\subsection{CORS (Cross-Origin Resource Sharing)}
+
+\textbf{Problem:} Browser blockieren Requests zwischen verschiedenen Domains aus Sicherheitsgründen.
+
+\textbf{Lösung:} CORS-Header erlauben bestimmte Cross-Origin-Requests.
+
+\begin{lstlisting}[language=Java, caption=CORS-Konfiguration]
+@CrossOrigin(origins = "http://localhost:3000")
+@RestController
+public class ItemController {
+    // Controller-Methoden...
+}
+
+// Oder global:
+@Configuration
+public class WebConfig implements WebMvcConfigurer {
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/api/**")
+                .allowedOrigins("http://localhost:3000")
+                .allowedMethods("GET", "POST", "PUT", "DELETE")
+                .allowCredentials(true);
+    }
+}
+\end{lstlisting}
+
+\subsection{Input-Validierung}
+
+\textbf{Warum wichtig?} Schutz vor SQL-Injection, XSS, und Dateninkonsistenz.
+
+\begin{lstlisting}[language=Java, caption=Bean Validation]
+public class Item {
+    @NotBlank(message = "Name ist erforderlich")
+    @Size(max = 100, message = "Name darf maximal 100 Zeichen haben")
+    private String name;
+
+    @Size(max = 2000, message = "Beschreibung darf maximal 2000 Zeichen haben")
+    private String description;
+
+    @NotBlank(message = "Kategorie ist erforderlich")
+    private String category;
+
+    @Email(message = "Ungültige E-Mail-Adresse")
+    private String email;
+}
+
+@PostMapping
+public ResponseEntity<Item> createItem(@Valid @RequestBody Item item) {
+    // @Valid triggert automatische Validierung
+    // Bei Fehlern wird automatisch 400 Bad Request zurückgegeben
+}
+\end{lstlisting}
+
+\section{File Upload und Storage}
+
+\subsection{Warum Datei-Upload komplex ist}
+
+\begin{itemize}
+    \item \textbf{Sicherheit:} Malware-Uploads verhindern
+    \item \textbf{Performance:} Große Dateien blockieren nicht den Server
+    \item \textbf{Storage:} Wo werden Dateien gespeichert?
+    \item \textbf{Skalierung:} Was passiert bei Millionen von Bildern?
+\end{itemize}
+
+\subsection{Implementierung}
+
+\begin{lstlisting}[language=Java, caption=FileUploadController.java]
+@RestController
+@RequestMapping("/api/upload")
+public class FileUploadController {
+
+    private final String uploadDir = "uploads/";
+
+    @PostMapping("/images")
+    public ResponseEntity<List<String>> uploadImages(
+            @RequestParam("files") MultipartFile[] files) {
+
+        List<String> imageUrls = new ArrayList<>();
+
+        for (MultipartFile file : files) {
+            // Validierung
+            if (!isValidImageFile(file)) {
+                throw new RuntimeException("Ungültiger Dateityp: " + file.getContentType());
+            }
+
+            if (file.getSize() > 10 * 1024 * 1024) { // 10MB
+                throw new RuntimeException("Datei zu groß: " + file.getSize());
+            }
+
+            try {
+                // Eindeutigen Dateinamen generieren
+                String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
+                Path targetPath = Paths.get(uploadDir + fileName);
+
+                // Ordner erstellen falls nicht vorhanden
+                Files.createDirectories(targetPath.getParent());
+
+                // Datei speichern
+                file.transferTo(targetPath);
+
+                // URL für Frontend
+                String imageUrl = "/uploads/" + fileName;
+                imageUrls.add(imageUrl);
+
+            } catch (IOException e) {
+                throw new RuntimeException("Fehler beim Speichern: " + e.getMessage());
+            }
+        }
+
+        return ResponseEntity.ok(imageUrls);
+    }
+
+    private boolean isValidImageFile(MultipartFile file) {
+        String contentType = file.getContentType();
+        return contentType != null &&
+               (contentType.equals("image/jpeg") ||
+                contentType.equals("image/png") ||
+                contentType.equals("image/gif"));
+    }
+}
+\end{lstlisting}
+
+\textbf{Sicherheitsmaßnahmen:}
+\begin{itemize}
+    \item Dateityp-Validierung (nur Bilder)
+    \item Dateigrößen-Limit (10MB)
+    \item Eindeutige Dateinamen (UUID)
+    \item Path Traversal-Schutz
+\end{itemize}
+
+\section{Testing}
+
+\subsection{Warum Testen wichtig ist}
+
+\begin{itemize}
+    \item \textbf{Qualitätssicherung:} Bugs früh erkennen
+    \item \textbf{Refactoring-Sicherheit:} Änderungen brechen nichts
+    \item \textbf{Dokumentation:} Tests zeigen wie Code verwendet wird
+    \item \textbf{Confidence:} Sicherheit bei Deployments
+\end{itemize}
+
+\subsection{Test-Pyramid}
+
+\begin{center}
+\begin{tikzpicture}
+    \filldraw[fill=green!30] (0,0) -- (6,0) -- (5,1) -- (1,1) -- cycle;
+    \filldraw[fill=yellow!30] (1,1) -- (5,1) -- (4,2) -- (2,2) -- cycle;
+    \filldraw[fill=red!30] (2,2) -- (4,2) -- (3.5,2.5) -- (2.5,2.5) -- cycle;
+
+    \node at (3,0.5) {\textbf{Unit Tests (viele)}};
+    \node at (3,1.5) {\textbf{Integration Tests (weniger)}};
+    \node at (3,2.25) {\textbf{E2E Tests (wenige)}};
+\end{tikzpicture}
+\end{center}
+
+\subsection{Unit Tests}
+
+\begin{lstlisting}[language=Java, caption=ItemControllerTest.java]
+@SpringBootTest
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+class ItemControllerTest {
+
+    @Autowired
+    private TestRestTemplate restTemplate;
+
+    @Autowired
+    private ItemRepository itemRepository;
+
+    @Test
+    void shouldCreateItem() {
+        // Given
+        Item newItem = new Item();
+        newItem.setName("Test Item");
+        newItem.setDescription("Test Description");
+        newItem.setCategory("Electronics");
+
+        // When
+        ResponseEntity<Item> response = restTemplate.postForEntity(
+            "/api/items", newItem, Item.class);
+
+        // Then
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+        assertThat(response.getBody().getName()).isEqualTo("Test Item");
+
+        // Verify in database
+        Optional<Item> savedItem = itemRepository.findById(response.getBody().getId());
+        assertThat(savedItem).isPresent();
+    }
+
+    @Test
+    void shouldReturnValidationErrorForInvalidItem() {
+        // Given
+        Item invalidItem = new Item();
+        // Name ist leer -> Validierungsfehler
+
+        // When
+        ResponseEntity<String> response = restTemplate.postForEntity(
+            "/api/items", invalidItem, String.class);
+
+        // Then
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+    }
+}
+\end{lstlisting}
+
+\section{Deployment}
+
+\subsection{Docker}
+
+\textbf{Warum Docker?}
+\begin{itemize}
+    \item \textbf{Konsistenz:} "It works on my machine" Problem lösen
+    \item \textbf{Isolation:} Anwendungen laufen in eigenen Containern
+    \item \textbf{Skalierung:} Container können einfach repliziert werden
+    \item \textbf{Portabilität:} Läuft überall wo Docker läuft
+\end{itemize}
+
+\begin{lstlisting}[language=Docker, caption=Dockerfile für Spring Boot Backend]
+FROM openjdk:17-jdk-slim
+
+WORKDIR /app
+
+# Maven Dependencies kopieren (für besseres Caching)
+COPY pom.xml .
+COPY mvnw .
+COPY .mvn .mvn
+RUN ./mvnw dependency:go-offline
+
+# Source Code kopieren
+COPY src ./src
+
+# Application bauen
+RUN ./mvnw clean package -DskipTests
+
+# JAR-File ausführen
+EXPOSE 8080
+CMD ["java", "-jar", "target/backend-0.0.1-SNAPSHOT.jar"]
+\end{lstlisting}
+
+\subsection{Docker Compose}
+
+\begin{lstlisting}[language=YAML, caption=docker-compose.yml]
+version: '3.8'
+
+services:
+  database:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: cictogive
+      POSTGRES_USER: cicuser
+      POSTGRES_PASSWORD: cicpass
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  backend:
+    build: ./backend
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://database:5432/cictogive
+      - SPRING_DATASOURCE_USERNAME=cicuser
+      - SPRING_DATASOURCE_PASSWORD=cicpass
+    depends_on:
+      - database
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:8080
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:
+\end{lstlisting}
+
+\section{Performance-Optimierung}
+
+\subsection{Backend-Performance}
+
+\begin{itemize}
+    \item \textbf{Datenbankindizes:} Auf häufig gesuchte Felder
+    \item \textbf{Connection Pooling:} Datenbankverbindungen wiederverwenden
+    \item \textbf{Caching:} Redis für häufig abgerufene Daten
+    \item \textbf{Pagination:} Große Datensätze aufteilen
+    \item \textbf{Lazy Loading:} Related Entities nur bei Bedarf laden
+\end{itemize}
+
+\subsection{Frontend-Performance}
+
+\begin{itemize}
+    \item \textbf{Code Splitting:} Nur benötigter Code wird geladen
+    \item \textbf{Image Optimization:} Next.js Image-Komponente
+    \item \textbf{Caching:} Browser-Cache und CDN
+    \item \textbf{Bundle Analysis:} Große Dependencies identifizieren
+    \item \textbf{Lazy Loading:} Komponenten und Bilder bei Bedarf laden
+\end{itemize}
+
+\section{Projektmanagement und Zeitschätzung}
+
+\subsection{Agile Entwicklung}
+
+\textbf{Scrum/Kanban Prinzipien:}
+\begin{itemize}
+    \item \textbf{Iterative Entwicklung:} In kleinen Schritten entwickeln
+    \item \textbf{MVP (Minimum Viable Product):} Erst Grundfunktionen, dann erweitern
+    \item \textbf{User Stories:} Anforderungen aus Benutzersicht
+    \item \textbf{Daily Standups:} Regelmäßiger Austausch (bei Teams)
+\end{itemize}
+
+\subsection{Detaillierte Zeitschätzung}
+
+\begin{center}
+\begin{tabularx}{\textwidth}{|X|c|X|}
+\hline
+\textbf{Task} & \textbf{Stunden} & \textbf{Begründung} \\
+\hline
+Projektsetup (Maven, Node.js, Git) & 2 & Grundkonfiguration \\
+\hline
+Datenmodell Design \& Implementierung & 8 & 3 Entities + Relationen \\
+\hline
+Spring Security + JWT & 12 & Komplex, viele Konfigurationen \\
+\hline
+User Registration/Login & 6 & Backend + Frontend \\
+\hline
+Item CRUD Operations & 10 & Alle HTTP-Methoden \\
+\hline
+File Upload System & 8 & Validierung + Storage \\
+\hline
+Search \& Filter Logic & 8 & Database Queries + Frontend \\
+\hline
+Comment System & 6 & Relations + UI \\
+\hline
+Frontend Components & 20 & Alle React-Komponenten \\
+\hline
+API Integration & 8 & Fetch Calls + Error Handling \\
+\hline
+Responsive Design & 12 & Tailwind CSS + Mobile \\
+\hline
+Testing & 16 & Unit + Integration Tests \\
+\hline
+Deployment Setup & 6 & Docker + Environment \\
+\hline
+Bug Fixing \& Polish & 12 & Unvorhergesehene Probleme \\
+\hline
+Documentation & 8 & Code Comments + README \\
+\hline
+\textbf{Total} & \textbf{142} & \textbf{≈ 18 Arbeitstage} \\
+\hline
+\end{tabularx}
+\end{center}
+
+\subsection{Risikomanagement}
+
+\textbf{Häufige Probleme und Lösungen:}
+
+\begin{itemize}
+    \item \textbf{CORS-Probleme:} Früh testen, richtige Headers setzen
+    \item \textbf{JWT-Token-Handling:} Expiration-Zeiten beachten
+    \item \textbf{File Upload-Limits:} Server und Frontend-Limits abstimmen
+    \item \textbf{Database Schema Changes:} Migration-Strategien planen
+    \item \textbf{Mobile Responsiveness:} Früh auf verschiedenen Geräten testen
+\end{itemize}
+
+\section{Fazit und Ausblick}
+
+\subsection{Was wurde erreicht?}
+
+Das Projekt "CIC to Give" demonstriert eine vollständige moderne Webentwicklung:
+
+\textbf{Backend-Kompetenzen:}
+\begin{itemize}
+    \item Spring Boot Framework-Verständnis
+    \item RESTful API-Design
+    \item Datenbank-Modellierung und JPA
+    \item Sicherheitskonzepte (JWT, BCrypt)
+    \item File Upload und Validation
+\end{itemize}
+
+\textbf{Frontend-Kompetenzen:}
+\begin{itemize}
+    \item React/Next.js Entwicklung
+    \item TypeScript für Typsicherheit
+    \item Responsive Design mit Tailwind CSS
+    \item API-Integration und State Management
+    \item User Experience Design
+\end{itemize}
+
+\textbf{DevOps-Kompetenzen:}
+\begin{itemize}
+    \item Docker Container-Technologie
+    \item Database Setup und Configuration
+    \item Testing-Strategien
+    \item Deployment-Prozesse
+\end{itemize}
+
+\subsection{Mögliche Erweiterungen}
+
+\begin{itemize}
+    \item \textbf{Real-time Chat:} WebSocket für Kommunikation zwischen Nutzern
+    \item \textbf{Push Notifications:} Benachrichtigungen für neue Items
+    \item \textbf{Geolocation:} Karten-Integration für Standorte
+    \item \textbf{Rating System:} Bewertungen für Nutzer
+    \item \textbf{Admin Panel:} Content-Moderation
+    \item \textbf{Mobile App:} React Native oder Flutter
+\end{itemize}
+
+\subsection{Lessons Learned}
+
+\textbf{Technische Erkenntnisse:}
+\begin{itemize}
+    \item Frühe Integration zwischen Frontend und Backend spart Zeit
+    \item Gute Dokumentation und Typisierung erleichtern Entwicklung
+    \item Testing ist Investment in zukünftige Wartbarkeit
+    \item Security sollte von Anfang an mitgedacht werden
+\end{itemize}
+
+\textbf{Projektmanagement:}
+\begin{itemize}
+    \item Realistische Zeitschätzungen sind schwierig aber wichtig
+    \item MVP-Ansatz hilft bei der Priorisierung
+    \item Regelmäßige Deployments decken Probleme früh auf
+\end{itemize}
+
+\vfill
+\begin{center}
+\textit{Diese Dokumentation zeigt die vollständige Entwicklung einer modernen Fullstack-Anwendung von der Konzeption bis zum Deployment.}
+
+\vspace{1cm}
+
+\textbf{Lehrabschlussprüfung Applikationsentwicklung - Coding}\\
+\textit{Dokument erstellt am: \today}\\
+\textit{Version: 1.0}
+\end{center}
+
+\end{document}

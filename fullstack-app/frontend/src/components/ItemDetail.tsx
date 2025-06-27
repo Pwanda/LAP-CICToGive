@@ -1,9 +1,12 @@
 "use client";
 
+// Externe Libraries
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Item, itemsApi, authApi } from "@/services/api";
 import Link from "next/link";
+
+// Eigene Services und Komponenten
+import { Item, itemsApi, authApi } from "@/services/api";
 import CommentSection from "@/components/CommentSection";
 
 interface ItemDetailProps {
@@ -34,8 +37,6 @@ export default function ItemDetail({ itemId }: ItemDetailProps) {
 
     fetchItem();
   }, [itemId]);
-
-  // Price formatting removed as all items are now free
 
   // Format date
   const formatDate = (dateString?: string) => {
@@ -89,28 +90,34 @@ export default function ItemDetail({ itemId }: ItemDetailProps) {
 
   return (
     <div className="bg-white rounded-lg shadow-lg overflow-hidden">
-      <div className="lg:flex">
-        {/* Image gallery */}
+      {/* Fixed height container for consistent card size */}
+      <div className="lg:flex" style={{ minHeight: "600px" }}>
+        {/* Image gallery - Fixed dimensions */}
         <div className="lg:w-3/5">
-          <div className="relative h-72 w-full sm:h-96 lg:h-[500px] bg-gray-100">
+          {/* Main image container with fixed aspect ratio */}
+          <div className="relative w-full h-80 sm:h-96 lg:h-[500px] bg-gray-100 overflow-hidden">
             {item.imageUrls && item.imageUrls.length > 0 ? (
               <>
                 <img
                   src={`http://localhost:8080${item.imageUrls[currentImageIndex]}`}
                   alt={item.name}
                   className="w-full h-full object-cover"
+                  style={{
+                    objectFit: "cover",
+                    objectPosition: "center",
+                  }}
                 />
 
                 {/* Image navigation */}
                 {item.imageUrls.length > 1 && (
-                  <div className="absolute inset-0 flex items-center justify-between p-4 ">
+                  <div className="absolute inset-0 flex items-center justify-between p-4">
                     <button
                       onClick={prevImage}
                       disabled={currentImageIndex === 0}
                       className="bg-white rounded-full p-3 shadow-lg disabled:opacity-50 hover:bg-gray-100 transition-colors duration-200"
                     >
                       <svg
-                        className="h-6 w-6 text-black -700"
+                        className="h-6 w-6 text-black"
                         xmlns="http://www.w3.org/2000/svg"
                         fill="none"
                         viewBox="0 0 24 24"
@@ -130,7 +137,7 @@ export default function ItemDetail({ itemId }: ItemDetailProps) {
                       className="bg-white rounded-full p-3 shadow-lg disabled:opacity-50 hover:bg-gray-100 transition-colors duration-200"
                     >
                       <svg
-                        className="h-6 w-6 text-black -700"
+                        className="h-6 w-6 text-black"
                         xmlns="http://www.w3.org/2000/svg"
                         fill="none"
                         viewBox="0 0 24 24"
@@ -150,7 +157,7 @@ export default function ItemDetail({ itemId }: ItemDetailProps) {
                 {/* Image counter */}
                 {item.imageUrls.length > 1 && (
                   <div className="absolute bottom-4 left-0 right-0 flex justify-center">
-                    <div className="bg-black bg-opacity-60 text-white  px-3 py-1 rounded-full text-sm font-medium">
+                    <div className="bg-black bg-opacity-60 text-white px-3 py-1 rounded-full text-sm font-medium">
                       {currentImageIndex + 1} / {item.imageUrls.length}
                     </div>
                   </div>
@@ -159,7 +166,7 @@ export default function ItemDetail({ itemId }: ItemDetailProps) {
             ) : (
               <div className="w-full h-full flex items-center justify-center">
                 <svg
-                  className="h-24 w-24 text-black "
+                  className="h-24 w-24 text-gray-400"
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
                   viewBox="0 0 24 24"
@@ -176,9 +183,9 @@ export default function ItemDetail({ itemId }: ItemDetailProps) {
             )}
           </div>
 
-          {/* Thumbnail gallery */}
+          {/* Thumbnail gallery - Fixed height */}
           {item.imageUrls && item.imageUrls.length > 1 && (
-            <div className="p-4 flex space-x-3 overflow-x-auto">
+            <div className="h-28 p-4 flex space-x-3 overflow-x-auto bg-gray-50">
               {item.imageUrls.map((url, index) => (
                 <button
                   key={index}
@@ -192,7 +199,7 @@ export default function ItemDetail({ itemId }: ItemDetailProps) {
                   <img
                     src={`http://localhost:8080${url}`}
                     alt={`Thumbnail ${index + 1}`}
-                    className="h-full w-max object-fill"
+                    className="h-full w-full object-cover"
                   />
                 </button>
               ))}
@@ -200,9 +207,9 @@ export default function ItemDetail({ itemId }: ItemDetailProps) {
           )}
         </div>
 
-        {/* Item details */}
-        <div className="lg:w-2/5 p-6 lg:p-8">
-          <div className="flex flex-col">
+        {/* Item details - Fixed width and consistent layout */}
+        <div className="lg:w-2/5 p-6 lg:p-8 flex flex-col justify-between">
+          <div className="flex flex-col flex-grow">
             <div className="flex justify-between items-start mb-4">
               <div
                 className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium"
@@ -213,7 +220,7 @@ export default function ItemDetail({ itemId }: ItemDetailProps) {
               >
                 {item.category}
               </div>
-              <div className="text-sm text-black ">ID: {item.id}</div>
+              <div className="text-sm text-gray-600">ID: {item.id}</div>
             </div>
 
             <div className="flex items-center space-x-2 mb-2">
@@ -234,7 +241,7 @@ export default function ItemDetail({ itemId }: ItemDetailProps) {
             </p>
 
             {item.location && (
-              <div className="flex items-center text-black  mb-6">
+              <div className="flex items-center text-gray-700 mb-6">
                 <svg
                   className="h-5 w-5 mr-2 text-green-500"
                   xmlns="http://www.w3.org/2000/svg"
@@ -252,8 +259,8 @@ export default function ItemDetail({ itemId }: ItemDetailProps) {
               </div>
             )}
 
-            <div className="bg-gray-50 rounded-lg p-4 mb-6">
-              <h2 className="text-lg font-semibold text-black  mb-3 flex items-center">
+            <div className="bg-gray-50 rounded-lg p-4 mb-6 flex-grow">
+              <h2 className="text-lg font-semibold text-black mb-3 flex items-center">
                 <svg
                   className="h-5 w-5 mr-2 text-green-500"
                   xmlns="http://www.w3.org/2000/svg"
@@ -269,18 +276,18 @@ export default function ItemDetail({ itemId }: ItemDetailProps) {
                 </svg>
                 Description
               </h2>
-              <p className="text-black -700 whitespace-pre-line">
+              <p className="text-gray-700 whitespace-pre-line">
                 {item.description}
               </p>
             </div>
 
             <div className="border-t border-gray-200 pt-6 mb-6">
-              <h2 className="text-lg font-semibold text-black  mb-3">
+              <h2 className="text-lg font-semibold text-black mb-3">
                 Giver Information
               </h2>
               <div className="flex items-center bg-gray-50 p-4 rounded-lg">
                 <div
-                  className="h-12 w-12 rounded-full bg-green-100 flex items-center justify-center text-green-800 font-bold text-xl"
+                  className="h-12 w-12 rounded-full bg-green-100 flex items-center justify-center text-green-800 font-bold text-xl flex-shrink-0"
                   style={{
                     backgroundColor: "var(--primary-light)",
                     color: "var(--primary-dark)",
@@ -289,84 +296,85 @@ export default function ItemDetail({ itemId }: ItemDetailProps) {
                   {item.user?.username?.charAt(0).toUpperCase() || "U"}
                 </div>
                 <div className="ml-4">
-                  <p className="text-base font-medium text-black ">
+                  <p className="text-base font-medium text-black">
                     {item.user?.username || "Anonymous"}
                   </p>
-                  <p className="text-sm text-black ">
+                  <p className="text-sm text-gray-600">
                     Posted on {formatDate(item.createdAt)}
                   </p>
                 </div>
               </div>
             </div>
+          </div>
 
-            <div className="flex flex-col sm:flex-row gap-3">
-              {isOwner() ? (
-                <>
-                  <Link
-                    href={`/items/${item.id}/edit`}
-                    className="flex-1 bg-green-600 text-black  py-3 px-6 rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 text-center font-medium transition-colors duration-200"
-                    style={{
-                      backgroundColor: "var(--primary)",
-                      borderColor: "var(--primary)",
-                    }}
+          {/* Action buttons - Always at bottom */}
+          <div className="flex flex-col sm:flex-row gap-3 mt-auto">
+            {isOwner() ? (
+              <>
+                <Link
+                  href={`/items/${item.id}/edit`}
+                  className="flex-1 bg-green-600 text-white py-3 px-6 rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 text-center font-medium transition-colors duration-200"
+                  style={{
+                    backgroundColor: "var(--primary)",
+                    borderColor: "var(--primary)",
+                  }}
+                >
+                  Edit Item
+                </Link>
+                <Link
+                  href="/items/my-items"
+                  className="flex-1 bg-gray-200 text-gray-800 py-3 px-6 rounded-lg hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500 text-center font-medium transition-colors duration-200"
+                >
+                  My Items
+                </Link>
+              </>
+            ) : (
+              <>
+                <Link
+                  href={`mailto:${item.user?.email || ""}`}
+                  className="flex-1 bg-green-600 text-white py-3 px-6 rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 text-center font-medium transition-colors duration-200 flex items-center justify-center"
+                  style={{
+                    backgroundColor: "var(--primary)",
+                    borderColor: "var(--primary)",
+                  }}
+                >
+                  <svg
+                    className="h-5 w-5 mr-2"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
                   >
-                    Edit Item
-                  </Link>
-                  <Link
-                    href="/items/my-items"
-                    className="flex-1 bg-gray-200 text-black -800 py-3 px-6 rounded-lg hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500 text-center font-medium transition-colors duration-200"
+                    <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
+                    <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
+                  </svg>
+                  Contact Giver
+                </Link>
+                <button
+                  className="flex-1 bg-gray-200 text-gray-800 py-3 px-6 rounded-lg hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500 text-center font-medium transition-colors duration-200 flex items-center justify-center"
+                  onClick={() => window.history.back()}
+                >
+                  <svg
+                    className="h-5 w-5 mr-2"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
                   >
-                    My Items
-                  </Link>
-                </>
-              ) : (
-                <>
-                  <Link
-                    href={`mailto:${item.user?.email || ""}`}
-                    className="flex-1 bg-green-600 text-black  py-3 px-6 rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 text-center font-medium transition-colors duration-200 flex items-center justify-center"
-                    style={{
-                      backgroundColor: "var(--primary)",
-                      borderColor: "var(--primary)",
-                    }}
-                  >
-                    <svg
-                      className="h-5 w-5 mr-2"
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 20 20"
-                      fill="currentColor"
-                    >
-                      <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
-                      <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
-                    </svg>
-                    Contact Giver
-                  </Link>
-                  <button
-                    className="flex-1 bg-gray-200 text-black -800 py-3 px-6 rounded-lg hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500 text-center font-medium transition-colors duration-200 flex items-center justify-center"
-                    onClick={() => window.history.back()}
-                  >
-                    <svg
-                      className="h-5 w-5 mr-2"
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 20 20"
-                      fill="currentColor"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                    Back to Listings
-                  </button>
-                </>
-              )}
-            </div>
+                    <path
+                      fillRule="evenodd"
+                      d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                  Back to Listings
+                </button>
+              </>
+            )}
           </div>
         </div>
       </div>
 
       {/* Kommentarbereich */}
-      <CommentSection />
+      {typeof item?.id === "number" && <CommentSection itemId={item.id} />}
     </div>
   );
 }

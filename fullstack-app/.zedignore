@@ -1,8 +1,0 @@
-*.log
-*.txt
-node_modules/
-target/
-build/
-dist/
-*.min.js
-*.bundle.js
