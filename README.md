@@ -169,30 +169,6 @@ npm install && npm run dev
 5. **Projektmanagement** - Realistische Zeitschätzungen
 6. **Dokumentation** - Professionelle technische Dokumentation
 
-## 🏆 LAP-Bewertungskriterien
-
-### Fachkompetenz (40%)
-- ✅ Vollständige Anwendungsarchitektur
-- ✅ Moderne Technologie-Integration
-- ✅ Best Practices umgesetzt
-- ✅ Fehlerbehandlung implementiert
-
-### Methodenkompetenz (30%)
-- ✅ Strukturierte Entwicklung
-- ✅ Testing-Strategien
-- ✅ Versionskontrolle
-- ✅ Deployment-Prozesse
-
-### Sozialkompetenz (20%)
-- ✅ Dokumentation für andere Entwickler
-- ✅ Code-Kommentare und Erklärungen
-- ✅ API-Design für Teams
-
-### Selbstkompetenz (10%)
-- ✅ Eigenständige Problemlösung
-- ✅ Technologie-Bewertung
-- ✅ Kontinuierliche Verbesserung
-
 ## 🔧 Entwicklung & Deployment
 
 ### Lokale Entwicklung
