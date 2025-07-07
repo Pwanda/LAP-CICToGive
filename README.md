@@ -2,6 +2,21 @@
 
 Eine moderne Full-Stack-Webanwendung zum Verschenken von Gegenständen - entwickelt mit React, Spring Boot und PostgreSQL.
 
+## 🔐 Sicherheitshinweis
+
+**⚠️ WICHTIG:** Diese Anwendung verwendet externe API-Keys (Backblaze B2), die **niemals** in Git committed werden dürfen!
+
+```bash
+# Vor dem ersten Start:
+cp backend/.env.example backend/.env
+cp Frontend/.env.example Frontend/.env
+
+# Dann .env Dateien mit deinen Credentials ausfüllen
+nano backend/.env  # B2_APPLICATION_KEY_ID, B2_APPLICATION_KEY, etc.
+```
+
+📖 **Ausführliche Anleitung:** Siehe [SECURITY.md](SECURITY.md)
+
 ## 🚀 Schnellstart
 
 ```bash
@@ -19,6 +34,8 @@ cd LAP
 - 🗄️ **Database**: localhost:5432
 
 **Testanmeldung:** `testuser` / `password123`
+
+> 💡 **Hinweis:** Falls Bildupload nicht funktioniert, überprüfe deine B2-Konfiguration in `backend/.env`
 
 ## 🛠️ Technologie-Stack
 
