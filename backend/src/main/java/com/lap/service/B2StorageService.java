@@ -275,9 +275,22 @@ public class B2StorageService {
                 logger.info("File deleted successfully: {}", fileName);
             } else {
                 logger.warn("File not found for deletion: {}", fileName);
+                // Don't throw exception if file doesn't exist - it might already be deleted
+                return;
             }
         } catch (B2Exception e) {
             logger.error("Error deleting file: {}", e.getMessage());
+            // Only throw exception for actual B2 errors, not for file not found
+            if (
+                e.getMessage().contains("Bad file ID") ||
+                e.getMessage().contains("not found")
+            ) {
+                logger.warn(
+                    "File {} not found in B2, skipping deletion",
+                    fileName
+                );
+                return;
+            }
             throw new RuntimeException("File deletion failed", e);
         }
     }
@@ -311,7 +324,7 @@ public class B2StorageService {
                 bucket.getBucketId()
             )
                 .setStartFileName(fileName)
-                .setMaxFileCount(100)
+                .setMaxFileCount(1000)
                 .build();
 
             for (B2FileVersion fileVersion : b2StorageClient.fileNames(
@@ -321,6 +334,26 @@ public class B2StorageService {
                     return Optional.of(fileVersion);
                 }
             }
+
+            // If not found with exact match, try prefix search for files in folders
+            if (fileName.contains("/")) {
+                B2ListFileNamesRequest prefixRequest =
+                    B2ListFileNamesRequest.builder(bucket.getBucketId())
+                        .setPrefix(
+                            fileName.substring(0, fileName.lastIndexOf("/") + 1)
+                        )
+                        .setMaxFileCount(1000)
+                        .build();
+
+                for (B2FileVersion fileVersion : b2StorageClient.fileNames(
+                    prefixRequest
+                )) {
+                    if (fileVersion.getFileName().equals(fileName)) {
+                        return Optional.of(fileVersion);
+                    }
+                }
+            }
+
             return Optional.empty();
         } catch (B2Exception e) {
             logger.error("Error getting file version: {}", e.getMessage());
