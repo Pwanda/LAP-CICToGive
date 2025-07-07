@@ -4,6 +4,7 @@ import { z } from "zod";
 import { useUpdateItem, useDeleteImage, useItem } from "../../hooks/useAPI";
 import type { Item } from "../../types";
 import { useEffect } from "react";
+import { CATEGORIES, CONDITIONS } from "../../schemas/ItemSchemas";
 
 const schema = z.object({
   title: z.string().min(1, "Titel erforderlich"),
@@ -21,16 +22,6 @@ interface Props {
   isOpen: boolean;
   onClose: () => void;
 }
-
-const categories = [
-  "Electronics",
-  "Furniture",
-  "Clothing",
-  "Books",
-  "Sports",
-  "Other",
-];
-const conditions = ["Like New", "Good", "Fair", "Poor"];
 
 export default function EditItemModal({ item, isOpen, onClose }: Props) {
   const {
@@ -214,7 +205,7 @@ export default function EditItemModal({ item, isOpen, onClose }: Props) {
                 className="select select-bordered w-full"
               >
                 <option value="">Kategorie auswählen</option>
-                {categories.map((cat) => (
+                {CATEGORIES.map((cat) => (
                   <option key={cat} value={cat}>
                     {cat}
                   </option>
@@ -246,7 +237,7 @@ export default function EditItemModal({ item, isOpen, onClose }: Props) {
                 className="select select-bordered w-full"
               >
                 <option value="">Zustand auswählen</option>
-                {conditions.map((cond) => (
+                {CONDITIONS.map((cond) => (
                   <option key={cond} value={cond}>
                     {cond}
                   </option>

@@ -51,7 +51,7 @@ public class ItemController {
             Optional<User> userOpt = userRepository.findByUsername(username);
             if (!userOpt.isPresent()) {
                 response.put("success", false);
-                response.put("error", "User not found");
+                response.put("error", "Benutzer nicht gefunden");
                 return ResponseEntity.badRequest().body(response);
             }
 
@@ -94,7 +94,7 @@ public class ItemController {
                     response.put("success", false);
                     response.put(
                         "error",
-                        "Failed to upload images: " + e.getMessage()
+                        "Fehler beim Hochladen der Bilder: " + e.getMessage()
                     );
                     return ResponseEntity.badRequest().body(response);
                 }
@@ -109,13 +109,16 @@ public class ItemController {
             Item savedItem = itemRepository.save(item);
 
             response.put("success", true);
-            response.put("message", "Item created successfully");
+            response.put("message", "Artikel erfolgreich erstellt");
             response.put("data", createItemResponse(savedItem, user));
 
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             response.put("success", false);
-            response.put("error", "Failed to create item: " + e.getMessage());
+            response.put(
+                "error",
+                "Fehler beim Erstellen des Artikels: " + e.getMessage()
+            );
             return ResponseEntity.badRequest().body(response);
         }
     }
@@ -268,7 +271,7 @@ public class ItemController {
 
             if (!itemOpt.isPresent()) {
                 response.put("success", false);
-                response.put("error", "Item not found");
+                response.put("error", "Artikel nicht gefunden");
                 return ResponseEntity.badRequest().body(response);
             }
 
@@ -279,7 +282,7 @@ public class ItemController {
                 response.put("success", false);
                 response.put(
                     "error",
-                    "You can only reserve/unreserve your own items"
+                    "Sie können nur Ihre eigenen Artikel reservieren/freigeben"
                 );
                 return ResponseEntity.badRequest().body(response);
             }
@@ -292,8 +295,8 @@ public class ItemController {
             response.put(
                 "message",
                 savedItem.getIsReserved()
-                    ? "Item reserved"
-                    : "Reservation removed"
+                    ? "Artikel reserviert"
+                    : "Reservierung entfernt"
             );
             response.put("data", createItemResponse(savedItem, username));
 
@@ -302,7 +305,7 @@ public class ItemController {
             response.put("success", false);
             response.put(
                 "error",
-                "Failed to toggle reservation: " + e.getMessage()
+                "Fehler beim Ändern der Reservierung: " + e.getMessage()
             );
             return ResponseEntity.badRequest().body(response);
         }
@@ -360,7 +363,7 @@ public class ItemController {
 
             if (!itemOpt.isPresent()) {
                 response.put("success", false);
-                response.put("error", "Item not found");
+                response.put("error", "Artikel nicht gefunden");
                 return ResponseEntity.badRequest().body(response);
             }
 
@@ -371,7 +374,10 @@ public class ItemController {
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             response.put("success", false);
-            response.put("error", "Failed to fetch item: " + e.getMessage());
+            response.put(
+                "error",
+                "Fehler beim Abrufen des Artikels: " + e.getMessage()
+            );
             return ResponseEntity.badRequest().body(response);
         }
     }
@@ -490,7 +496,7 @@ public class ItemController {
 
             if (!itemOpt.isPresent()) {
                 response.put("success", false);
-                response.put("error", "Item not found");
+                response.put("error", "Artikel nicht gefunden");
                 return ResponseEntity.badRequest().body(response);
             }
 
@@ -531,11 +537,14 @@ public class ItemController {
             itemRepository.delete(item);
 
             response.put("success", true);
-            response.put("message", "Item deleted successfully");
+            response.put("message", "Artikel erfolgreich gelöscht");
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             response.put("success", false);
-            response.put("error", "Failed to delete item: " + e.getMessage());
+            response.put(
+                "error",
+                "Fehler beim Löschen des Artikels: " + e.getMessage()
+            );
             return ResponseEntity.badRequest().body(response);
         }
     }
@@ -562,7 +571,7 @@ public class ItemController {
 
             if (!itemOpt.isPresent()) {
                 response.put("success", false);
-                response.put("error", "Item not found");
+                response.put("error", "Artikel nicht gefunden");
                 return ResponseEntity.badRequest().body(response);
             }
 
@@ -622,7 +631,7 @@ public class ItemController {
                     response.put("success", false);
                     response.put(
                         "error",
-                        "Failed to upload images: " + e.getMessage()
+                        "Fehler beim Hochladen der Bilder: " + e.getMessage()
                     );
                     return ResponseEntity.badRequest().body(response);
                 }
@@ -636,13 +645,16 @@ public class ItemController {
             Item savedItem = itemRepository.save(item);
 
             response.put("success", true);
-            response.put("message", "Item updated successfully");
+            response.put("message", "Artikel erfolgreich aktualisiert");
             response.put("data", createItemResponse(savedItem, username));
 
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             response.put("success", false);
-            response.put("error", "Failed to update item: " + e.getMessage());
+            response.put(
+                "error",
+                "Fehler beim Aktualisieren des Artikels: " + e.getMessage()
+            );
             return ResponseEntity.badRequest().body(response);
         }
     }
@@ -661,7 +673,7 @@ public class ItemController {
 
             if (!itemOpt.isPresent()) {
                 response.put("success", false);
-                response.put("error", "Item not found");
+                response.put("error", "Artikel nicht gefunden");
                 return ResponseEntity.badRequest().body(response);
             }
 
@@ -672,7 +684,7 @@ public class ItemController {
                 response.put("success", false);
                 response.put(
                     "error",
-                    "You can only add images to your own items"
+                    "Sie können nur zu Ihren eigenen Artikeln Bilder hinzufügen"
                 );
                 return ResponseEntity.badRequest().body(response);
             }
@@ -715,7 +727,7 @@ public class ItemController {
                 response.put("success", false);
                 response.put(
                     "error",
-                    "Failed to upload images: " + e.getMessage()
+                    "Fehler beim Hochladen der Bilder: " + e.getMessage()
                 );
                 return ResponseEntity.badRequest().body(response);
             }
@@ -728,13 +740,16 @@ public class ItemController {
             Item savedItem = itemRepository.save(item);
 
             response.put("success", true);
-            response.put("message", "Images added successfully");
+            response.put("message", "Bilder erfolgreich hinzugefügt");
             response.put("data", createItemResponse(savedItem, username));
 
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             response.put("success", false);
-            response.put("error", "Failed to add images: " + e.getMessage());
+            response.put(
+                "error",
+                "Fehler beim Hinzufügen der Bilder: " + e.getMessage()
+            );
             return ResponseEntity.badRequest().body(response);
         }
     }
@@ -753,7 +768,7 @@ public class ItemController {
 
             if (!itemOpt.isPresent()) {
                 response.put("success", false);
-                response.put("error", "Item not found");
+                response.put("error", "Artikel nicht gefunden");
                 return ResponseEntity.badRequest().body(response);
             }
 
@@ -764,7 +779,7 @@ public class ItemController {
                 response.put("success", false);
                 response.put(
                     "error",
-                    "You can only delete images from your own items"
+                    "Sie können nur Bilder von Ihren eigenen Artikeln löschen"
                 );
                 return ResponseEntity.badRequest().body(response);
             }
@@ -792,17 +807,20 @@ public class ItemController {
                 }
 
                 response.put("success", true);
-                response.put("message", "Image deleted successfully");
+                response.put("message", "Bild erfolgreich gelöscht");
                 response.put("data", createItemResponse(item, username));
                 return ResponseEntity.ok(response);
             } else {
                 response.put("success", false);
-                response.put("error", "Image not found in item");
+                response.put("error", "Bild nicht gefunden");
                 return ResponseEntity.badRequest().body(response);
             }
         } catch (Exception e) {
             response.put("success", false);
-            response.put("error", "Failed to delete image: " + e.getMessage());
+            response.put(
+                "error",
+                "Fehler beim Löschen des Bildes: " + e.getMessage()
+            );
             return ResponseEntity.badRequest().body(response);
         }
     }

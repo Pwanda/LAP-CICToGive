@@ -15,25 +15,28 @@ public class Item {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "Title is required")
-    @Size(max = 100, message = "Title must be less than 100 characters")
+    @NotBlank(message = "Titel ist erforderlich")
+    @Size(max = 100, message = "Titel muss weniger als 100 Zeichen haben")
     @Column(nullable = false)
     private String title;
 
-    @NotBlank(message = "Description is required")
-    @Size(max = 500, message = "Description must be less than 500 characters")
+    @NotBlank(message = "Beschreibung ist erforderlich")
+    @Size(
+        max = 500,
+        message = "Beschreibung muss weniger als 500 Zeichen haben"
+    )
     @Column(nullable = false, length = 500)
     private String description;
 
-    @NotBlank(message = "Category is required")
+    @NotBlank(message = "Kategorie ist erforderlich")
     @Column(nullable = false)
     private String category;
 
-    @NotBlank(message = "Location is required")
+    @NotBlank(message = "Standort ist erforderlich")
     @Column(nullable = false)
     private String location;
 
-    @NotBlank(message = "Condition is required")
+    @NotBlank(message = "Zustand ist erforderlich")
     @Column(nullable = false)
     private String condition;
 
