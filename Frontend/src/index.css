@@ -1,0 +1,309 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom Color Variables */
+:root {
+    --color-primary: #4caf50;
+    --color-primary-dark: #2e7d32;
+    --color-secondary: #1976d2;
+    --color-accent-purple: #9c27b0;
+}
+
+/* Light Theme */
+[data-theme="laptheme"] {
+    --p: 76 175 80;
+    --pc: 255 255 255;
+    --s: 25 118 210;
+    --sc: 255 255 255;
+    --a: 255 107 53;
+    --ac: 255 255 255;
+    --n: 44 44 44;
+    --nc: 255 255 255;
+    --b1: 255 255 255;
+    --b2: 248 249 250;
+    --b3: 233 236 239;
+    --bc: 33 37 41;
+    --su: 76 175 80;
+    --wa: 255 152 0;
+    --er: 244 67 54;
+    --in: 33 150 243;
+}
+
+/* Light Mode Overrides */
+[data-theme="laptheme"] body,
+[data-theme="laptheme"] html {
+    background-color: #f8f9fa !important;
+    color: #212529 !important;
+}
+
+[data-theme="laptheme"] .navbar {
+    background-color: #ffffff !important;
+    color: #212529 !important;
+}
+
+[data-theme="laptheme"] .navbar .menu a,
+[data-theme="laptheme"] .navbar .btn {
+    color: #212529 !important;
+}
+
+/* Dark Theme */
+[data-theme="dark"] {
+    --p: 76 175 80;
+    --pc: 255 255 255;
+    --s: 25 118 210;
+    --sc: 255 255 255;
+    --a: 255 107 53;
+    --ac: 255 255 255;
+    --n: 128 128 128;
+    --nc: 255 255 255;
+    --b1: 96 96 96;
+    --b2: 80 80 80;
+    --b3: 64 64 64;
+    --bc: 248 248 248;
+    --su: 76 175 80;
+    --wa: 255 152 0;
+    --er: 244 67 54;
+    --in: 33 150 243;
+}
+
+/* Dark Mode Text Override */
+[data-theme="dark"] h1,
+[data-theme="dark"] h2,
+[data-theme="dark"] h3,
+[data-theme="dark"] h4,
+[data-theme="dark"] h5,
+[data-theme="dark"] h6,
+[data-theme="dark"] p,
+[data-theme="dark"] span,
+[data-theme="dark"] div,
+[data-theme="dark"] a {
+    color: #f8f8f8 !important;
+}
+
+/* Base Styles - Light Mode als Standard */
+html {
+    font-family:
+        system-ui,
+        -apple-system,
+        "Segoe UI",
+        Roboto,
+        sans-serif;
+    background-color: #f8f9fa !important;
+    color: #212529 !important;
+}
+
+body {
+    margin: 0;
+    background-color: #f8f9fa !important;
+    color: #212529 !important;
+    transition:
+        background-color 0.3s ease,
+        color 0.3s ease;
+}
+
+/* Alle Texte im Light Mode dunkel machen */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+span,
+div,
+a {
+    color: #212529 !important;
+}
+
+/* Light Mode ist Standard */
+body {
+    background-color: #f8f9fa !important;
+    color: #212529 !important;
+}
+
+/* Navbar */
+.navbar {
+    background-color: #ffffff;
+    color: #212529;
+}
+
+.navbar .menu a,
+.navbar .btn {
+    color: #212529;
+}
+
+[data-theme="dark"] .navbar {
+    background-color: #606060 !important;
+    border: 1px solid #404040;
+    color: #f8f8f8 !important;
+}
+
+[data-theme="dark"] .navbar .menu a,
+[data-theme="dark"] .navbar .btn {
+    color: #f8f8f8 !important;
+}
+
+/* Cards */
+.card {
+    border: 1px solid #e9ecef;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    background-color: #ffffff;
+}
+
+[data-theme="dark"] .card {
+    background-color: #606060 !important;
+    border: 1px solid #404040;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+/* Inputs */
+.input {
+    border: 2px solid #e9ecef;
+    background-color: #ffffff !important;
+    color: #212529 !important;
+}
+
+.input::placeholder {
+    color: #6c757d !important;
+}
+
+[data-theme="dark"] .input {
+    background-color: #505050 !important;
+    border: 2px solid #404040;
+    color: #f8f8f8 !important;
+}
+
+[data-theme="dark"] .input::placeholder {
+    color: #adb5bd !important;
+}
+
+/* Buttons */
+.btn-primary {
+    background-color: #4caf50;
+    border-color: #4caf50;
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #2e7d32;
+    border-color: #2e7d32;
+}
+
+.btn-secondary {
+    background-color: #1976d2;
+    border-color: #1976d2;
+    color: white;
+}
+
+.btn-outline {
+    border-color: #4caf50;
+    color: #4caf50;
+}
+
+.btn-outline:hover {
+    background-color: #4caf50;
+    color: white;
+}
+
+/* Badges - Schwarzer Text */
+.badge {
+    color: #000000 !important;
+    font-weight: 600;
+}
+
+.badge-reserved,
+.badge[class*="bg-purple"] {
+    background-color: #9c27b0;
+    color: #000000 !important;
+}
+
+.badge-my-item,
+.badge[class*="bg-green"] {
+    background-color: #4caf50;
+    color: #000000 !important;
+}
+
+.badge-outline {
+    border: 2px solid #495057;
+    color: #000000 !important;
+    background-color: #ffffff;
+}
+
+/* Dark Theme - Badges bleiben mit schwarzem Text lesbar */
+[data-theme="dark"] .badge {
+    color: #000000 !important;
+}
+
+[data-theme="dark"] .badge-reserved,
+[data-theme="dark"] .badge[class*="bg-purple"] {
+    background-color: #ab47bc;
+    color: #000000 !important;
+}
+
+[data-theme="dark"] .badge-my-item,
+[data-theme="dark"] .badge[class*="bg-green"] {
+    background-color: #66bb6a;
+    color: #000000 !important;
+}
+
+[data-theme="dark"] .badge-outline {
+    background-color: #f8f8f8;
+    color: #000000 !important;
+}
+
+/* Modal */
+.modal-box {
+    border: 1px solid #e9ecef;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    background-color: #ffffff !important;
+    color: #212529 !important;
+}
+
+.modal-box * {
+    color: #212529 !important;
+}
+
+[data-theme="dark"] .modal-box {
+    background-color: #606060 !important;
+    border: 1px solid #404040;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+    color: #f8f8f8 !important;
+}
+
+[data-theme="dark"] .modal-box * {
+    color: #f8f8f8 !important;
+}
+
+/* Background Utilities - Light Mode Override */
+.bg-base-200 {
+    background-color: #f8f9fa !important;
+}
+
+.bg-base-100 {
+    background-color: #ffffff !important;
+}
+
+/* Dark Theme Backgrounds - Nur für Dark Mode */
+[data-theme="dark"] .bg-base-200 {
+    background-color: #505050 !important;
+}
+
+[data-theme="dark"] .bg-base-100 {
+    background-color: #606060 !important;
+}
+
+[data-theme="dark"] body,
+[data-theme="dark"] html {
+    background-color: #505050 !important;
+    color: #f8f8f8 !important;
+}
+
+/* Light Mode Backgrounds - Explizit definieren */
+[data-theme="laptheme"] body,
+[data-theme="laptheme"] html,
+body:not([data-theme="dark"]),
+html:not([data-theme="dark"]) {
+    background-color: #f8f9fa !important;
+    color: #212529 !important;
+}

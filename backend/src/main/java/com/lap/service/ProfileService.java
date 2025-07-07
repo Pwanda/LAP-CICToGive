@@ -1,0 +1,211 @@
+package com.lap.service;
+
+import com.lap.dto.ProfileDTO;
+import com.lap.entity.User;
+import com.lap.repository.UserRepository;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+@Service
+public class ProfileService {
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private B2StorageService b2StorageService;
+
+    private static final List<String> ALLOWED_IMAGE_TYPES = Arrays.asList(
+        "image/jpeg",
+        "image/jpg",
+        "image/png",
+        "image/webp"
+    );
+
+    private static final long MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+
+    public ProfileDTO.ProfileResponse getUserProfile(String username) {
+        Optional<User> userOpt = userRepository.findByUsername(username);
+        if (userOpt.isEmpty()) {
+            throw new RuntimeException("User not found");
+        }
+
+        User user = userOpt.get();
+        return new ProfileDTO.ProfileResponse(
+            user.getId(),
+            user.getUsername(),
+            user.getEmail(),
+            user.getAvatarUrl()
+        );
+    }
+
+    public ProfileDTO.AvatarUploadResponse uploadAvatar(
+        String username,
+        MultipartFile file
+    ) {
+        // Find user
+        Optional<User> userOpt = userRepository.findByUsername(username);
+        if (userOpt.isEmpty()) {
+            throw new RuntimeException("User not found");
+        }
+
+        User user = userOpt.get();
+
+        // Validate file
+        validateImageFile(file);
+
+        try {
+            // Delete old avatar if exists
+            if (user.getAvatarUrl() != null && !user.getAvatarUrl().isEmpty()) {
+                String oldFileName = extractFileNameFromUrl(
+                    user.getAvatarUrl()
+                );
+                if (oldFileName != null) {
+                    b2StorageService.deleteFileByName(oldFileName);
+                }
+            }
+
+            // Generate unique filename
+            String originalFilename = file.getOriginalFilename();
+            String fileExtension = getFileExtension(originalFilename);
+            String uniqueFilename =
+                "avatars/" +
+                user.getId() +
+                "_" +
+                UUID.randomUUID().toString() +
+                fileExtension;
+
+            // Upload to B2
+            String avatarUrl = b2StorageService.uploadImageWrapper(
+                file,
+                uniqueFilename
+            );
+
+            // Update user in database
+            user.setAvatarUrl(avatarUrl);
+            userRepository.save(user);
+
+            return new ProfileDTO.AvatarUploadResponse(
+                avatarUrl,
+                "Avatar erfolgreich hochgeladen"
+            );
+        } catch (Exception e) {
+            throw new RuntimeException("Fehler beim Upload: " + e.getMessage());
+        }
+    }
+
+    public String removeAvatar(String username) {
+        Optional<User> userOpt = userRepository.findByUsername(username);
+        if (userOpt.isEmpty()) {
+            throw new RuntimeException("User not found");
+        }
+
+        User user = userOpt.get();
+
+        try {
+            // Delete from B2 if exists
+            if (user.getAvatarUrl() != null && !user.getAvatarUrl().isEmpty()) {
+                String fileName = extractFileNameFromUrl(user.getAvatarUrl());
+                if (fileName != null) {
+                    b2StorageService.deleteFileByName(fileName);
+                }
+            }
+
+            // Update user in database
+            user.setAvatarUrl(null);
+            userRepository.save(user);
+
+            return "Avatar erfolgreich entfernt";
+        } catch (Exception e) {
+            throw new RuntimeException(
+                "Fehler beim Entfernen des Avatars: " + e.getMessage()
+            );
+        }
+    }
+
+    public String changePassword(
+        String username,
+        ProfileDTO.ChangePasswordRequest request
+    ) {
+        Optional<User> userOpt = userRepository.findByUsername(username);
+        if (userOpt.isEmpty()) {
+            throw new RuntimeException("User not found");
+        }
+
+        User user = userOpt.get();
+
+        // Verify current password
+        if (
+            !passwordEncoder.matches(
+                request.getCurrentPassword(),
+                user.getPassword()
+            )
+        ) {
+            throw new RuntimeException("Aktuelles Passwort ist falsch");
+        }
+
+        // Update password
+        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        userRepository.save(user);
+
+        return "Passwort erfolgreich geändert";
+    }
+
+    private void validateImageFile(MultipartFile file) {
+        if (file == null || file.isEmpty()) {
+            throw new RuntimeException("Keine Datei ausgewählt");
+        }
+
+        if (file.getSize() > MAX_FILE_SIZE) {
+            throw new RuntimeException(
+                "Datei ist zu groß. Maximum 5MB erlaubt"
+            );
+        }
+
+        String contentType = file.getContentType();
+        if (
+            contentType == null ||
+            !ALLOWED_IMAGE_TYPES.contains(contentType.toLowerCase())
+        ) {
+            throw new RuntimeException(
+                "Nur JPG, PNG oder WebP Dateien sind erlaubt"
+            );
+        }
+    }
+
+    private String getFileExtension(String filename) {
+        if (filename == null || filename.lastIndexOf('.') == -1) {
+            return "";
+        }
+        return filename.substring(filename.lastIndexOf('.'));
+    }
+
+    private String extractFileNameFromUrl(String url) {
+        if (url == null || url.isEmpty()) {
+            return null;
+        }
+
+        // For our proxy URLs (e.g., "/api/files/download/avatars/1_uuid.jpg")
+        // Extract the filename part after the last slash
+        if (url.startsWith("/api/files/download/")) {
+            String fileName = url.substring("/api/files/download/".length());
+            return fileName;
+        }
+
+        // For direct B2 URLs
+        String[] parts = url.split("/");
+        if (parts.length > 0) {
+            return parts[parts.length - 1];
+        }
+        return null;
+    }
+}

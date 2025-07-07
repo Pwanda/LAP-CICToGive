@@ -1,0 +1,45 @@
+# LAP Backend Configuration Example
+# Copy this file to application.properties and update with your values
+
+# Server Configuration
+server.port=8080
+
+# Database Configuration
+spring.datasource.url=jdbc:postgresql://localhost:5432/lapdb
+spring.datasource.username=lapuser
+spring.datasource.password=lappassword
+spring.datasource.driver-class-name=org.postgresql.Driver
+
+# JPA/Hibernate Configuration
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=false
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
+spring.jpa.properties.hibernate.format_sql=true
+
+# JWT Configuration
+jwt.secret=mySecretKey123456789012345678901234567890123456789012345678901234567890
+jwt.expiration=86400000
+
+# Backblaze B2 Storage Configuration (REQUIRED)
+# Get these from your B2 account: https://www.backblaze.com/b2/cloud-storage.html
+b2.application.key.id=your_key_id_here
+b2.application.key=your_application_key_here
+b2.bucket.name=your_bucket_name_here
+
+# Logging Configuration
+logging.level.com.lap=INFO
+logging.level.org.springframework.security=INFO
+logging.level.org.hibernate.SQL=INFO
+logging.level.org.hibernate.type.descriptor.sql.BasicBinder=INFO
+
+# DevTools Configuration (for development)
+spring.devtools.restart.enabled=true
+spring.devtools.livereload.enabled=true
+
+# File Upload Configuration
+spring.servlet.multipart.max-file-size=50MB
+spring.servlet.multipart.max-request-size=50MB
+
+# Application Info
+spring.application.name=LAP Backend
+management.endpoints.web.exposure.include=health,info

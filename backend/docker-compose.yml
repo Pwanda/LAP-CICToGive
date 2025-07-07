@@ -1,0 +1,105 @@
+version: "3.8"
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: lap-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: lapdb
+      POSTGRES_USER: lapuser
+      POSTGRES_PASSWORD: lappassword
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./src/main/resources/db/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - lap-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U lapuser -d lapdb"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: lap-backend
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/lapdb
+      - SPRING_DATASOURCE_USERNAME=lapuser
+      - SPRING_DATASOURCE_PASSWORD=lappassword
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - SPRING_JPA_SHOW_SQL=true
+      - JWT_SECRET=mySecretKey123456789012345678901234567890123456789012345678901234567890
+      - JWT_EXPIRATION=86400000
+    volumes:
+      - ./src:/app/src:Z
+      - ./pom.xml:/app/pom.xml:Z
+      - maven_cache:/root/.m2
+    networks:
+      - lap-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: ../Frontend
+      dockerfile: Dockerfile
+    container_name: lap-frontend
+    restart: unless-stopped
+    ports:
+      - "5173:5173"
+    environment:
+      - VITE_API_URL=http://localhost:8080
+    volumes:
+      - ../Frontend/src:/app/src:Z
+      - ../Frontend/public:/app/public:Z
+      - ../Frontend/package.json:/app/package.json:Z
+      - ../Frontend/vite.config.ts:/app/vite.config.ts:Z
+      - ../Frontend/tailwind.config.js:/app/tailwind.config.js:Z
+      - ../Frontend/tsconfig.json:/app/tsconfig.json:Z
+      - node_modules:/app/node_modules
+    networks:
+      - lap-network
+    depends_on:
+      - backend
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: lap-pgadmin
+    restart: unless-stopped
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@lap.com
+      PGADMIN_DEFAULT_PASSWORD: admin123
+      PGADMIN_CONFIG_SERVER_MODE: "False"
+    ports:
+      - "5050:80"
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    networks:
+      - lap-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  postgres_data:
+    driver: local
+  pgadmin_data:
+    driver: local
+  maven_cache:
+    driver: local
+  node_modules:
+    driver: local
+
+networks:
+  lap-network:
+    driver: bridge

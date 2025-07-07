@@ -1,0 +1,112 @@
+version: "3.8"
+
+services:
+  postgres:
+    image: docker.io/postgres:15-alpine
+    container_name: lap-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: lapdb
+      POSTGRES_USER: lapuser
+      POSTGRES_PASSWORD: lappassword
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data:Z
+      - ./backend/src/main/resources/db/init.sql:/docker-entrypoint-initdb.d/init.sql:Z
+    networks:
+      - lap-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U lapuser -d lapdb"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: lap-backend
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/lapdb
+      SPRING_DATASOURCE_USERNAME: lapuser
+      SPRING_DATASOURCE_PASSWORD: lappassword
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_JPA_SHOW_SQL: "true"
+      JWT_SECRET: mySecretKey123456789012345678901234567890123456789012345678901234567890
+      JWT_EXPIRATION: 86400000
+      SPRING_DEVTOOLS_RESTART_ENABLED: "true"
+      SPRING_DEVTOOLS_LIVERELOAD_ENABLED: "true"
+    volumes:
+      - ./backend/src:/app/src:Z
+      - ./backend/pom.xml:/app/pom.xml:Z
+      - maven_cache:/root/.m2:Z
+    networks:
+      - lap-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+    user: "0"
+
+  frontend:
+    build:
+      context: ./Frontend
+      dockerfile: Dockerfile
+    container_name: lap-frontend
+    restart: unless-stopped
+    ports:
+      - "5173:5173"
+    environment:
+      VITE_API_URL: http://localhost:8080
+      VITE_HMR_HOST: localhost
+    volumes:
+      - ./Frontend/src:/app/src:Z
+      - ./Frontend/public:/app/public:Z
+      - ./Frontend/index.html:/app/index.html:Z
+      - ./Frontend/package.json:/app/package.json:Z
+      - ./Frontend/package-lock.json:/app/package-lock.json:Z
+      - ./Frontend/vite.config.ts:/app/vite.config.ts:Z
+      - ./Frontend/tailwind.config.js:/app/tailwind.config.js:Z
+      - ./Frontend/tsconfig.json:/app/tsconfig.json:Z
+      - ./Frontend/tsconfig.app.json:/app/tsconfig.app.json:Z
+      - ./Frontend/tsconfig.node.json:/app/tsconfig.node.json:Z
+      - ./Frontend/eslint.config.js:/app/eslint.config.js:Z
+      - node_modules:/app/node_modules:Z
+    networks:
+      - lap-network
+    depends_on:
+      - backend
+
+  pgadmin:
+    image: docker.io/dpage/pgadmin4:latest
+    container_name: lap-pgadmin
+    restart: unless-stopped
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@lap.com
+      PGADMIN_DEFAULT_PASSWORD: admin123
+      PGADMIN_CONFIG_SERVER_MODE: "False"
+      PGADMIN_DISABLE_POSTFIX: "true"
+    ports:
+      - "5050:80"
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin:Z
+    networks:
+      - lap-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+    user: "0"
+
+volumes:
+  postgres_data:
+  pgadmin_data:
+  maven_cache:
+  node_modules:
+
+networks:
+  lap-network:
+    driver: bridge
