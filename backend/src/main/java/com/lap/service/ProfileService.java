@@ -64,15 +64,8 @@ public class ProfileService {
         validateImageFile(file);
 
         try {
-            // Delete old avatar if exists
-            if (user.getAvatarUrl() != null && !user.getAvatarUrl().isEmpty()) {
-                String oldFileName = extractFileNameFromUrl(
-                    user.getAvatarUrl()
-                );
-                if (oldFileName != null) {
-                    b2StorageService.deleteFileByName(oldFileName);
-                }
-            }
+            // Skip old avatar deletion to prevent upload failures
+            // Old avatars will be cleaned up separately if needed
 
             // Generate unique filename
             String originalFilename = file.getOriginalFilename();
@@ -112,13 +105,8 @@ public class ProfileService {
         User user = userOpt.get();
 
         try {
-            // Delete from B2 if exists
-            if (user.getAvatarUrl() != null && !user.getAvatarUrl().isEmpty()) {
-                String fileName = extractFileNameFromUrl(user.getAvatarUrl());
-                if (fileName != null) {
-                    b2StorageService.deleteFileByName(fileName);
-                }
-            }
+            // Skip B2 deletion to prevent errors
+            // File will remain in B2 but user avatar will be removed from database
 
             // Update user in database
             user.setAvatarUrl(null);
