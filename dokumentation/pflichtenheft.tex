@@ -1,0 +1,768 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[ngerman]{babel}
+\usepackage{geometry}
+\usepackage{fancyhdr}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{tikz}
+\usepackage{pgfgantt}
+\usepackage{rotating}
+\usepackage{ltxtable}
+
+\geometry{a4paper, left=3cm, right=2cm, top=2.5cm, bottom=2.5cm}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{LAP - Verschenke-Plattform}
+\fancyhead[R]{Pflichtenheft}
+\fancyfoot[C]{\thepage}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,
+    urlcolor=cyan,
+    pdftitle={Pflichtenheft - LAP Verschenke-Plattform},
+    pdfauthor={Prüfungskandidat},
+    pdfsubject={Lehrabschlussprüfung Applikationsentwicklung},
+    pdfkeywords={Pflichtenheft, Implementierung, Zeitschätzung, Full-Stack}
+}
+
+\title{
+    \huge\textbf{Pflichtenheft}\\
+    \Large LAP - Verschenke-Plattform\\
+    \large Technische Spezifikation und Implementierungsplan
+}
+\author{Lehrabschlussprüfung Applikationsentwicklung}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\newpage
+
+\tableofcontents
+
+\newpage
+
+\section{Einleitung}
+
+\subsection{Zweck des Dokuments}
+Dieses Pflichtenheft definiert die technische Implementierung der LAP-Verschenke-Plattform basierend auf den im Lastenheft definierten Anforderungen. Es enthält detaillierte Spezifikationen, Architekturentscheidungen und eine realistische Zeitschätzung für die Entwicklung.
+
+\subsection{Projektübersicht}
+Die LAP-Plattform ist eine moderne Full-Stack-Webanwendung, die es Benutzern ermöglicht, Gegenstände zu verschenken und zu finden. Das System besteht aus einem React-Frontend, einem Spring Boot-Backend und einer PostgreSQL-Datenbank, ergänzt durch Cloud-Speicher für Dateien.
+
+\subsection{Technische Zielsetzung}
+\begin{itemize}
+    \item Entwicklung einer skalierbaren, wartbaren Full-Stack-Anwendung
+    \item Implementierung moderner Entwicklungsstandards und Best Practices
+    \item Gewährleistung hoher Sicherheitsstandards
+    \item Optimierung für Performance und Benutzerfreundlichkeit
+    \item Containerisierte Entwicklungs- und Deployment-Umgebung
+\end{itemize}
+
+\section{Systemarchitektur}
+
+\subsection{Architektur-Überblick}
+Das System folgt einer dreischichtigen Architektur:
+
+\begin{itemize}
+    \item \textbf{Präsentationsschicht:} React-Frontend mit TypeScript
+    \item \textbf{Anwendungsschicht:} Spring Boot-Backend mit REST-API
+    \item \textbf{Datenschicht:} PostgreSQL-Datenbank mit JPA/Hibernate
+    \item \textbf{Speicherschicht:} Backblaze B2 Cloud Storage für Dateien
+\end{itemize}
+
+\subsection{Technische Komponenten}
+
+\subsubsection{Frontend-Architektur}
+\begin{longtable}{|p{0.25\textwidth}|p{0.3\textwidth}|p{0.35\textwidth}|}
+\hline
+\textbf{Komponente} & \textbf{Technologie} & \textbf{Zweck} \\
+\hline
+UI-Framework & React 19 + TypeScript & Moderne, typsichere Benutzeroberfläche \\
+\hline
+Build-Tool & Vite & Schnelle Entwicklung und Builds \\
+\hline
+Routing & React Router v7 & Client-seitiges Routing \\
+\hline
+State Management & React Query & Server-State-Management und Caching \\
+\hline
+Styling & TailwindCSS + DaisyUI & Utility-first CSS mit Komponenten \\
+\hline
+Formulare & React Hook Form + Zod & Effiziente Formularvalidierung \\
+\hline
+HTTP-Client & Axios & API-Kommunikation \\
+\hline
+\end{longtable}
+
+\subsubsection{Backend-Architektur}
+\begin{longtable}{|p{0.25\textwidth}|p{0.3\textwidth}|p{0.35\textwidth}|}
+\hline
+\textbf{Komponente} & \textbf{Technologie} & \textbf{Zweck} \\
+\hline
+Framework & Spring Boot 3.2 & Enterprise-Java-Framework \\
+\hline
+Sicherheit & Spring Security & Authentifizierung und Autorisierung \\
+\hline
+Datenzugriff & Spring Data JPA & ORM und Datenbankzugriff \\
+\hline
+Authentifizierung & JWT & Token-basierte Authentifizierung \\
+\hline
+Validierung & Bean Validation & Server-seitige Validierung \\
+\hline
+Dokumentation & Spring Boot Actuator & Monitoring und Health Checks \\
+\hline
+\end{longtable}
+
+\subsubsection{Datenbank-Design}
+\begin{longtable}{|p{0.2\textwidth}|p{0.35\textwidth}|p{0.35\textwidth}|}
+\hline
+\textbf{Tabelle} & \textbf{Zweck} & \textbf{Hauptfelder} \\
+\hline
+users & Benutzerverwaltung & id, username, email, password\_hash, avatar\_url, created\_at, updated\_at \\
+\hline
+items & Artikelverwaltung & id, title, description, category, location, condition, is\_reserved, user\_id, created\_at \\
+\hline
+item\_images & Artikel-Bilder & item\_id, image\_url \\
+\hline
+comments & Kommentarsystem & id, content, item\_id, user\_id, created\_at \\
+\hline
+\end{longtable}
+
+\section{Detaillierte Funktionsspezifikation}
+
+\subsection{Authentifizierung und Autorisierung}
+
+\subsubsection{Technische Umsetzung}
+\begin{itemize}
+    \item \textbf{Passwort-Verschlüsselung:} BCrypt mit Strength 12
+    \item \textbf{JWT-Token:} HMAC-SHA256 mit 24h Ablaufzeit
+    \item \textbf{Token-Speicherung:} Secure HttpOnly Cookies (Optional: localStorage)
+    \item \textbf{Refresh-Token:} Implementierung für automatische Token-Erneuerung
+\end{itemize}
+
+\subsubsection{API-Endpunkte}
+\begin{longtable}{|p{0.15\textwidth}|p{0.25\textwidth}|p{0.25\textwidth}|p{0.25\textwidth}|}
+\hline
+\textbf{Methode} & \textbf{Endpunkt} & \textbf{Zweck} & \textbf{Authentifizierung} \\
+\hline
+POST & /api/auth/register & Benutzerregistrierung & Nein \\
+\hline
+POST & /api/auth/login & Benutzeranmeldung & Nein \\
+\hline
+GET & /api/auth/me & Benutzerinfo abrufen & Ja \\
+\hline
+POST & /api/auth/logout & Benutzerabmeldung & Ja \\
+\hline
+PUT & /api/auth/profile & Profil aktualisieren & Ja \\
+\hline
+\end{longtable}
+
+\subsection{Artikelverwaltung}
+
+\subsubsection{Technische Umsetzung}
+\begin{itemize}
+    \item \textbf{Validierung:} Bean Validation mit Custom Constraints
+    \item \textbf{Bildupload:} Multipart-Upload mit Größenbegrenzung (10MB)
+    \item \textbf{Bildverarbeitung:} Automatische Größenanpassung
+    \item \textbf{Suchfunktion:} JPA Criteria API für dynamische Queries
+\end{itemize}
+
+\subsubsection{API-Endpunkte}
+\begin{longtable}{|p{0.15\textwidth}|p{0.25\textwidth}|p{0.25\textwidth}|p{0.25\textwidth}|}
+\hline
+\textbf{Methode} & \textbf{Endpunkt} & \textbf{Zweck} & \textbf{Authentifizierung} \\
+\hline
+GET & /api/items & Artikel auflisten & Nein \\
+\hline
+GET & /api/items/\{id\} & Artikel abrufen & Nein \\
+\hline
+POST & /api/items & Artikel erstellen & Ja \\
+\hline
+PUT & /api/items/\{id\} & Artikel aktualisieren & Ja (Besitzer) \\
+\hline
+DELETE & /api/items/\{id\} & Artikel löschen & Ja (Besitzer) \\
+\hline
+GET & /api/items/search & Artikel suchen & Nein \\
+\hline
+PUT & /api/items/\{id\}/reserve & Artikel reservieren & Ja \\
+\hline
+GET & /api/items/my & Eigene Artikel & Ja \\
+\hline
+\end{longtable}
+
+\subsection{Dateiverwaltung}
+
+\subsubsection{Technische Umsetzung}
+\begin{itemize}
+    \item \textbf{Cloud-Speicher:} Backblaze B2 Integration
+    \item \textbf{Datei-Upload:} Chunked Upload für große Dateien
+    \item \textbf{Bildoptimierung:} Automatische Komprimierung
+    \item \textbf{URL-Generierung:} Sichere, zeitlich begrenzte URLs
+\end{itemize}
+
+\subsubsection{API-Endpunkte}
+\begin{longtable}{|p{0.15\textwidth}|p{0.25\textwidth}|p{0.25\textwidth}|p{0.25\textwidth}|}
+\hline
+\textbf{Methode} & \textbf{Endpunkt} & \textbf{Zweck} & \textbf{Authentifizierung} \\
+\hline
+POST & /api/files/upload & Datei hochladen & Ja \\
+\hline
+GET & /api/files/\{filename\} & Datei abrufen & Nein \\
+\hline
+DELETE & /api/files/\{filename\} & Datei löschen & Ja \\
+\hline
+GET & /api/files/url/\{filename\} & Download-URL generieren & Nein \\
+\hline
+\end{longtable}
+
+\section{Frontend-Implementierung}
+
+\subsection{Komponentenstruktur}
+\begin{longtable}{|p{0.3\textwidth}|p{0.35\textwidth}|p{0.25\textwidth}|}
+\hline
+\textbf{Komponente} & \textbf{Zweck} & \textbf{Typ} \\
+\hline
+App.tsx & Hauptapplikation mit Routing & Container \\
+\hline
+Navbar.tsx & Navigation und Benutzermenü & Layout \\
+\hline
+HomePage.tsx & Artikelübersicht mit Suche & Page \\
+\hline
+ItemCard.tsx & Artikel-Kachel in der Übersicht & Component \\
+\hline
+ItemModal.tsx & Artikel-Detailansicht & Modal \\
+\hline
+CreateItemModal.tsx & Artikel-Erstellungsformular & Modal \\
+\hline
+LoginPage.tsx & Anmeldungsformular & Page \\
+\hline
+RegisterPage.tsx & Registrierungsformular & Page \\
+\hline
+ProfilePage.tsx & Benutzerprofil & Page \\
+\hline
+ProtectedRoute.tsx & Routenschutz & HOC \\
+\hline
+\end{longtable}
+
+\subsection{State Management}
+\begin{itemize}
+    \item \textbf{Server State:} React Query für API-Daten
+    \item \textbf{Authentication State:} React Context für Benutzerstatus
+    \item \textbf{Form State:} React Hook Form für Formulare
+    \item \textbf{UI State:} useState für lokale Komponenten-States
+\end{itemize}
+
+\subsection{Responsive Design}
+\begin{longtable}{|p{0.2\textwidth}|p{0.25\textwidth}|p{0.45\textwidth}|}
+\hline
+\textbf{Breakpoint} & \textbf{Größe} & \textbf{Layout-Anpassungen} \\
+\hline
+Mobile & < 768px & Single-column Layout, Burger-Menü, Touch-optimiert \\
+\hline
+Tablet & 768px - 1024px & 2-column Grid, kompakte Navigation \\
+\hline
+Desktop & > 1024px & 3-4 column Grid, volle Navigation \\
+\hline
+Large Desktop & > 1280px & 4+ column Grid, maximale Raumausnutzung \\
+\hline
+\end{longtable}
+
+\section{Backend-Implementierung}
+
+\subsection{Schichtarchitektur}
+\begin{longtable}{|p{0.2\textwidth}|p{0.35\textwidth}|p{0.35\textwidth}|}
+\hline
+\textbf{Schicht} & \textbf{Zweck} & \textbf{Komponenten} \\
+\hline
+Controller & REST-API Endpunkte & AuthController, ItemController, FileController \\
+\hline
+Service & Business Logic & AuthService, ItemService, FileStorageService \\
+\hline
+Repository & Datenzugriff & UserRepository, ItemRepository, CommentRepository \\
+\hline
+Entity & Datenmodell & User, Item, Comment \\
+\hline
+DTO & Datentransfer & AuthDTO, ItemDTO, CommentDTO \\
+\hline
+Configuration & Konfiguration & SecurityConfig, JwtUtil, WebConfig \\
+\hline
+\end{longtable}
+
+\subsection{Sicherheitskonzept}
+\begin{itemize}
+    \item \textbf{CORS-Konfiguration:} Whitelist für erlaubte Origins
+    \item \textbf{JWT-Filter:} Automatische Token-Validierung
+    \item \textbf{Method-Level Security:} @PreAuthorize für granulare Kontrolle
+    \item \textbf{Input Validation:} Umfassende Validierung aller Eingaben
+    \item \textbf{Error Handling:} Sichere Fehlerbehandlung ohne Informationslecks
+\end{itemize}
+
+\subsection{Datenbankoptimierung}
+\begin{itemize}
+    \item \textbf{Indizierung:} Strategische Indizes für Suchfelder
+    \item \textbf{Lazy Loading:} Optimierte JPA-Beziehungen
+    \item \textbf{Query Optimization:} Effiziente JPA-Queries
+    \item \textbf{Connection Pooling:} HikariCP für Performance
+\end{itemize}
+
+\section{Entwicklungsumgebung}
+
+\subsection{Container-Setup}
+\begin{longtable}{|p{0.2\textwidth}|p{0.25\textwidth}|p{0.45\textwidth}|}
+\hline
+\textbf{Container} & \textbf{Purpose} & \textbf{Konfiguration} \\
+\hline
+lap-frontend & React Development & Node.js 18, Vite Dev Server, Hot Reload \\
+\hline
+lap-backend & Spring Boot API & Java 17, Maven, Spring Boot DevTools \\
+\hline
+lap-postgres & Database & PostgreSQL 14, persistent volume \\
+\hline
+lap-pgadmin & DB Admin & PgAdmin 4, web interface \\
+\hline
+\end{longtable}
+
+\subsection{Development Workflow}
+\begin{itemize}
+    \item \textbf{Hot Reload:} Frontend und Backend automatische Neulades
+    \item \textbf{Volume Mounting:} Live-Codeänderungen
+    \item \textbf{Database Seeding:} Automatische Testdaten
+    \item \textbf{Port Forwarding:} Lokale Entwicklungsports
+\end{itemize}
+
+\section{Testkonzept}
+
+\subsection{Frontend-Tests}
+\begin{longtable}{|p{0.25\textwidth}|p{0.35\textwidth}|p{0.3\textwidth}|}
+\hline
+\textbf{Test-Typ} & \textbf{Framework} & \textbf{Abdeckung} \\
+\hline
+Unit Tests & Jest + React Testing Library & Komponenten-Logic \\
+\hline
+Integration Tests & Cypress & User Workflows \\
+\hline
+Visual Tests & Storybook & Component Gallery \\
+\hline
+\end{longtable}
+
+\subsection{Backend-Tests}
+\begin{longtable}{|p{0.25\textwidth}|p{0.35\textwidth}|p{0.3\textwidth}|}
+\hline
+\textbf{Test-Typ} & \textbf{Framework} & \textbf{Abdeckung} \\
+\hline
+Unit Tests & JUnit 5 + Mockito & Service Layer \\
+\hline
+Integration Tests & Spring Boot Test & API Endpoints \\
+\hline
+Repository Tests & @DataJpaTest & Database Operations \\
+\hline
+Security Tests & Spring Security Test & Authentication \\
+\hline
+\end{longtable}
+
+\section{Deployment und DevOps}
+
+\subsection{Containerisierung}
+\begin{itemize}
+    \item \textbf{Multi-Stage Builds:} Optimierte Production Images
+    \item \textbf{Health Checks:} Container-Überwachung
+    \item \textbf{Volume Management:} Persistent Storage
+    \item \textbf{Network Configuration:} Sichere Container-Kommunikation
+\end{itemize}
+
+\subsection{CI/CD Pipeline}
+\begin{itemize}
+    \item \textbf{Build Stage:} Automatische Builds bei Code-Änderungen
+    \item \textbf{Test Stage:} Ausführung aller Tests
+    \item \textbf{Security Scan:} Dependency-Vulnerability-Checks
+    \item \textbf{Deploy Stage:} Automatisches Deployment
+\end{itemize}
+
+\section{Zeitschätzung und Projektplanung}
+
+\subsection{Entwicklungsphasen}
+\begin{longtable}{|p{0.05\textwidth}|p{0.3\textwidth}|p{0.15\textwidth}|p{0.4\textwidth}|}
+\hline
+\textbf{Nr.} & \textbf{Phase} & \textbf{Dauer} & \textbf{Aktivitäten} \\
+\hline
+1 & Projektsetup & 8 Stunden & Repository Setup, Entwicklungsumgebung, Toolchain \\
+\hline
+2 & Backend-Grundstruktur & 16 Stunden & Spring Boot Setup, Datenbankmodell, Grundkonfiguration \\
+\hline
+3 & Authentifizierung & 12 Stunden & JWT-Implementierung, User-Management, Security \\
+\hline
+4 & Frontend-Grundstruktur & 12 Stunden & React Setup, Routing, Basic Components \\
+\hline
+5 & Artikelverwaltung Backend & 20 Stunden & CRUD-Operationen, Validierung, Tests \\
+\hline
+6 & Artikelverwaltung Frontend & 24 Stunden & UI-Komponenten, Formulare, State Management \\
+\hline
+7 & Dateiverwaltung & 16 Stunden & B2-Integration, Upload-Funktionalität \\
+\hline
+8 & Suchfunktionalität & 12 Stunden & Backend-Suche, Frontend-Filter, Paginierung \\
+\hline
+9 & Kommentarsystem & 10 Stunden & Backend-APIs, Frontend-Komponenten \\
+\hline
+10 & UI/UX-Verbesserungen & 16 Stunden & Responsive Design, Styling, Accessibility \\
+\hline
+11 & Testing & 20 Stunden & Unit-Tests, Integration-Tests, E2E-Tests \\
+\hline
+12 & Deployment & 8 Stunden & Containerisierung, CI/CD, Production-Setup \\
+\hline
+13 & Dokumentation & 12 Stunden & API-Docs, Benutzerhandbuch, Entwickler-Docs \\
+\hline
+14 & Bugfixing \& Optimierung & 16 Stunden & Performance-Optimierung, Bugfixes \\
+\hline
+& \textbf{Gesamt} & \textbf{182 Stunden} & \textbf{≈ 23 Arbeitstage} \\
+\hline
+\end{longtable}
+
+\subsection{Detaillierte Zeitschätzung nach Bereichen}
+
+\subsubsection{Backend-Entwicklung (84 Stunden)}
+\begin{longtable}{|p{0.4\textwidth}|p{0.15\textwidth}|p{0.35\textwidth}|}
+\hline
+\textbf{Aufgabe} & \textbf{Stunden} & \textbf{Details} \\
+\hline
+Spring Boot Setup \& Konfiguration & 8 & Projekt-Setup, Dependencies, Properties \\
+\hline
+Datenbankmodell \& JPA-Entities & 10 & User, Item, Comment Entities, Relationships \\
+\hline
+Security \& JWT-Implementation & 12 & Spring Security, JWT-Filter, Authentication \\
+\hline
+User-Management APIs & 8 & Registration, Login, Profile-Management \\
+\hline
+Item-Management APIs & 16 & CRUD-Operationen, Validierung, Business Logic \\
+\hline
+File-Storage Integration & 12 & B2-Integration, Upload/Download APIs \\
+\hline
+Search \& Filter APIs & 8 & JPA Criteria, Dynamic Queries \\
+\hline
+Comment-System APIs & 6 & CRUD für Kommentare \\
+\hline
+Testing \& Debugging & 4 & Unit-Tests, Integration-Tests \\
+\hline
+\end{longtable}
+
+\subsubsection{Frontend-Entwicklung (72 Stunden)}
+\begin{longtable}{|p{0.4\textwidth}|p{0.15\textwidth}|p{0.35\textwidth}|}
+\hline
+\textbf{Aufgabe} & \textbf{Stunden} & \textbf{Details} \\
+\hline
+React Setup \& Toolchain & 6 & Vite, TypeScript, ESLint, Prettier \\
+\hline
+Routing \& Navigation & 8 & React Router, Protected Routes, Navigation \\
+\hline
+Authentication Components & 12 & Login, Register, Profile Components \\
+\hline
+Item-Management UI & 20 & ItemCard, ItemModal, CreateItemModal, EditItemModal \\
+\hline
+Search \& Filter UI & 8 & Searchbar, Category Filter, Pagination \\
+\hline
+File-Upload Components & 6 & Image Upload, Preview, Drag \& Drop \\
+\hline
+Responsive Design & 8 & Mobile Optimization, Tablet Layout \\
+\hline
+State Management & 4 & React Query Setup, Context API \\
+\hline
+\end{longtable}
+
+\subsubsection{DevOps \& Deployment (26 Stunden)}
+\begin{longtable}{|p{0.4\textwidth}|p{0.15\textwidth}|p{0.35\textwidth}|}
+\hline
+\textbf{Aufgabe} & \textbf{Stunden} & \textbf{Details} \\
+\hline
+Containerisierung & 8 & Docker/Podman Setup, Multi-Container Environment \\
+\hline
+Development Environment & 6 & docker-compose, Hot Reload, Volume Mounting \\
+\hline
+CI/CD Pipeline & 4 & GitHub Actions, Automated Testing \\
+\hline
+Production Deployment & 4 & Production Configuration, Environment Variables \\
+\hline
+Monitoring \& Logging & 4 & Health Checks, Log Aggregation \\
+\hline
+\end{longtable}
+
+\subsection{Projektphasen-Gantt-Chart}
+
+\begin{sidewaystable}
+\centering
+\begin{ganttchart}[
+    y unit title=0.5cm,
+    y unit chart=0.5cm,
+    vgrid,
+    hgrid,
+    title label font=\bfseries\footnotesize,
+    bar label font=\footnotesize,
+    milestone label font=\footnotesize,
+    group label font=\footnotesize
+    ]{1}{23}
+\gantttitle{Entwicklungszeitraum (Arbeitstage)}{23} \\
+\gantttitlelist{1,...,23}{1} \\
+\ganttgroup{Setup \& Grundlagen}{1}{4} \\
+\ganttbar{Projektsetup}{1}{1} \\
+\ganttbar{Backend-Grundstruktur}{2}{4} \\
+\ganttgroup{Authentifizierung}{5}{7} \\
+\ganttbar{JWT \& Security}{5}{6} \\
+\ganttbar{Frontend Auth}{7}{7} \\
+\ganttgroup{Kernfunktionalität}{8}{16} \\
+\ganttbar{Backend APIs}{8}{11} \\
+\ganttbar{Frontend Components}{9}{13} \\
+\ganttbar{File Management}{14}{16} \\
+\ganttgroup{Erweiterte Features}{17}{19} \\
+\ganttbar{Suche \& Filter}{17}{18} \\
+\ganttbar{Kommentare}{19}{19} \\
+\ganttgroup{Qualitätssicherung}{20}{23} \\
+\ganttbar{Testing}{20}{21} \\
+\ganttbar{UI/UX Polish}{22}{22} \\
+\ganttbar{Deployment}{23}{23} \\
+\ganttmilestone{MVP Release}{16} \\
+\ganttmilestone{Final Release}{23}
+\end{ganttchart}
+\end{sidewaystable}
+
+\subsection{Risiko-Puffer}
+\begin{itemize}
+    \item \textbf{Technische Risiken:} +20\% (36 Stunden) für unvorhergesehene Probleme
+    \item \textbf{Integration-Challenges:} +10\% (18 Stunden) für Integrationsprobleme
+    \item \textbf{Learning Curve:} +15\% (27 Stunden) für neue Technologien
+    \item \textbf{Gesamt-Puffer:} +45\% (81 Stunden)
+\end{itemize}
+
+\textbf{Realistische Gesamtschätzung:} 182 + 81 = \textbf{263 Stunden (≈ 33 Arbeitstage)}
+
+\section{Qualitätskriterien}
+
+\subsection{Code-Qualität}
+\begin{longtable}{|p{0.3\textwidth}|p{0.3\textwidth}|p{0.3\textwidth}|}
+\hline
+\textbf{Kriterium} & \textbf{Zielwert} & \textbf{Messverfahren} \\
+\hline
+Test-Abdeckung & > 80\% & SonarQube, Coverage Reports \\
+\hline
+Code-Komplexität & < 10 (Cyclomatic) & ESLint, SonarQube \\
+\hline
+Duplicate Code & < 5\% & SonarQube \\
+\hline
+TypeScript-Typisierung & 100\% & TypeScript Compiler \\
+\hline
+Code-Style & 100\% Konformität & ESLint, Prettier \\
+\hline
+\end{longtable}
+
+\subsection{Performance-Kriterien}
+\begin{longtable}{|p{0.3\textwidth}|p{0.3\textwidth}|p{0.3\textwidth}|}
+\hline
+\textbf{Kriterium} & \textbf{Zielwert} & \textbf{Messverfahren} \\
+\hline
+Seitenladezeit & < 2 Sekunden & Lighthouse, WebPageTest \\
+\hline
+API-Antwortzeit & < 500ms & Application Metrics \\
+\hline
+Bildladezeit & < 3 Sekunden & Browser DevTools \\
+\hline
+First Contentful Paint & < 1.5 Sekunden & Lighthouse \\
+\hline
+Bundle-Größe & < 1MB gzipped & Webpack Bundle Analyzer \\
+\hline
+\end{longtable}
+
+\subsection{Sicherheitskriterien}
+\begin{longtable}{|p{0.3\textwidth}|p{0.3\textwidth}|p{0.3\textwidth}|}
+\hline
+\textbf{Kriterium} & \textbf{Zielwert} & \textbf{Messverfahren} \\
+\hline
+Vulnerability Scan & 0 High-Risk Issues & OWASP ZAP, Snyk \\
+\hline
+Authentication Security & JWT Best Practices & Security Review \\
+\hline
+Input Validation & 100\% Coverage & Code Review \\
+\hline
+HTTPS Enforcement & 100\% & SSL Labs Test \\
+\hline
+Dependency Security & 0 Known Vulnerabilities & npm audit, OWASP \\
+\hline
+\end{longtable}
+
+\section{Wartung und Erweiterbarkeit}
+
+\subsection{Wartungskonzept}
+\begin{itemize}
+    \item \textbf{Dependency Updates:} Monatliche Updates für Security-Patches
+    \item \textbf{Database Maintenance:} Regelmäßige Backups und Performance-Optimierung
+    \item \textbf{Monitoring:} Kontinuierliche Überwachung von Performance und Fehlern
+    \item \textbf{Log Analysis:} Wöchentliche Analyse der Anwendungslogs
+    \item \textbf{Security Updates:} Sofortige Patches für kritische Sicherheitslücken
+\end{itemize}
+
+\subsection{Erweiterbarkeit}
+\begin{itemize}
+    \item \textbf{Modulare Architektur:} Neue Features können unabhängig entwickelt werden
+    \item \textbf{API-First Design:} Einfache Integration neuer Clients
+    \item \textbf{Microservice-Ready:} Architektur erlaubt spätere Aufteilung
+    \item \textbf{Database Migration:} Liquibase/Flyway für Schema-Updates
+    \item \textbf{Feature Flags:} Graduelle Rollouts neuer Funktionen
+\end{itemize}
+
+\section{Technische Risiken und Mitigationen}
+
+\subsection{Identifizierte Risiken}
+\begin{longtable}{|p{0.25\textwidth}|p{0.2\textwidth}|p{0.25\textwidth}|p{0.2\textwidth}|}
+\hline
+\textbf{Risiko} & \textbf{Wahrscheinlichkeit} & \textbf{Auswirkung} & \textbf{Mitigation} \\
+\hline
+Performance-Probleme bei großen Datenmengen & Mittel & Hoch & Indexierung, Pagination, Caching \\
+\hline
+Sicherheitslücken in Dependencies & Hoch & Hoch & Regelmäßige Scans, Updates \\
+\hline
+B2-Service-Ausfälle & Niedrig & Mittel & Retry-Logic, Fallback-Strategie \\
+\hline
+Browser-Kompatibilität & Niedrig & Mittel & Polyfills, Progressive Enhancement \\
+\hline
+Datenbankperformance & Mittel & Hoch & Query-Optimierung, Connection Pooling \\
+\hline
+\end{longtable}
+
+\subsection{Backup und Recovery}
+\begin{itemize}
+    \item \textbf{Datenbank-Backups:} Tägliche automatische Backups
+    \item \textbf{File-Storage:} B2-native Redundanz und Versionierung
+    \item \textbf{Code-Repository:} Git-basierte Versionskontrolle
+    \item \textbf{Configuration:} Infrastructure as Code für Reproduzierbarkeit
+    \item \textbf{Disaster Recovery:} Dokumentierte Wiederherstellungsverfahren
+\end{itemize}
+
+\section{Erfolgsmetriken}
+
+\subsection{Technische Metriken}
+\begin{longtable}{|p{0.3\textwidth}|p{0.25\textwidth}|p{0.35\textwidth}|}
+\hline
+\textbf{Metrik} & \textbf{Zielwert} & \textbf{Messverfahren} \\
+\hline
+Systemverfügbarkeit & > 99.5\% & Uptime Monitoring \\
+\hline
+Durchschnittliche Antwortzeit & < 500ms & Application Performance Monitoring \\
+\hline
+Fehlerrate & < 1\% & Error Tracking (Sentry) \\
+\hline
+Deployment-Häufigkeit & Täglich möglich & CI/CD Pipeline Metriken \\
+\hline
+Mean Time to Recovery & < 30 Minuten & Incident Response Tracking \\
+\hline
+\end{longtable}
+
+\subsection{Qualitätsmetriken}
+\begin{longtable}{|p{0.3\textwidth}|p{0.25\textwidth}|p{0.35\textwidth}|}
+\hline
+\textbf{Metrik} & \textbf{Zielwert} & \textbf{Messverfahren} \\
+\hline
+Code Coverage & > 80\% & JaCoCo, Jest Coverage \\
+\hline
+Sonar Quality Gate & Passed & SonarQube Analysis \\
+\hline
+Security Vulnerabilities & 0 Critical & OWASP ZAP, Snyk \\
+\hline
+Performance Budget & < 2MB Bundle & Webpack Bundle Analyzer \\
+\hline
+Accessibility Score & > 90\% & Lighthouse Accessibility Audit \\
+\hline
+\end{longtable}
+
+\section{Implementierungsrichtlinien}
+
+\subsection{Coding Standards}
+\begin{itemize}
+    \item \textbf{Java:} Google Java Style Guide, Checkstyle
+    \item \textbf{TypeScript:} Airbnb Style Guide, ESLint
+    \item \textbf{Git:} Conventional Commits, Branch Protection
+    \item \textbf{Documentation:} JavaDoc, TSDoc, README-Standards
+    \item \textbf{Code Review:} Minimum 2 Reviewer, Automated Checks
+\end{itemize}
+
+\subsection{Development Best Practices}
+\begin{itemize}
+    \item \textbf{TDD:} Test-Driven Development für kritische Funktionen
+    \item \textbf{CI/CD:} Continuous Integration und Deployment
+    \item \textbf{Feature Branches:} GitFlow-Workflow
+    \item \textbf{Code Reviews:} Peer Reviews für alle Änderungen
+    \item \textbf{Documentation:} Living Documentation, ADRs
+\end{itemize}
+
+\section{Fazit}
+
+\subsection{Projektzusammenfassung}
+Die LAP-Verschenke-Plattform stellt eine technisch anspruchsvolle Full-Stack-Anwendung dar, die moderne Entwicklungsstandards und Best Practices implementiert. Die geschätzte Entwicklungszeit von 263 Stunden (33 Arbeitstage) berücksichtigt alle Aspekte der Softwareentwicklung von der Planung bis zum Deployment.
+
+\subsection{Technische Highlights}
+\begin{itemize}
+    \item Moderne React-Architektur mit TypeScript
+    \item Robuste Spring Boot-Backend-Implementierung
+    \item Sichere JWT-basierte Authentifizierung
+    \item Skalierbare Cloud-Speicher-Integration
+    \item Containerisierte Entwicklungsumgebung
+    \item Comprehensive Testing-Strategie
+\end{itemize}
+
+\subsection{Lernziele}
+Dieses Projekt demonstriert:
+\begin{itemize}
+    \item Vollständige Full-Stack-Entwicklung
+    \item Integration moderner Technologien
+    \item Sicherheitsbewusstsein in der Entwicklung
+    \item DevOps und Deployment-Praktiken
+    \item Qualitätssicherung und Testing
+    \item Projektmanagement und Zeitschätzung
+\end{itemize}
+
+\section{Anhang}
+
+\subsection{Technologie-Versionen}
+\begin{longtable}{|p{0.3\textwidth}|p{0.2\textwidth}|p{0.4\textwidth}|}
+\hline
+\textbf{Technologie} & \textbf{Version} & \textbf{Begründung} \\
+\hline
+React & 19.x & Neueste stabile Version, moderne Features \\
+\hline
+TypeScript & 5.x & Beste Typisierung, moderne ECMAScript-Features \\
+\hline
+Spring Boot & 3.2.x & LTS-Version, Java 17 Unterstützung \\
+\hline
+PostgreSQL & 14.x & Stabile Version, JSON-Unterstützung \\
+\hline
+Node.js & 18.x LTS & Langzeit-Support, npm-Kompatibilität \\
+\hline
+Java & 17 LTS & Langzeit-Support, moderne Features \\
+\hline
+\end{longtable}
+
+\subsection{Externe Abhängigkeiten}
+\begin{itemize}
+    \item \textbf{Backblaze B2:} Cloud-Speicher für Dateien
+    \item \textbf{JWT Libraries:} Token-basierte Authentifizierung
+    \item \textbf{BCrypt:} Passwort-Hashing
+    \item \textbf{Hibernate:} ORM-Framework
+    \item \textbf{React Query:} Server-State-Management
+\end{itemize}
+
+\subsection{Referenzen}
+\begin{itemize}
+    \item Spring Boot Best Practices: \url{https://spring.io/guides}
+    \item React Performance Patterns: \url{https://reactjs.org/docs/optimizing-performance.html}
+    \item JWT Security Guidelines: \url{https://tools.ietf.org/html/rfc7519}
+    \item PostgreSQL Performance Tuning: \url{https://www.postgresql.org/docs/current/performance-tips.html}
+    \item Container Security Best Practices: \url{https://docs.docker.com/develop/security-best-practices/}
+\end{itemize}
+
+\end{document}

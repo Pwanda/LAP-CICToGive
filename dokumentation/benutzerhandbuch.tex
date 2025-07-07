@@ -1,0 +1,1075 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[ngerman]{babel}
+\usepackage{geometry}
+\usepackage{fancyhdr}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{listings}
+\usepackage{framed}
+\usepackage{tcolorbox}
+
+\geometry{a4paper, left=3cm, right=2cm, top=2.5cm, bottom=2.5cm}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{LAP - Verschenke-Plattform}
+\fancyhead[R]{Benutzerhandbuch}
+\fancyfoot[C]{\thepage}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,
+    urlcolor=cyan,
+    pdftitle={Benutzerhandbuch - LAP Verschenke-Plattform},
+    pdfauthor={Prüfungskandidat},
+    pdfsubject={Lehrabschlussprüfung Applikationsentwicklung},
+    pdfkeywords={Benutzerhandbuch, Installation, Bedienung, Full-Stack}
+}
+
+\lstset{
+    basicstyle=\ttfamily\small,
+    frame=single,
+    backgroundcolor=\color{lightgray!20},
+    breaklines=true,
+    breakatwhitespace=true,
+    tabsize=2,
+    showstringspaces=false
+}
+
+\newtcolorbox{infobox}{
+    colback=blue!5!white,
+    colframe=blue!75!black,
+    title=Information
+}
+
+\newtcolorbox{warningbox}{
+    colback=orange!5!white,
+    colframe=orange!75!black,
+    title=Warnung
+}
+
+\newtcolorbox{tipbox}{
+    colback=green!5!white,
+    colframe=green!75!black,
+    title=Tipp
+}
+
+\title{
+    \huge\textbf{Benutzerhandbuch}\\
+    \Large LAP - Verschenke-Plattform\\
+    \large Installation, Konfiguration und Bedienung
+}
+\author{Lehrabschlussprüfung Applikationsentwicklung}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\newpage
+
+\tableofcontents
+
+\newpage
+
+\section{Einleitung}
+
+\subsection{Über die LAP-Verschenke-Plattform}
+Die LAP-Verschenke-Plattform ist eine moderne Full-Stack-Webanwendung, die es Benutzern ermöglicht, nicht mehr benötigte Gegenstände zu verschenken, anstatt sie wegzuwerfen. Die Plattform fördert nachhaltiges Verhalten und schafft eine lokale Gemeinschaft zum Teilen von Ressourcen.
+
+\subsection{Hauptfunktionen}
+\begin{itemize}
+    \item \textbf{Benutzerregistrierung und -anmeldung} mit sicherer Authentifizierung
+    \item \textbf{Artikel erstellen} mit Bildern, Beschreibungen und Kategorien
+    \item \textbf{Artikel suchen und filtern} nach verschiedenen Kriterien
+    \item \textbf{Artikel reservieren} und Interesse bekunden
+    \item \textbf{Kommentare} zu Artikeln hinzufügen
+    \item \textbf{Persönliche Artikelverwaltung} für eigene Einträge
+    \item \textbf{Profilverwaltung} mit Avatar-Upload
+\end{itemize}
+
+\subsection{Technische Übersicht}
+\begin{itemize}
+    \item \textbf{Frontend:} React 19 mit TypeScript, TailwindCSS und DaisyUI
+    \item \textbf{Backend:} Spring Boot 3.2 mit Java 17
+    \item \textbf{Datenbank:} PostgreSQL 14
+    \item \textbf{Dateispeicher:} Backblaze B2 Cloud Storage
+    \item \textbf{Containerisierung:} Podman/Docker für einfache Entwicklung
+\end{itemize}
+
+\section{Systemanforderungen}
+
+\subsection{Mindestanforderungen}
+\begin{longtable}{|p{0.3\textwidth}|p{0.6\textwidth}|}
+\hline
+\textbf{Komponente} & \textbf{Anforderung} \\
+\hline
+Betriebssystem & Windows 10/11, macOS 10.15+, Linux (Ubuntu 20.04+) \\
+\hline
+RAM & Mindestens 8 GB (16 GB empfohlen) \\
+\hline
+Festplatte & 5 GB freier Speicherplatz \\
+\hline
+Internetverbindung & Breitband für Cloud-Services \\
+\hline
+Webbrowser & Chrome 90+, Firefox 88+, Safari 14+, Edge 90+ \\
+\hline
+\end{longtable}
+
+\subsection{Entwicklungsumgebung}
+\begin{longtable}{|p{0.3\textwidth}|p{0.6\textwidth}|}
+\hline
+\textbf{Software} & \textbf{Version} \\
+\hline
+Podman oder Docker & Aktuelle Version \\
+\hline
+Git & 2.30+ \\
+\hline
+Node.js & 18.x LTS \\
+\hline
+Java & 17 LTS \\
+\hline
+Maven & 3.8+ \\
+\hline
+\end{longtable}
+
+\section{Installation}
+
+\subsection{Schnellstart für Entwickler}
+
+\begin{infobox}
+Die LAP-Plattform ist so konzipiert, dass neue Entwickler mit einem einzigen Befehl loslegen können!
+\end{infobox}
+
+\subsubsection{Voraussetzungen prüfen}
+\begin{lstlisting}[language=bash]
+# Podman installiert?
+podman --version
+
+# Git installiert?
+git --version
+
+# curl installiert?
+curl --version
+\end{lstlisting}
+
+\subsubsection{Ein-Befehl-Setup}
+\begin{lstlisting}[language=bash]
+# Repository klonen
+git clone <your-repo-url>
+cd LAP
+
+# Alles mit einem Befehl starten
+./start-dev.sh
+\end{lstlisting}
+
+\begin{tipbox}
+Das Skript erledigt automatisch:
+\begin{itemize}
+    \item Bau aller Container
+    \item Einrichtung der PostgreSQL-Datenbank
+    \item Erstellung eines Testbenutzers
+    \item Start aller Services mit Hot Reload
+\end{itemize}
+\end{tipbox}
+
+\subsection{Manuelle Installation}
+
+\subsubsection{1. Repository klonen}
+\begin{lstlisting}[language=bash]
+git clone <your-repo-url>
+cd LAP
+\end{lstlisting}
+
+\subsubsection{2. Container-Services starten}
+\begin{lstlisting}[language=bash]
+# Alle Services mit podman-compose starten
+podman-compose up -d
+
+# Oder mit Docker
+docker-compose up -d
+\end{lstlisting}
+
+\subsubsection{3. Backend-Container bauen}
+\begin{lstlisting}[language=bash]
+# In Backend-Verzeichnis wechseln
+cd backend
+
+# Container bauen
+podman build -t lap-backend .
+
+# Container mit Datenbank verknüpfen
+podman run -d --name lap-backend \
+  --network lap-network \
+  -p 8080:8080 \
+  lap-backend
+\end{lstlisting}
+
+\subsubsection{4. Frontend-Container bauen}
+\begin{lstlisting}[language=bash]
+# In Frontend-Verzeichnis wechseln
+cd Frontend
+
+# Container bauen
+podman build -t lap-frontend .
+
+# Container starten
+podman run -d --name lap-frontend \
+  -p 5173:5173 \
+  -v $(pwd)/src:/app/src \
+  lap-frontend
+\end{lstlisting}
+
+\section{Konfiguration}
+
+\subsection{Umgebungsvariablen}
+
+\subsubsection{Backend-Konfiguration}
+\begin{lstlisting}[language=properties]
+# application.properties
+spring.datasource.url=jdbc:postgresql://lap-postgres:5432/lapdb
+spring.datasource.username=lapuser
+spring.datasource.password=lappassword
+
+# JWT-Konfiguration
+jwt.secret=mySecretKey123456789012345678901234567890123456789012345678901234567890
+jwt.expiration=86400000
+
+# Backblaze B2 (optional)
+b2.application.key.id=YOUR_B2_APPLICATION_KEY_ID
+b2.application.key=YOUR_B2_APPLICATION_KEY
+b2.bucket.name=YOUR_B2_BUCKET_NAME
+\end{lstlisting}
+
+\subsubsection{Frontend-Konfiguration}
+\begin{lstlisting}[language=properties]
+# .env
+VITE_API_URL=http://localhost:8080
+VITE_APP_NAME=LAP Verschenke-Plattform
+\end{lstlisting}
+
+\subsection{Datenbank-Setup}
+
+\subsubsection{PostgreSQL-Verbindung prüfen}
+\begin{lstlisting}[language=bash]
+# Datenbankverbindung testen
+podman exec lap-postgres pg_isready -U lapuser -d lapdb
+
+# Datenbankshell öffnen
+podman exec -it lap-postgres psql -U lapuser -d lapdb
+\end{lstlisting}
+
+\subsubsection{Testdaten erstellen}
+\begin{lstlisting}[language=sql]
+-- Testbenutzer erstellen (automatisch beim Start)
+INSERT INTO users (username, email, password, created_at, updated_at)
+VALUES ('testuser', 'test@example.com',
+        '$2a$12$encrypted_password_hash',
+        CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+\end{lstlisting}
+
+\subsection{Cloud-Speicher (Backblaze B2)}
+
+\subsubsection{B2-Account einrichten}
+\begin{enumerate}
+    \item Backblaze-Account erstellen: \url{https://www.backblaze.com/}
+    \item B2 Cloud Storage aktivieren
+    \item Neuen Bucket erstellen
+    \item Application Key generieren
+    \item Credentials in \texttt{application.properties} eintragen
+\end{enumerate}
+
+\begin{warningbox}
+Credentials niemals in Git committen! Verwenden Sie Umgebungsvariablen für Production.
+\end{warningbox}
+
+\section{Bedienung}
+
+\subsection{Erste Schritte}
+
+\subsubsection{Zugriff auf die Anwendung}
+Nach dem Start sind folgende URLs verfügbar:
+\begin{itemize}
+    \item \textbf{Frontend:} \url{http://localhost:5173}
+    \item \textbf{Backend-API:} \url{http://localhost:8080}
+    \item \textbf{PgAdmin:} \url{http://localhost:5050} (mit \texttt{--with-pgadmin})
+\end{itemize}
+
+\subsubsection{Testanmeldung}
+\begin{itemize}
+    \item \textbf{Benutzername:} testuser
+    \item \textbf{Passwort:} password123
+\end{itemize}
+
+\subsection{Benutzerregistrierung}
+
+\subsubsection{Neuen Account erstellen}
+\begin{enumerate}
+    \item Auf der Startseite auf \textbf{„Registrieren"} klicken
+    \item Formular ausfüllen:
+    \begin{itemize}
+        \item Benutzername (3-50 Zeichen)
+        \item E-Mail-Adresse
+        \item Passwort (mindestens 6 Zeichen)
+    \end{itemize}
+    \item \textbf{„Registrieren"} klicken
+    \item Automatische Weiterleitung zur Anmeldung
+\end{enumerate}
+
+\subsubsection{Anmeldung}
+\begin{enumerate}
+    \item Auf \textbf{„Anmelden"} klicken
+    \item Benutzername und Passwort eingeben
+    \item \textbf{„Anmelden"} klicken
+    \item Weiterleitung zur Hauptseite
+\end{enumerate}
+
+\subsection{Hauptseite (Homepage)}
+
+\subsubsection{Artikel-Übersicht}
+Die Hauptseite zeigt alle verfügbaren Artikel in einer Kachel-Ansicht:
+\begin{itemize}
+    \item \textbf{Titel und Beschreibung} des Artikels
+    \item \textbf{Kategorie} und \textbf{Standort}
+    \item \textbf{Zustand} (Neu, Gut, Gebraucht)
+    \item \textbf{Bilder} (falls vorhanden)
+    \item \textbf{Reservierungsstatus}
+\end{itemize}
+
+\subsubsection{Suchfunktion}
+\begin{enumerate}
+    \item Suchbegriff in die Suchleiste eingeben
+    \item Artikel werden automatisch gefiltert
+    \item Suche erfolgt in Titel und Beschreibung
+\end{enumerate}
+
+\subsubsection{Kategoriefilter}
+\begin{itemize}
+    \item Klick auf Kategorie-Buttons filtert Artikel
+    \item Verfügbare Kategorien: Elektronik, Möbel, Kleidung, Bücher, Spielzeug, Sonstiges
+    \item \textbf{„Alle"} zeigt alle Artikel an
+\end{itemize}
+
+\subsubsection{Paginierung}
+\begin{itemize}
+    \item 12 Artikel pro Seite (3 Reihen × 4 Spalten)
+    \item Navigation mit Vor/Zurück-Buttons
+    \item Seitenzahlen für direkten Sprung
+\end{itemize}
+
+\subsection{Artikel erstellen}
+
+\subsubsection{Neuen Artikel hinzufügen}
+\begin{enumerate}
+    \item \textbf{Plus-Button} unten rechts klicken
+    \item Formular ausfüllen:
+    \begin{itemize}
+        \item \textbf{Titel:} Aussagekräftiger Name (max. 100 Zeichen)
+        \item \textbf{Beschreibung:} Detaillierte Beschreibung (max. 500 Zeichen)
+        \item \textbf{Kategorie:} Passende Kategorie auswählen
+        \item \textbf{Standort:} Abholort angeben
+        \item \textbf{Zustand:} Neu, Gut oder Gebraucht
+        \item \textbf{Bilder:} Ein oder mehrere Bilder hochladen
+    \end{itemize}
+    \item \textbf{„Artikel erstellen"} klicken
+\end{enumerate}
+
+\begin{tipbox}
+Gute Bilder erhöhen die Chance, dass Ihr Artikel gefunden wird!
+\end{tipbox}
+
+\subsubsection{Bildupload}
+\begin{itemize}
+    \item Unterstützte Formate: JPG, PNG, GIF
+    \item Maximale Größe: 10 MB pro Bild
+    \item Drag \& Drop oder Datei-Browser
+    \item Mehrere Bilder gleichzeitig möglich
+    \item Automatische Größenanpassung
+\end{itemize}
+
+\subsection{Artikel-Details}
+
+\subsubsection{Artikel anzeigen}
+\begin{enumerate}
+    \item Artikel-Kachel anklicken
+    \item Detail-Modal öffnet sich mit:
+    \begin{itemize}
+        \item Vollständigen Informationen
+        \item Bildergalerie
+        \item Kontakt zum Anbieter
+        \item Kommentarbereich
+    \end{itemize}
+\end{enumerate}
+
+\subsubsection{Artikel reservieren}
+\begin{enumerate}
+    \item In der Artikel-Detailansicht
+    \item \textbf{„Reservieren"} klicken
+    \item Artikel wird als „Reserviert" markiert
+    \item Andere Nutzer sehen den Reservierungsstatus
+\end{enumerate}
+
+\subsubsection{Kommentare}
+\begin{enumerate}
+    \item Kommentar in das Textfeld eingeben
+    \item \textbf{„Kommentar hinzufügen"} klicken
+    \item Kommentar erscheint chronologisch
+    \item Eigene Kommentare können gelöscht werden
+\end{enumerate}
+
+\subsection{Persönliche Artikelverwaltung}
+
+\subsubsection{Meine Artikel}
+\begin{enumerate}
+    \item Navigation: \textbf{„Meine Artikel"} klicken
+    \item Übersicht aller eigenen Artikel
+    \item Bearbeiten und Löschen möglich
+    \item Reservierungsstatus einsehen
+\end{enumerate}
+
+\subsubsection{Artikel bearbeiten}
+\begin{enumerate}
+    \item Artikel auswählen
+    \item \textbf{„Bearbeiten"} klicken
+    \item Formular mit aktuellen Daten öffnet sich
+    \item Änderungen vornehmen
+    \item \textbf{„Speichern"} klicken
+\end{enumerate}
+
+\subsubsection{Artikel löschen}
+\begin{enumerate}
+    \item Artikel auswählen
+    \item \textbf{„Löschen"} klicken
+    \item Bestätigung erforderlich
+    \item Artikel wird permanent entfernt
+\end{enumerate}
+
+\begin{warningbox}
+Gelöschte Artikel können nicht wiederhergestellt werden!
+\end{warningbox}
+
+\subsection{Profilverwaltung}
+
+\subsubsection{Profil anzeigen}
+\begin{enumerate}
+    \item Navigation: \textbf{„Profil"} klicken
+    \item Aktuelle Profildaten anzeigen
+    \item Benutzerstatistiken einsehen
+\end{enumerate}
+
+\subsubsection{Profil bearbeiten}
+\begin{enumerate}
+    \item \textbf{„Profil bearbeiten"} klicken
+    \item Daten ändern:
+    \begin{itemize}
+        \item Benutzername
+        \item E-Mail-Adresse
+        \item Passwort
+        \item Profilbild
+    \end{itemize}
+    \item \textbf{„Speichern"} klicken
+\end{enumerate}
+
+\subsubsection{Avatar hochladen}
+\begin{enumerate}
+    \item Im Profil-Bearbeiten-Modus
+    \item \textbf{„Avatar hochladen"} klicken
+    \item Bilddatei auswählen (JPG, PNG)
+    \item Automatische Größenanpassung
+    \item Bild wird sofort angezeigt
+\end{enumerate}
+
+\section{Entwicklung}
+
+\subsection{Entwicklungsumgebung}
+
+\subsubsection{Hot Reload aktivieren}
+\begin{lstlisting}[language=bash]
+# Entwicklungsserver mit Hot Reload starten
+./start-dev.sh
+
+# Automatische Neuladen:
+# - Frontend: Sofortige Updates bei Dateiänderungen
+# - Backend: Automatischer Neustart bei Java-Änderungen
+# - Datenbank: Schema-Updates via JPA
+\end{lstlisting}
+
+\subsubsection{Entwicklungstools}
+\begin{itemize}
+    \item \textbf{Frontend:} Vite Dev Server mit HMR
+    \item \textbf{Backend:} Spring Boot DevTools
+    \item \textbf{Datenbank:} PgAdmin Web-Interface
+    \item \textbf{API-Testing:} Integrierte Swagger-UI
+\end{itemize}
+
+\subsection{Verfügbare Befehle}
+
+\subsubsection{Hauptbefehle}
+\begin{lstlisting}[language=bash]
+# Alle Services starten
+./start-dev.sh
+
+# Mit PgAdmin Web-Interface
+./start-dev.sh --with-pgadmin
+
+# Clean Start (Container/Volumes löschen)
+./start-dev.sh --clean
+
+# Services stoppen
+./start-dev.sh stop
+
+# Alles neustarten
+./start-dev.sh restart
+
+# Logs anzeigen
+./start-dev.sh logs
+
+# Container-Status prüfen
+./start-dev.sh status
+
+# Zur Datenbank verbinden
+./start-dev.sh db
+
+# Komplette Bereinigung
+./start-dev.sh clean
+\end{lstlisting}
+
+\subsubsection{Entwicklungsworkflow}
+\begin{enumerate}
+    \item Entwicklungsumgebung starten: \texttt{./start-dev.sh}
+    \item Code editieren in \texttt{./Frontend/src} oder \texttt{./backend/src}
+    \item Änderungen werden automatisch übernommen
+    \item Testen im Browser: \url{http://localhost:5173}
+    \item API testen: \url{http://localhost:8080}
+\end{enumerate}
+
+\subsection{Frontend-Entwicklung}
+
+\subsubsection{Projektstruktur}
+\begin{lstlisting}
+Frontend/
+├── src/
+│   ├── components/        # Wiederverwendbare Komponenten
+│   │   ├── auth/         # Authentifizierung
+│   │   ├── HomePage/     # Homepage-spezifische Komponenten
+│   │   └── ...
+│   ├── pages/            # Seiten-Komponenten
+│   ├── hooks/            # Custom React Hooks
+│   ├── services/         # API-Services
+│   ├── types/            # TypeScript-Definitionen
+│   ├── contexts/         # React Contexts
+│   └── App.tsx           # Haupt-App-Komponente
+├── public/               # Statische Dateien
+└── package.json          # Node.js Dependencies
+\end{lstlisting}
+
+\subsubsection{Neue Komponente hinzufügen}
+\begin{enumerate}
+    \item Komponente in \texttt{src/components/} erstellen
+    \item TypeScript-Interface definieren
+    \item Styling mit TailwindCSS
+    \item In Parent-Komponente importieren
+    \item Hot Reload zeigt Änderungen sofort
+\end{enumerate}
+
+\subsubsection{API-Integration}
+\begin{lstlisting}[language=typescript]
+// services/ItemService.ts
+export const createItem = async (itemData: CreateItemRequest) => {
+  const response = await axios.post('/api/items', itemData);
+  return response.data;
+};
+
+// hooks/useAPI.ts
+export const useCreateItem = () => {
+  return useMutation({
+    mutationFn: createItem,
+    onSuccess: () => {
+      queryClient.invalidateQueries(['items']);
+    }
+  });
+};
+\end{lstlisting}
+
+\subsection{Backend-Entwicklung}
+
+\subsubsection{Projektstruktur}
+\begin{lstlisting}
+backend/
+├── src/main/java/com/lap/
+│   ├── controller/       # REST-Controller
+│   ├── service/          # Business Logic
+│   ├── repository/       # Data Access
+│   ├── entity/           # JPA-Entities
+│   ├── dto/              # Data Transfer Objects
+│   ├── config/           # Konfiguration
+│   └── LapBackendApplication.java
+├── src/main/resources/
+│   ├── application.properties
+│   └── db/init.sql
+└── pom.xml               # Maven-Konfiguration
+\end{lstlisting}
+
+\subsubsection{Neue API-Endpoint hinzufügen}
+\begin{enumerate}
+    \item Controller-Methode erstellen
+    \item Service-Logic implementieren
+    \item Repository-Interface erweitern
+    \item DTO für Request/Response definieren
+    \item Validierung hinzufügen
+    \item Tests schreiben
+\end{enumerate}
+
+\subsubsection{Beispiel: Neuer Endpoint}
+\begin{lstlisting}[language=java]
+@RestController
+@RequestMapping("/api/items")
+public class ItemController {
+
+    @PostMapping
+    public ResponseEntity<ItemResponse> createItem(
+            @Valid @RequestBody CreateItemRequest request) {
+        ItemResponse item = itemService.createItem(request);
+        return ResponseEntity.ok(item);
+    }
+}
+\end{lstlisting}
+
+\section{Troubleshooting}
+
+\subsection{Häufige Probleme}
+
+\subsubsection{Container starten nicht}
+\begin{lstlisting}[language=bash]
+# Container-Status prüfen
+podman ps -a
+
+# Logs anzeigen
+podman logs lap-backend
+podman logs lap-frontend
+podman logs lap-postgres
+
+# Ports prüfen
+ss -tulpn | grep :8080
+ss -tulpn | grep :5173
+\end{lstlisting}
+
+\subsubsection{Datenbank-Verbindungsprobleme}
+\begin{lstlisting}[language=bash]
+# PostgreSQL-Status prüfen
+podman exec lap-postgres pg_isready -U lapuser -d lapdb
+
+# Datenbank-Verbindung testen
+podman exec -it lap-postgres psql -U lapuser -d lapdb
+
+# Netzwerk prüfen
+podman network ls
+podman network inspect lap-network
+\end{lstlisting}
+
+\subsubsection{Frontend lädt nicht}
+\begin{lstlisting}[language=bash]
+# Frontend-Container neu starten
+podman restart lap-frontend
+
+# Node.js-Abhängigkeiten neu installieren
+cd Frontend
+npm install
+npm run dev
+
+# Browser-Cache leeren
+# Strg+F5 oder Entwicklertools -> Cache leeren
+\end{lstlisting}
+
+\subsubsection{Backend-API nicht erreichbar}
+\begin{lstlisting}[language=bash]
+# Backend-Container neu starten
+podman restart lap-backend
+
+# Java-Anwendung-Logs prüfen
+podman logs lap-backend -f
+
+# Port-Weiterleitung prüfen
+podman port lap-backend
+
+# API-Endpunkt testen
+curl -X GET http://localhost:8080/api/items
+\end{lstlisting}
+
+\subsection{Fehlerdiagnose}
+
+\subsubsection{Systematische Problemlösung}
+\begin{enumerate}
+    \item \textbf{Container-Status:} Alle Container laufen?
+    \item \textbf{Logs prüfen:} Fehlermeldungen in den Logs?
+    \item \textbf{Netzwerk:} Container können kommunizieren?
+    \item \textbf{Ports:} Sind alle Ports frei und weitergeleitet?
+    \item \textbf{Volumes:} Sind Dateien korrekt gemountet?
+\end{enumerate}
+
+\subsubsection{Clean Restart}
+\begin{lstlisting}[language=bash]
+# Alles stoppen und bereinigen
+./start-dev.sh stop
+./start-dev.sh clean
+
+# Komplett neu starten
+./start-dev.sh
+\end{lstlisting}
+
+\subsubsection{Einzelne Services debuggen}
+\begin{lstlisting}[language=bash]
+# Nur Backend starten
+cd backend
+podman build -t lap-backend .
+podman run -it lap-backend
+
+# Nur Frontend starten
+cd Frontend
+npm run dev
+
+# Nur Datenbank starten
+podman run -d --name lap-postgres \
+  -e POSTGRES_DB=lapdb \
+  -e POSTGRES_USER=lapuser \
+  -e POSTGRES_PASSWORD=lappassword \
+  -p 5432:5432 \
+  postgres:14
+\end{lstlisting}
+
+\section{API-Dokumentation}
+
+\subsection{Authentifizierung}
+
+\subsubsection{Benutzerregistrierung}
+\begin{lstlisting}[language=bash]
+curl -X POST http://localhost:8080/api/auth/register \
+  -H "Content-Type: application/json" \
+  -d '{
+    "username": "newuser",
+    "email": "user@example.com",
+    "password": "password123"
+  }'
+\end{lstlisting}
+
+\subsubsection{Benutzeranmeldung}
+\begin{lstlisting}[language=bash]
+curl -X POST http://localhost:8080/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{
+    "username": "testuser",
+    "password": "password123"
+  }'
+\end{lstlisting}
+
+\subsubsection{Geschützte Endpunkte}
+\begin{lstlisting}[language=bash]
+# JWT-Token verwenden
+curl -X GET http://localhost:8080/api/auth/me \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN"
+\end{lstlisting}
+
+\subsection{Artikel-API}
+
+\subsubsection{Artikel auflisten}
+\begin{lstlisting}[language=bash]
+# Alle Artikel
+curl -X GET http://localhost:8080/api/items
+
+# Mit Paginierung
+curl -X GET "http://localhost:8080/api/items?page=0&size=10"
+
+# Mit Suche
+curl -X GET "http://localhost:8080/api/items/search?query=laptop"
+\end{lstlisting}
+
+\subsubsection{Artikel erstellen}
+\begin{lstlisting}[language=bash]
+curl -X POST http://localhost:8080/api/items \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -d '{
+    "title": "Alter Laptop",
+    "description": "Funktioniert noch gut",
+    "category": "Elektronik",
+    "location": "Berlin",
+    "condition": "Gut"
+  }'
+\end{lstlisting}
+
+\subsubsection{Artikel mit Bildern}
+\begin{lstlisting}[language=bash]
+curl -X POST http://localhost:8080/api/items \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -F "title=Laptop" \
+  -F "description=Beschreibung" \
+  -F "category=Elektronik" \
+  -F "location=Berlin" \
+  -F "condition=Gut" \
+  -F "images=@/path/to/image1.jpg" \
+  -F "images=@/path/to/image2.jpg"
+\end{lstlisting}
+
+\subsection{Datei-API}
+
+\subsubsection{Datei hochladen}
+\begin{lstlisting}[language=bash]
+curl -X POST http://localhost:8080/api/files/upload \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -F "file=@/path/to/your/file.jpg"
+\end{lstlisting}
+
+\subsubsection{Datei herunterladen}
+\begin{lstlisting}[language=bash]
+curl -X GET http://localhost:8080/api/files/download/filename.jpg \
+  -o downloaded_file.jpg
+\end{lstlisting}
+
+\subsubsection{Download-URL generieren}
+\begin{lstlisting}[language=bash]
+curl -X GET http://localhost:8080/api/files/url/filename.jpg
+\end{lstlisting}
+
+\section{Sicherheit}
+
+\subsection{Authentifizierung}
+
+\subsubsection{JWT-Token}
+\begin{itemize}
+    \item Tokens haben eine Ablaufzeit von 24 Stunden
+    \item Automatische Erneuerung bei aktiver Nutzung
+    \item Sichere Speicherung im Browser
+    \item Automatische Abmeldung bei Ablauf
+\end{itemize}
+
+\subsubsection{Passwort-Sicherheit}
+\begin{itemize}
+    \item Mindestens 6 Zeichen erforderlich
+    \item BCrypt-Verschlüsselung mit Strength 12
+    \item Keine Passwort-Speicherung im Klartext
+    \item Sichere Passwort-Reset-Funktion
+\end{itemize}
+
+\subsection{Datenschutz}
+
+\subsubsection{Persönliche Daten}
+\begin{itemize}
+    \item Minimale Datensammlung
+    \item Verschlüsselte Speicherung
+    \item Keine Weitergabe an Dritte
+    \item Benutzer haben Kontrolle über ihre Daten
+\end{itemize}
+
+\subsubsection{Datenlöschung}
+\begin{itemize}
+    \item Artikel können jederzeit gelöscht werden
+    \item Bilder werden automatisch entfernt
+    \item Account-Löschung auf Anfrage
+    \item Sichere Datenlöschung aus Cloud-Speicher
+\end{itemize}
+
+\section{Performance und Optimierung}
+
+\subsection{Ladezeiten}
+\begin{itemize}
+    \item Optimierte Bilder mit automatischer Komprimierung
+    \item Lazy Loading für große Bildergalerien
+    \item Effiziente Datenbankabfragen
+    \item Frontend-Caching mit React Query
+\end{itemize}
+
+\subsection{Responsive Design}
+\begin{itemize}
+    \item Optimiert für alle Bildschirmgrößen
+    \item Touch-freundliche Bedienung auf Mobilgeräten
+    \item Adaptive Layouts für verschiedene Geräte
+    \item Schnelle Navigation auf allen Plattformen
+\end{itemize}
+
+\section{Backup und Wiederherstellung}
+
+\subsection{Datensicherung}
+\begin{itemize}
+    \item Automatische tägliche Datenbank-Backups
+    \item Cloud-Speicher mit integrierter Redundanz
+    \item Versionskontrolle für Code-Änderungen
+    \item Konfigurationsdaten in Git
+\end{itemize}
+
+\subsection{Wiederherstellung}
+\begin{itemize}
+    \item Schnelle Wiederherstellung aus Backups
+    \item Point-in-Time-Recovery für Datenbank
+    \item Automatische Failover-Mechanismen
+    \item Dokumentierte Recovery-Procedures
+\end{itemize}
+
+\section{Erweiterte Funktionen}
+
+\subsection{Zukünftige Features}
+\begin{itemize}
+    \item Push-Benachrichtigungen für neue Artikel
+    \item Erweiterte Suchfilter (Preis, Entfernung)
+    \item Bewertungssystem für Benutzer
+    \item Chat-Funktion zwischen Benutzern
+    \item Mobile App für iOS und Android
+    \item Integration mit sozialen Medien
+\end{itemize}
+
+\subsection{API-Erweiterungen}
+\begin{itemize}
+    \item GraphQL-API für flexible Datenabfragen
+    \item WebSocket-Support für Real-time Updates
+    \item OAuth-Integration für Social Login
+    \item Webhook-Support für externe Integrationen
+\end{itemize}
+
+\section{Monitoring und Logs}
+
+\subsection{Anwendungsüberwachung}
+\begin{itemize}
+    \item Health-Check-Endpunkte für alle Services
+    \item Performance-Metriken und Alerts
+    \item Fehlerberichterstattung mit Stack Traces
+    \item Benutzeraktivitäts-Tracking
+\end{itemize}
+
+\subsection{Log-Management}
+\begin{itemize}
+    \item Strukturierte Logs in JSON-Format
+    \item Zentrale Log-Aggregation
+    \item Automatische Log-Rotation
+    \item Suchbare Log-Historie
+\end{itemize}
+
+\section{Deployment}
+
+\subsection{Produktionsumgebung}
+\begin{itemize}
+    \item Multi-Container-Deployment mit Docker Compose
+    \item Reverse Proxy mit Nginx
+    \item SSL/TLS-Terminierung
+    \item Load Balancing für Hochverfügbarkeit
+\end{itemize}
+
+\subsection{CI/CD Pipeline}
+\begin{itemize}
+    \item Automatische Builds bei Code-Änderungen
+    \item Umfassende Test-Suites
+    \item Automatische Sicherheitstests
+    \item Zero-Downtime-Deployments
+\end{itemize}
+
+\section{Support und Wartung}
+
+\subsection{Bekannte Einschränkungen}
+\begin{itemize}
+    \item Maximale Dateigröße: 10 MB pro Bild
+    \item Maximale Anzahl Bilder: 5 pro Artikel
+    \item Unterstützte Bildformate: JPG, PNG, GIF
+    \item Keine Offline-Funktionalität
+\end{itemize}
+
+\subsection{Geplante Verbesserungen}
+\begin{itemize}
+    \item Erhöhung der Dateigrößenlimits
+    \item Unterstützung für Video-Uploads
+    \item Progressive Web App (PWA) Features
+    \item Verbessertes Caching für bessere Performance
+\end{itemize}
+
+\section{Anhang}
+
+\subsection{Kommandoreferenz}
+\begin{longtable}{|p{0.4\textwidth}|p{0.5\textwidth}|}
+\hline
+\textbf{Kommando} & \textbf{Beschreibung} \\
+\hline
+\texttt{./start-dev.sh} & Alle Services starten \\
+\hline
+\texttt{./start-dev.sh --with-pgadmin} & Mit PgAdmin Web-Interface \\
+\hline
+\texttt{./start-dev.sh --clean} & Clean Start mit neuen Containern \\
+\hline
+\texttt{./start-dev.sh stop} & Alle Services stoppen \\
+\hline
+\texttt{./start-dev.sh restart} & Services neustarten \\
+\hline
+\texttt{./start-dev.sh logs} & Logs anzeigen \\
+\hline
+\texttt{./start-dev.sh status} & Container-Status prüfen \\
+\hline
+\texttt{./start-dev.sh db} & Zur Datenbank verbinden \\
+\hline
+\texttt{./start-dev.sh clean} & Komplette Bereinigung \\
+\hline
+\end{longtable}
+
+\subsection{Umgebungsvariablen}
+\begin{longtable}{|p{0.3\textwidth}|p{0.25\textwidth}|p{0.35\textwidth}|}
+\hline
+\textbf{Variable} & \textbf{Standard} & \textbf{Beschreibung} \\
+\hline
+\texttt{VITE\_API\_URL} & http://localhost:8080 & Backend-API URL \\
+\hline
+\texttt{JWT\_SECRET} & mySecretKey... & JWT-Signatur-Schlüssel \\
+\hline
+\texttt{JWT\_EXPIRATION} & 86400000 & Token-Ablaufzeit in ms \\
+\hline
+\texttt{B2\_APPLICATION\_KEY\_ID} & - & Backblaze B2 Key ID \\
+\hline
+\texttt{B2\_APPLICATION\_KEY} & - & Backblaze B2 Key \\
+\hline
+\texttt{B2\_BUCKET\_NAME} & - & Backblaze B2 Bucket \\
+\hline
+\end{longtable}
+
+\subsection{Nützliche Links}
+\begin{itemize}
+    \item \textbf{React Documentation:} \url{https://react.dev/}
+    \item \textbf{Spring Boot Guides:} \url{https://spring.io/guides}
+    \item \textbf{PostgreSQL Documentation:} \url{https://www.postgresql.org/docs/}
+    \item \textbf{TailwindCSS Documentation:} \url{https://tailwindcss.com/docs}
+    \item \textbf{DaisyUI Components:} \url{https://daisyui.com/components/}
+    \item \textbf{Backblaze B2 Documentation:} \url{https://www.backblaze.com/b2/docs/}
+    \item \textbf{Podman Documentation:} \url{https://podman.io/docs}
+\end{itemize}
+
+\subsection{Troubleshooting-Checkliste}
+\begin{enumerate}
+    \item Sind alle Container gestartet? (\texttt{podman ps})
+    \item Sind die Ports frei? (\texttt{ss -tulpn | grep :8080})
+    \item Funktioniert die Datenbankverbindung? (\texttt{./start-dev.sh db})
+    \item Sind die Logs fehlerfrei? (\texttt{./start-dev.sh logs})
+    \item Ist die Netzwerkkonnektivität OK? (\texttt{curl localhost:8080})
+    \item Sind die Volumes korrekt gemountet? (\texttt{podman inspect})
+    \item Sind alle Abhängigkeiten installiert? (Container neu bauen)
+    \item Hilft ein Clean Restart? (\texttt{./start-dev.sh clean})
+\end{enumerate}
+
+\section{Schlusswort}
+
+Die LAP-Verschenke-Plattform demonstriert eine moderne, vollständige Full-Stack-Entwicklung mit aktuellen Technologien und Best Practices. Die Anwendung zeigt:
+
+\begin{itemize}
+    \item Professionelle Softwareentwicklung mit TypeScript und Java
+    \item Sichere Authentifizierung und Datenschutz
+    \item Benutzerfreundliche, responsive Web-Oberfläche
+    \item Skalierbare Cloud-Integration
+    \item Containerisierte Entwicklungsumgebung
+    \item Umfassende Dokumentation und Testing
+\end{itemize}
+
+Diese Dokumentation dient als Referenz für Entwickler, Benutzer und Prüfer der Lehrabschlussprüfung. Das Projekt zeigt die Fähigkeit zur selbstständigen Entwicklung komplexer Webanwendungen und die Anwendung moderner Entwicklungsmethoden.
+
+\textbf{Viel Erfolg bei der Nutzung und Weiterentwicklung der LAP-Plattform!}
+
+\end{document}

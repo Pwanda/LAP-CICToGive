@@ -1,0 +1,476 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[ngerman]{babel}
+\usepackage{geometry}
+\usepackage{fancyhdr}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{ltxtable}
+
+\geometry{a4paper, left=3cm, right=2cm, top=2.5cm, bottom=2.5cm}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{LAP - Verschenke-Plattform}
+\fancyhead[R]{Lastenheft}
+\fancyfoot[C]{\thepage}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,
+    urlcolor=cyan,
+    pdftitle={Lastenheft - LAP Verschenke-Plattform},
+    pdfauthor={Prüfungskandidat},
+    pdfsubject={Lehrabschlussprüfung Applikationsentwicklung},
+    pdfkeywords={Lastenheft, Full-Stack, React, Spring Boot, PostgreSQL}
+}
+
+\title{
+    \huge\textbf{Lastenheft}\\
+    \Large LAP - Verschenke-Plattform\\
+    \large Eine moderne Full-Stack-Webanwendung
+}
+\author{Lehrabschlussprüfung Applikationsentwicklung}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\newpage
+
+\tableofcontents
+
+\newpage
+
+\section{Projektübersicht}
+
+\subsection{Projektbezeichnung}
+\textbf{LAP - Local Application Platform}\\
+Eine webbasierte Plattform zum Verschenken und Tauschen von Gegenständen
+
+\subsection{Projektziel}
+Die Entwicklung einer modernen, benutzerfreundlichen Webanwendung, die es Nutzern ermöglicht, nicht mehr benötigte Gegenstände zu verschenken anstatt sie wegzuwerfen. Die Plattform soll nachhaltiges Verhalten fördern und eine lokale Gemeinschaft zum Teilen von Ressourcen schaffen.
+
+\subsection{Zielgruppe}
+\begin{itemize}
+    \item Privatpersonen, die Gegenstände verschenken möchten
+    \item Personen, die nach kostenlosen Artikeln suchen
+    \item Umweltbewusste Nutzer, die Nachhaltigkeit fördern
+    \item Lokale Gemeinschaften und Nachbarschaften
+\end{itemize}
+
+\subsection{Projekthintergrund}
+In der heutigen Konsumgesellschaft werden viele funktionsfähige Gegenstände weggeworfen, obwohl sie für andere noch nützlich wären. Diese Plattform schafft eine digitale Lösung für das Problem der Ressourcenverschwendung und fördert eine Kreislaufwirtschaft auf lokaler Ebene.
+
+\section{Funktionale Anforderungen}
+
+\subsection{Benutzerverwaltung}
+\begin{longtable}{|p{0.15\textwidth}|p{0.35\textwidth}|p{0.4\textwidth}|}
+\hline
+\textbf{ID} & \textbf{Anforderung} & \textbf{Beschreibung} \\
+\hline
+FA-01 & Benutzerregistrierung & Neue Nutzer können sich mit E-Mail-Adresse, Benutzername und Passwort registrieren \\
+\hline
+FA-02 & Benutzeranmeldung & Registrierte Nutzer können sich mit Benutzername/E-Mail und Passwort anmelden \\
+\hline
+FA-03 & JWT-Authentifizierung & Sichere Authentifizierung mittels JSON Web Tokens \\
+\hline
+FA-04 & Profilmanagement & Nutzer können ihre Profildaten einsehen und bearbeiten \\
+\hline
+FA-05 & Avatar-Upload & Nutzer können ein Profilbild hochladen \\
+\hline
+FA-06 & Passwort-Sicherheit & Passwörter werden verschlüsselt gespeichert (BCrypt) \\
+\hline
+FA-07 & Benutzerabmeldung & Nutzer können sich sicher abmelden \\
+\hline
+\end{longtable}
+
+\subsection{Artikelverwaltung}
+\begin{longtable}{|p{0.15\textwidth}|p{0.35\textwidth}|p{0.4\textwidth}|}
+\hline
+\textbf{ID} & \textbf{Anforderung} & \textbf{Beschreibung} \\
+\hline
+FA-08 & Artikel erstellen & Nutzer können neue Artikel mit Titel, Beschreibung, Kategorie, Standort und Zustand erstellen \\
+\hline
+FA-09 & Bildupload & Mehrere Bilder pro Artikel können hochgeladen werden \\
+\hline
+FA-10 & Artikel anzeigen & Alle verfügbaren Artikel werden in einer übersichtlichen Galerie dargestellt \\
+\hline
+FA-11 & Artikeldetails & Detailansicht eines Artikels mit allen Informationen und Bildern \\
+\hline
+FA-12 & Artikel bearbeiten & Artikelbesitzer können ihre Artikel bearbeiten \\
+\hline
+FA-13 & Artikel löschen & Artikelbesitzer können ihre Artikel löschen \\
+\hline
+FA-14 & Artikel reservieren & Nutzer können Interesse an einem Artikel bekunden \\
+\hline
+FA-15 & Meine Artikel & Nutzer können ihre eigenen Artikel verwalten \\
+\hline
+\end{longtable}
+
+\subsection{Such- und Filterfunktionen}
+\begin{longtable}{|p{0.15\textwidth}|p{0.35\textwidth}|p{0.4\textwidth}|}
+\hline
+\textbf{ID} & \textbf{Anforderung} & \textbf{Beschreibung} \\
+\hline
+FA-16 & Textsuche & Nutzer können nach Artikeln anhand des Titels oder der Beschreibung suchen \\
+\hline
+FA-17 & Kategoriefilter & Filterung nach Kategorien (Elektronik, Möbel, Kleidung, etc.) \\
+\hline
+FA-18 & Standortfilter & Suche nach Artikeln in bestimmten Standorten \\
+\hline
+FA-19 & Zustandsfilter & Filterung nach Zustand (Neu, Gut, Gebraucht) \\
+\hline
+FA-20 & Kombinierte Filter & Mehrere Filter können gleichzeitig angewendet werden \\
+\hline
+FA-21 & Sortierung & Artikel können nach Datum, Relevanz sortiert werden \\
+\hline
+\end{longtable}
+
+\subsection{Kommentarsystem}
+\begin{longtable}{|p{0.15\textwidth}|p{0.35\textwidth}|p{0.4\textwidth}|}
+\hline
+\textbf{ID} & \textbf{Anforderung} & \textbf{Beschreibung} \\
+\hline
+FA-22 & Kommentare erstellen & Nutzer können Kommentare zu Artikeln verfassen \\
+\hline
+FA-23 & Kommentare anzeigen & Alle Kommentare zu einem Artikel werden chronologisch angezeigt \\
+\hline
+FA-24 & Kommentare löschen & Nutzer können ihre eigenen Kommentare löschen \\
+\hline
+FA-25 & Kommentar-Validierung & Kommentare werden auf Länge und Inhalt validiert \\
+\hline
+\end{longtable}
+
+\subsection{Dateiverwaltung}
+\begin{longtable}{|p{0.15\textwidth}|p{0.35\textwidth}|p{0.4\textwidth}|}
+\hline
+\textbf{ID} & \textbf{Anforderung} & \textbf{Beschreibung} \\
+\hline
+FA-26 & Cloud-Speicher & Integration mit Backblaze B2 für Bildspeicherung \\
+\hline
+FA-27 & Mehrfach-Upload & Mehrere Dateien können gleichzeitig hochgeladen werden \\
+\hline
+FA-28 & Bildoptimierung & Automatische Bildgrößenanpassung und Komprimierung \\
+\hline
+FA-29 & Datei-Validierung & Überprüfung von Dateityp und -größe \\
+\hline
+FA-30 & Sichere URLs & Generierung sicherer Download-URLs \\
+\hline
+\end{longtable}
+
+\section{Nicht-funktionale Anforderungen}
+
+\subsection{Leistungsanforderungen}
+\begin{longtable}{|p{0.15\textwidth}|p{0.35\textwidth}|p{0.4\textwidth}|}
+\hline
+\textbf{ID} & \textbf{Anforderung} & \textbf{Beschreibung} \\
+\hline
+NFA-01 & Antwortzeit & Seitenaufbau in unter 2 Sekunden \\
+\hline
+NFA-02 & Gleichzeitige Nutzer & System unterstützt mindestens 100 gleichzeitige Benutzer \\
+\hline
+NFA-03 & Datenbankperformance & Datenbankabfragen unter 500ms \\
+\hline
+NFA-04 & Bildladezeit & Bilder laden in unter 3 Sekunden \\
+\hline
+NFA-05 & Hot Reload & Entwicklungsumgebung mit Hot Reload für effiziente Entwicklung \\
+\hline
+\end{longtable}
+
+\subsection{Sicherheitsanforderungen}
+\begin{longtable}{|p{0.15\textwidth}|p{0.35\textwidth}|p{0.4\textwidth}|}
+\hline
+\textbf{ID} & \textbf{Anforderung} & \textbf{Beschreibung} \\
+\hline
+NFA-06 & Passwort-Verschlüsselung & BCrypt-Verschlüsselung für Passwörter \\
+\hline
+NFA-07 & JWT-Sicherheit & Sichere JWT-Token mit Ablaufzeit \\
+\hline
+NFA-08 & CORS-Konfiguration & Korrekte Cross-Origin-Konfiguration \\
+\hline
+NFA-09 & Input-Validierung & Umfassende Server- und Client-seitige Validierung \\
+\hline
+NFA-10 & SQL-Injection-Schutz & Verwendung von JPA/Hibernate für sichere Datenbankzugriffe \\
+\hline
+NFA-11 & Authentifizierung & Geschützte Routen erfordern gültige Authentifizierung \\
+\hline
+\end{longtable}
+
+\subsection{Usability-Anforderungen}
+\begin{longtable}{|p{0.15\textwidth}|p{0.35\textwidth}|p{0.4\textwidth}|}
+\hline
+\textbf{ID} & \textbf{Anforderung} & \textbf{Beschreibung} \\
+\hline
+NFA-12 & Responsive Design & Optimierung für Desktop, Tablet und Mobile \\
+\hline
+NFA-13 & Intuitive Navigation & Benutzerfreundliche Navigation mit klarer Struktur \\
+\hline
+NFA-14 & Barrierefreiheit & Grundlegende Accessibility-Standards \\
+\hline
+NFA-15 & Mehrsprachigkeit & Grundstruktur für Deutsche Lokalisierung \\
+\hline
+NFA-16 & Modernes Design & Attraktives UI mit DaisyUI und TailwindCSS \\
+\hline
+\end{longtable}
+
+\subsection{Technische Anforderungen}
+\begin{longtable}{|p{0.15\textwidth}|p{0.35\textwidth}|p{0.4\textwidth}|}
+\hline
+\textbf{ID} & \textbf{Anforderung} & \textbf{Beschreibung} \\
+\hline
+NFA-17 & Browser-Kompatibilität & Unterstützung moderner Browser (Chrome, Firefox, Safari, Edge) \\
+\hline
+NFA-18 & Containerisierung & Vollständige Containerisierung mit Podman/Docker \\
+\hline
+NFA-19 & Datenpersistierung & Zuverlässige Datenspeicherung in PostgreSQL \\
+\hline
+NFA-20 & API-Dokumentation & RESTful API mit klarer Dokumentation \\
+\hline
+NFA-21 & Fehlerbehandlung & Umfassende Fehlerbehandlung und Logging \\
+\hline
+\end{longtable}
+
+\section{Systemarchitektur}
+
+\subsection{Architektur-Übersicht}
+Das System folgt einer modernen Full-Stack-Architektur mit klarer Trennung zwischen Frontend, Backend und Datenbank:
+
+\begin{itemize}
+    \item \textbf{Frontend:} React 19 mit TypeScript für eine typsichere, moderne Benutzeroberfläche
+    \item \textbf{Backend:} Spring Boot 3.2 mit Java 17 für robuste Server-Logik
+    \item \textbf{Datenbank:} PostgreSQL für zuverlässige Datenpersistierung
+    \item \textbf{Cloud-Speicher:} Backblaze B2 für skalierbare Dateispeicherung
+    \item \textbf{Containerisierung:} Podman für konsistente Entwicklungs- und Deployment-Umgebungen
+\end{itemize}
+
+\subsection{Technologie-Stack}
+
+\subsubsection{Frontend-Technologien}
+\begin{itemize}
+    \item React 19 - Moderne JavaScript-Bibliothek für Benutzeroberflächen
+    \item TypeScript - Typsicherheit und bessere Entwicklererfahrung
+    \item Vite - Schneller Build-Tool und Entwicklungsserver
+    \item React Router v7 - Client-seitiges Routing
+    \item React Query - Datenmanagement und Caching
+    \item TailwindCSS - Utility-first CSS Framework
+    \item DaisyUI - Komponenten-Bibliothek für TailwindCSS
+    \item React Hook Form - Effiziente Formularvalidierung
+    \item Zod - Schema-Validierung
+\end{itemize}
+
+\subsubsection{Backend-Technologien}
+\begin{itemize}
+    \item Spring Boot 3.2 - Enterprise-Java-Framework
+    \item Spring Security - Authentifizierung und Autorisierung
+    \item Spring Data JPA - Datenzugriff und ORM
+    \item JWT (JSON Web Tokens) - Sichere Token-basierte Authentifizierung
+    \item PostgreSQL - Relationale Datenbank
+    \item Hibernate - ORM-Framework
+    \item Maven - Build-Management
+    \item Backblaze B2 SDK - Cloud-Speicher Integration
+\end{itemize}
+
+\subsubsection{Entwicklungstools}
+\begin{itemize}
+    \item Podman - Containerisierung
+    \item Git - Versionskontrolle
+    \item ESLint - Code-Qualität für JavaScript/TypeScript
+    \item Prettier - Code-Formatierung
+    \item Spring Boot DevTools - Hot Reload für Backend
+\end{itemize}
+
+\section{Benutzerschnittstellen}
+
+\subsection{Hauptseiten}
+\begin{longtable}{|p{0.2\textwidth}|p{0.35\textwidth}|p{0.35\textwidth}|}
+\hline
+\textbf{Seite} & \textbf{Beschreibung} & \textbf{Funktionen} \\
+\hline
+Landing Page & Startseite für nicht angemeldete Benutzer & Überblick, Anmeldung, Registrierung \\
+\hline
+Home Page & Hauptseite mit Artikelübersicht & Artikel anzeigen, Suchen, Filtern, Paginierung \\
+\hline
+Artikel-Detail & Detailansicht eines Artikels & Vollständige Informationen, Bilder, Kommentare \\
+\hline
+Meine Artikel & Verwaltung eigener Artikel & Eigene Artikel anzeigen, bearbeiten, löschen \\
+\hline
+Profil & Benutzerprofil-Verwaltung & Profildaten bearbeiten, Avatar hochladen \\
+\hline
+\end{longtable}
+
+\subsection{Modale Dialoge}
+\begin{longtable}{|p{0.2\textwidth}|p{0.35\textwidth}|p{0.35\textwidth}|}
+\hline
+\textbf{Modal} & \textbf{Beschreibung} & \textbf{Funktionen} \\
+\hline
+Artikel erstellen & Neuen Artikel hinzufügen & Formulareingabe, Bildupload, Validierung \\
+\hline
+Artikel bearbeiten & Bestehenden Artikel ändern & Daten aktualisieren, Bilder verwalten \\
+\hline
+Artikel-Detail & Artikel in Großansicht & Bildergalerie, Kommentare, Reservierung \\
+\hline
+\end{longtable}
+
+\subsection{Navigation}
+\begin{itemize}
+    \item \textbf{Hauptnavigation:} Logo, Menüpunkte, Benutzerstatus
+    \item \textbf{Suchleiste:} Prominente Platzierung für Artikelsuche
+    \item \textbf{Kategoriefilter:} Horizontale Filterleiste
+    \item \textbf{Floating Action Button:} Schneller Zugriff zum Artikel erstellen
+    \item \textbf{Footer:} Zusätzliche Links und Informationen
+\end{itemize}
+
+\section{Datenmodell}
+
+\subsection{Hauptentitäten}
+\begin{longtable}{|p{0.2\textwidth}|p{0.35\textwidth}|p{0.35\textwidth}|}
+\hline
+\textbf{Entität} & \textbf{Beschreibung} & \textbf{Hauptattribute} \\
+\hline
+User & Benutzer des Systems & id, username, email, password, avatarUrl, createdAt, updatedAt \\
+\hline
+Item & Artikel/Gegenstände & id, title, description, category, location, condition, imageUrls, isReserved, userId \\
+\hline
+Comment & Kommentare zu Artikeln & id, content, itemId, userId, createdAt \\
+\hline
+\end{longtable}
+
+\subsection{Beziehungen}
+\begin{itemize}
+    \item \textbf{User : Item} - 1:n (Ein Benutzer kann mehrere Artikel haben)
+    \item \textbf{Item : Comment} - 1:n (Ein Artikel kann mehrere Kommentare haben)
+    \item \textbf{User : Comment} - 1:n (Ein Benutzer kann mehrere Kommentare schreiben)
+\end{itemize}
+
+\section{Qualitätsanforderungen}
+
+\subsection{Testanforderungen}
+\begin{itemize}
+    \item Unit-Tests für kritische Backend-Funktionen
+    \item Integration-Tests für API-Endpunkte
+    \item Frontend-Tests für Benutzerinteraktionen
+    \item Sicherheitstests für Authentifizierung
+    \item Performance-Tests für Datenbankabfragen
+\end{itemize}
+
+\subsection{Dokumentationsanforderungen}
+\begin{itemize}
+    \item Umfassende API-Dokumentation
+    \item Benutzerhandbuch
+    \item Entwickler-Dokumentation
+    \item Deployment-Anleitung
+    \item Troubleshooting-Guide
+\end{itemize}
+
+\section{Projektabgrenzung}
+
+\subsection{Im Projektumfang enthalten}
+\begin{itemize}
+    \item Vollständige Webanwendung mit Frontend und Backend
+    \item Benutzerverwaltung mit Authentifizierung
+    \item Artikelverwaltung mit Bildupload
+    \item Such- und Filterfunktionen
+    \item Kommentarsystem
+    \item Responsive Design
+    \item Containerisierte Entwicklungsumgebung
+    \item Cloud-Speicher Integration
+\end{itemize}
+
+\subsection{Nicht im Projektumfang enthalten}
+\begin{itemize}
+    \item Mobile Apps (nur responsive Web-App)
+    \item Zahlungssystem (nur Verschenken, kein Verkauf)
+    \item Komplexes Benachrichtigungssystem
+    \item Social Media Integration
+    \item Erweiterte Analytics
+    \item Multi-Mandantenfähigkeit
+    \item Offline-Funktionalität
+\end{itemize}
+
+\section{Risiken und Annahmen}
+
+\subsection{Projektrisiken}
+\begin{longtable}{|p{0.15\textwidth}|p{0.35\textwidth}|p{0.4\textwidth}|}
+\hline
+\textbf{Risiko} & \textbf{Beschreibung} & \textbf{Maßnahme} \\
+\hline
+Technische Komplexität & Integration verschiedener Technologien & Proof of Concept, schrittweise Entwicklung \\
+\hline
+Sicherheitslücken & Unsichere Authentifizierung oder Datenlecks & Security-Reviews, bewährte Praktiken \\
+\hline
+Performance-Probleme & Langsame Ladezeiten bei vielen Bildern & Optimierung, Caching, CDN \\
+\hline
+Browser-Kompatibilität & Funktioniert nicht in älteren Browsern & Testing, Polyfills falls nötig \\
+\hline
+\end{longtable}
+
+\subsection{Annahmen}
+\begin{itemize}
+    \item Nutzer haben Zugang zu modernen Webbrowsern
+    \item Internetverbindung ist verfügbar
+    \item Backblaze B2 Service ist verfügbar und zuverlässig
+    \item PostgreSQL-Datenbank ist verfügbar
+    \item Containerisierung ist in der Deployment-Umgebung möglich
+\end{itemize}
+
+\section{Erfolgskriterien}
+
+\subsection{Technische Erfolgskriterien}
+\begin{itemize}
+    \item Vollständig funktionsfähige Webanwendung
+    \item Alle funktionalen Anforderungen implementiert
+    \item Responsive Design funktioniert auf allen Geräten
+    \item Sicherheitsanforderungen erfüllt
+    \item Performance-Ziele erreicht
+    \item Automatisierte Deployment-Pipeline
+\end{itemize}
+
+\subsection{Qualitätskriterien}
+\begin{itemize}
+    \item Code-Qualität entspricht Best Practices
+    \item Umfassende Dokumentation vorhanden
+    \item Testabdeckung für kritische Funktionen
+    \item Benutzerfreundliche Oberfläche
+    \item Stabile und wartbare Codebasis
+\end{itemize}
+
+\section{Anhang}
+
+\subsection{Glossar}
+\begin{longtable}{|p{0.2\textwidth}|p{0.7\textwidth}|}
+\hline
+\textbf{Begriff} & \textbf{Definition} \\
+\hline
+API & Application Programming Interface - Schnittstelle für Anwendungen \\
+\hline
+JWT & JSON Web Token - Standard für sichere Token-basierte Authentifizierung \\
+\hline
+ORM & Object-Relational Mapping - Abbildung von Objekten auf Datenbankstrukturen \\
+\hline
+SPA & Single Page Application - Webanwendung mit dynamischem Inhalt \\
+\hline
+CORS & Cross-Origin Resource Sharing - Sicherheitsmechanismus für Web-APIs \\
+\hline
+REST & Representational State Transfer - Architekturstil für Web-Services \\
+\hline
+\end{longtable}
+
+\subsection{Referenzen}
+\begin{itemize}
+    \item React Documentation: \url{https://reactjs.org/docs/}
+    \item Spring Boot Documentation: \url{https://spring.io/projects/spring-boot}
+    \item PostgreSQL Documentation: \url{https://www.postgresql.org/docs/}
+    \item Backblaze B2 API: \url{https://www.backblaze.com/b2/docs/}
+    \item TailwindCSS Documentation: \url{https://tailwindcss.com/docs}
+\end{itemize}
+
+\end{document}

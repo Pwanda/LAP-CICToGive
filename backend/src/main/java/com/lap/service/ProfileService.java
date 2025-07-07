@@ -176,24 +176,4 @@ public class ProfileService {
         }
         return filename.substring(filename.lastIndexOf('.'));
     }
-
-    private String extractFileNameFromUrl(String url) {
-        if (url == null || url.isEmpty()) {
-            return null;
-        }
-
-        // For our proxy URLs (e.g., "/api/files/download/avatars/1_uuid.jpg")
-        // Extract the filename part after the last slash
-        if (url.startsWith("/api/files/download/")) {
-            String fileName = url.substring("/api/files/download/".length());
-            return fileName;
-        }
-
-        // For direct B2 URLs
-        String[] parts = url.split("/");
-        if (parts.length > 0) {
-            return parts[parts.length - 1];
-        }
-        return null;
-    }
 }

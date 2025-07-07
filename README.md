@@ -1,410 +1,252 @@
-# LAP - Local Application Platform
+# LAP - Verschenke-Plattform
 
-A modern full-stack web application built with React, Spring Boot, and PostgreSQL, featuring JWT authentication and containerized development with Podman.
+Eine moderne Full-Stack-Webanwendung zum Verschenken von Gegenständen - entwickelt mit React, Spring Boot und PostgreSQL.
 
-## 🚀 Quick Start for New Developers
-
-### Prerequisites
-- **Podman** (containerized development)
-- **Git** (version control)
-- **curl** (for testing APIs)
-
-### One-Command Setup
+## 🚀 Schnellstart
 
 ```bash
-# Clone the repository
+# Repository klonen
 git clone <your-repo-url>
 cd LAP
 
-# Start everything (first-time setup included)
+# Alles mit einem Befehl starten
 ./start-dev.sh
 ```
 
-**That's it!** ✨ The script will:
-- Build all containers
-- Set up PostgreSQL database  
-- Create test user with proper authentication
-- Start all services with hot reload
-
-### Access Your Application
-
+**Das war's!** ✨ Die Anwendung läuft unter:
 - 📱 **Frontend**: http://localhost:5173
-- 🔧 **Backend API**: http://localhost:8080
-- 🗄️ **Database**: localhost:5433
-- 🔍 **PgAdmin**: http://localhost:5050 (with --with-pgadmin)
+- 🔧 **Backend**: http://localhost:8080
+- 🗄️ **Database**: localhost:5432
 
-### Test Credentials
+**Testanmeldung:** `testuser` / `password123`
 
-- **App Login**: `testuser` / `password123`
-- **PgAdmin**: `admin@lap.com` / `admin123`
-- **Database**: `lapuser` / `lappassword`
+## 🛠️ Technologie-Stack
 
-## 🏗️ Architecture
+### Frontend
+- **React 19** + **TypeScript** - Moderne, typsichere UI
+- **Vite** - Blitzschnelle Entwicklung
+- **TailwindCSS** + **DaisyUI** - Schönes, responsives Design
+- **React Query** - Intelligentes Datenmanagement
+- **React Hook Form** + **Zod** - Validierung
+- **React Router v7** - Navigation
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│                    LAP Technology Stack                     │
-├─────────────────────────────────────────────────────────────┤
-│  Frontend                    │  Backend                     │
-│  • React 18 + TypeScript    │  • Spring Boot 3.2          │
-│  • Vite + Hot Reload        │  • Spring Security + JWT    │
-│  • TailwindCSS + DaisyUI    │  • JPA/Hibernate           │
-│  • React Router v7          │  • PostgreSQL Database      │
-│  • React Query              │  • Maven Build System       │
-├─────────────────────────────────────────────────────────────┤
-│  Development Environment                                    │
-│  • Podman Containers        │  • Hot Reload Enabled      │
-│  • PostgreSQL Database      │  • PgAdmin Web Interface    │
-│  • Volume Mounting          │  • Automated Setup         │
-└─────────────────────────────────────────────────────────────┘
-```
+### Backend
+- **Spring Boot 3.2** - Robuste API
+- **Spring Security** + **JWT** - Sichere Authentifizierung
+- **PostgreSQL** - Zuverlässige Datenbank
+- **JPA/Hibernate** - Datenzugriff
+- **Backblaze B2** - Cloud-Speicher
 
-## 🛠️ Development Workflow
+### DevOps
+- **Podman/Docker** - Containerisierung
+- **Hot Reload** - Sofortige Entwicklung
+- **Maven** - Build-Management
 
-### Daily Development
+## 🎯 Features
 
-```bash
-# Start development environment
-./start-dev.sh
+### ✅ Implemented
+- **Benutzerregistrierung** und sichere Anmeldung
+- **Artikel erstellen** mit Bildern
+- **Artikel suchen** und filtern
+- **Artikel reservieren**
+- **Kommentare** zu Artikeln
+- **Profilmanagement**
+- **Responsive Design**
 
-# Your app is now running with hot reload:
-# - Edit Frontend code in ./Frontend/src → instant browser updates
-# - Edit Backend code in ./backend/src → automatic restart (~2-3s)
-# - Database changes via JPA → automatic schema updates
+### 🔄 In Development
+- Push-Benachrichtigungen
+- Erweiterte Suchfilter
+- Bewertungssystem
+- Chat-Funktion
 
-# Stop when done
-./start-dev.sh stop
-```
-
-### Available Commands
-
-```bash
-# Start all services (default)
-./start-dev.sh
-
-# Start with PgAdmin web interface
-./start-dev.sh --with-pgadmin
-
-# Clean start (removes containers/volumes)
-./start-dev.sh --clean
-
-# Stop all services  
-./start-dev.sh stop
-
-# Restart everything
-./start-dev.sh restart
-
-# View recent logs
-./start-dev.sh logs
-
-# Check container status
-./start-dev.sh status
-
-# Connect to database
-./start-dev.sh db
-
-# Clean everything (destructive)
-./start-dev.sh clean
-```
-
-### Hot Reload Features
-
-✅ **Frontend (React)**
-- Instant UI updates on file save
-- CSS/Tailwind changes apply immediately
-- Component state preserved during updates
-- TypeScript errors shown in browser
-
-✅ **Backend (Spring Boot)**
-- Automatic application restart on Java changes
-- Database schema updates via JPA
-- Live reload of configuration files
-- DevTools integration
-
-## 🔐 Authentication System
-
-### JWT-Based Authentication
-- **Registration**: Create new user accounts
-- **Login**: Get JWT token for authenticated requests
-- **Protected Routes**: Automatic redirect to login
-- **Token Validation**: Server-side JWT verification
-- **Secure Storage**: Client-side token management
-
-### API Endpoints
-
-```bash
-# Register new user
-curl -X POST http://localhost:8080/api/auth/register \
-  -H "Content-Type: application/json" \
-  -d '{"username":"newuser","email":"user@example.com","password":"password123"}'
-
-# Login to get JWT token
-curl -X POST http://localhost:8080/api/auth/login \
-  -H "Content-Type: application/json" \
-  -d '{"username":"testuser","password":"password123"}'
-
-# Access protected endpoint
-curl -X GET http://localhost:8080/api/auth/me \
-  -H "Authorization: Bearer <your-jwt-token>"
-```
-
-## 📁 Project Structure
+## 📁 Vereinfachte Projektstruktur
 
 ```
 LAP/
-├── Frontend/                     # React TypeScript Application
+├── Frontend/
 │   ├── src/
-│   │   ├── components/          # Reusable UI components
-│   │   │   ├── auth/           # Authentication components
-│   │   │   └── Navigation.tsx   # App navigation
-│   │   ├── pages/              # Page components
-│   │   │   ├── HomePage.tsx    # Dashboard with DaisyUI card
-│   │   │   ├── LoginPage.tsx   # User login
-│   │   │   ├── RegisterPage.tsx # User registration
-│   │   │   └── LandingPage.tsx # Public landing page
-│   │   ├── hooks/              # Custom React hooks
-│   │   │   ├── useAuth.tsx     # Authentication hook
-│   │   │   └── useAuthProvider.tsx # Auth context provider
-│   │   ├── services/           # API services
-│   │   │   └── AuthService.ts  # Authentication API calls
-│   │   ├── types/              # TypeScript type definitions
-│   │   └── contexts/           # React contexts
-│   ├── Dockerfile              # Frontend container config
-│   ├── package.json            # Node dependencies
-│   └── vite.config.ts          # Vite configuration
-├── backend/                      # Spring Boot Application
+│   │   ├── lib/
+│   │   │   └── auth.ts              # 🔥 EINFACHE Auth-Logik
+│   │   ├── hooks/
+│   │   │   └── useAuth.tsx          # 🔥 Auth Hook + Context
+│   │   ├── components/
+│   │   │   ├── auth/
+│   │   │   │   ├── LoginForm.tsx    # 🔥 Vereinfacht
+│   │   │   │   ├── RegisterForm.tsx # 🔥 Vereinfacht
+│   │   │   │   └── ProtectedRoute.tsx
+│   │   │   ├── Navbar.tsx
+│   │   │   └── Footer.tsx
+│   │   ├── pages/
+│   │   │   ├── HomePage.tsx
+│   │   │   ├── LandingPage.tsx
+│   │   │   ├── ProfilePage.tsx
+│   │   │   └── MyItemsPage.tsx
+│   │   ├── schemas/
+│   │   │   └── AuthSchemas.ts       # 🔥 Zod-Validierung
+│   │   └── App.tsx
+│   ├── tailwind.config.js
+│   └── package.json
+├── backend/
 │   ├── src/main/java/com/lap/
-│   │   ├── config/             # Security & JWT configuration
-│   │   │   ├── SecurityConfig.java      # Spring Security setup
-│   │   │   ├── JwtUtil.java             # JWT token utilities
-│   │   │   └── JwtAuthenticationFilter.java # JWT filter
-│   │   ├── controller/         # REST API controllers
-│   │   │   └── AuthController.java      # Authentication endpoints
-│   │   ├── dto/                # Data Transfer Objects
-│   │   │   └── AuthDTO.java             # Auth request/response DTOs
-│   │   ├── entity/             # JPA entities
-│   │   │   └── User.java                # User database entity
-│   │   ├── repository/         # Data access layer
-│   │   │   └── UserRepository.java      # User database operations
-│   │   ├── service/            # Business logic layer
-│   │   │   ├── AuthService.java         # Authentication business logic
-│   │   │   └── CustomUserDetailsService.java # Spring Security user service
-│   │   └── LapBackendApplication.java   # Main Spring Boot class
-│   ├── src/main/resources/
-│   │   ├── application.properties       # App configuration
-│   │   └── db/init.sql                 # Database initialization
-│   ├── Dockerfile                      # Backend container config
-│   └── pom.xml                         # Maven dependencies
-├── start-dev.sh                        # Development environment script
-└── README.md                           # This file
+│   │   ├── controller/
+│   │   ├── service/
+│   │   ├── repository/
+│   │   ├── entity/
+│   │   └── config/
+│   └── pom.xml
+├── start-dev.sh                     # 🔥 Ein-Klick-Setup
+└── README.md
 ```
 
-## 🗄️ Database
-
-### PostgreSQL Database
-- **Host**: localhost:5433 (external) / lap-postgres:5432 (internal)
-- **Database**: lapdb
-- **User**: lapuser / lappassword
-- **Schema**: Auto-created by JPA/Hibernate
-
-### Database Access
+## 🔧 Development Commands
 
 ```bash
-# Direct PostgreSQL access
-podman exec -it lap-postgres psql -U lapuser -d lapdb
+# Entwicklungsumgebung starten
+./start-dev.sh
 
-# Web interface (PgAdmin)
-# URL: http://localhost:5050
-# Login: admin@lap.com / admin123
+# Mit PgAdmin Web-Interface
+./start-dev.sh --with-pgadmin
+
+# Sauberer Neustart
+./start-dev.sh --clean
+
+# Services stoppen
+./start-dev.sh stop
+
+# Logs anzeigen
+./start-dev.sh logs
+
+# Container-Status
+./start-dev.sh status
+
+# Datenbank verbinden
+./start-dev.sh db
 ```
 
-### Schema Management
-- **JPA/Hibernate**: Automatic schema creation and updates
-- **Migrations**: Handled by Spring Boot + JPA
-- **Test Data**: Automatically created test user on startup
+## 📚 Neue vereinfachte Auth-Struktur
 
-## 🔧 Configuration
+### 🔥 Einfache Verwendung:
 
-### Environment Variables
+```typescript
+// In einer Komponente
+import { useAuth } from './hooks/useAuth';
 
-The application uses the following environment variables (automatically set in containers):
-
-**Backend:**
-```env
-SPRING_DATASOURCE_URL=jdbc:postgresql://lap-postgres:5432/lapdb
-SPRING_DATASOURCE_USERNAME=lapuser
-SPRING_DATASOURCE_PASSWORD=lappassword
-JWT_SECRET=mySecretKey123456789012345678901234567890123456789012345678901234567890
-JWT_EXPIRATION=86400000
+function MyComponent() {
+  const { user, login, logout, isAuthenticated } = useAuth();
+  
+  // Einfach zu verwenden!
+  if (!isAuthenticated) {
+    return <LoginForm />;
+  }
+  
+  return <div>Willkommen, {user.username}!</div>;
+}
 ```
 
-**Frontend:**
-```env
-VITE_API_URL=http://localhost:8080
+### 🔥 Direkte API-Calls:
+
+```typescript
+// Überall verwendbar
+import { auth } from './lib/auth';
+
+// Login
+const user = await auth.login({ username, password });
+
+// Authentifizierte API-Calls
+const response = await auth.apiCall('/api/items');
 ```
 
-### Customization
+## 🏗️ Architektur-Prinzipien
 
-**Backend Ports & Database:**
-- Edit `start-dev.sh` to change ports
-- Edit `backend/src/main/resources/application.properties` for database config
+### KISS (Keep It Simple, Stupid)
+- **Eine** `auth.ts` statt 5 Dateien
+- **Eine** `useAuth.tsx` für alles
+- **Direkte** API-Calls ohne Abstraktionen
 
-**Frontend Styling:**
-- Modify `Frontend/tailwind.config.js` for Tailwind customization
-- Edit `Frontend/src/index.css` for global styles
+### Modern Stack
+- **React 19** - Neueste Features
+- **TypeScript** - Typsicherheit
+- **Zod** - Schema-Validierung
+- **DaisyUI** - Schöne Komponenten
+
+### Developer Experience
+- **Hot Reload** - Sofortige Änderungen
+- **Ein-Klick-Setup** - Keine Konfiguration
+- **Einfache APIs** - Weniger Boilerplate
 
 ## 🚨 Troubleshooting
 
-### Common Issues
-
-**1. Permission denied error**
+### Container starten nicht?
 ```bash
-# If you get "Permission denied" when running the script
-chmod +x ./start-dev.sh
-
-# Then run the script
-./start-dev.sh
-```
-
-**2. Containers won't start**
-```bash
-# Clean everything and restart
-./start-dev.sh stop
+# Komplette Bereinigung
 ./start-dev.sh clean
+
+# Neu starten
 ./start-dev.sh
 ```
 
-**3. Port already in use**
+### Frontend lädt nicht?
 ```bash
-# Check what's using the port
-ss -tulpn | grep :8080
+# Container neu starten
+podman restart lap-frontend
 
-# Kill the process or change ports in start-dev.sh
+# Logs prüfen
+./start-dev.sh logs
 ```
 
-**4. Database connection issues**
+### Backend-Fehler?
 ```bash
-# Check PostgreSQL container
-podman logs lap-postgres
+# Java-Logs prüfen
+podman logs lap-backend
 
-# Test database connection
-podman exec lap-postgres pg_isready -U lapuser -d lapdb
+# Datenbank testen
+./start-dev.sh db
 ```
 
-**5. Hot reload not working**
-```bash
-# Restart specific container
-podman restart lap-frontend  # or lap-backend
+## 🔐 Sicherheit
 
-# Check volume mounts
-podman inspect lap-frontend | grep -A 5 Mounts
-```
+- **JWT-Authentifizierung** mit sicheren Tokens
+- **BCrypt-Passwort-Hashing** 
+- **Input-Validierung** mit Zod
+- **CORS-Konfiguration**
+- **Sichere Cloud-Speicherung**
 
-**6. Login not working**
-```bash
-# Check if test user exists
-podman exec lap-postgres psql -U lapuser -d lapdb -c "SELECT * FROM users;"
+## 📈 Performance
 
-# Re-create test user
-curl -X POST http://localhost:8080/api/auth/register \
-  -H "Content-Type: application/json" \
-  -d '{"username":"testuser","email":"test@example.com","password":"password123"}'
-```
-
-### Health Checks
-
-```bash
-# Check all services
-curl http://localhost:5173          # Frontend
-curl http://localhost:8080/api/auth/me  # Backend  
-curl http://localhost:5050          # PgAdmin
-
-```bash
-# Container status
-podman ps
-./start-dev.sh status
-```
-
-## 📚 Adding Features
-
-### Frontend Development
-
-**Adding a new page:**
-1. Create component in `Frontend/src/pages/`
-2. Add route in `Frontend/src/App.tsx`
-3. Hot reload will show changes instantly
-
-**Adding components:**
-1. Create in `Frontend/src/components/`
-2. Use TypeScript for type safety
-3. Leverage DaisyUI classes for styling
-
-**API integration:**
-1. Add service in `Frontend/src/services/`
-2. Use React Query for data fetching
-3. Handle authentication with useAuth hook
-
-### Backend Development
-
-**Adding REST endpoints:**
-1. Create controller in `backend/src/main/java/com/lap/controller/`
-2. Add DTOs in `dto/` package
-3. Implement service logic in `service/` package
-
-**Database entities:**
-1. Create entity in `entity/` package
-2. Add repository interface in `repository/`
-3. JPA will auto-create tables
-
-**Security:**
-- Protected endpoints automatically require JWT
-- Public endpoints: configure in `SecurityConfig.java`
-
-## 🔄 Deployment
-
-### Development → Production
-
-**Environment-specific configs:**
-- Use environment variables for sensitive data
-- Separate `application-prod.properties` for production
-- Build optimized Docker images for production
-
-**Database Migration:**
-- Export development data: `pg_dump`
-- Use proper PostgreSQL instance for production
-- Configure connection pooling and performance settings
+- **React Query** - Intelligentes Caching
+- **Lazy Loading** - Optimierte Ladezeiten
+- **Bildoptimierung** - Automatische Komprimierung
+- **Datenbankindizes** - Schnelle Suche
 
 ## 🤝 Contributing
 
-### Development Setup
-1. Follow Quick Start guide
-2. Create feature branch: `git checkout -b feature/your-feature`
-3. Develop with hot reload enabled
-4. Test authentication flows
-5. Submit pull request
+1. Repository forken
+2. Feature-Branch erstellen
+3. Entwickeln mit `./start-dev.sh`
+4. Tests schreiben
+5. Pull Request erstellen
 
-### Code Standards
-- **Frontend**: TypeScript, ESLint, Prettier
-- **Backend**: Java 21, Spring Boot conventions
-- **Database**: JPA annotations, meaningful table names
-- **Git**: Conventional commit messages
+## 📄 Lizenz
 
-## 📄 License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
+MIT License - Siehe [LICENSE](LICENSE) für Details.
 
 ---
 
-## 🎯 Next Steps
+## 🎓 Lehrabschlussprüfung
 
-After setup, you might want to:
+Diese Anwendung wurde als Abschlussprojekt für die Lehrabschlussprüfung Applikationsentwicklung entwickelt und demonstriert:
 
-1. **Explore the codebase** - Start with `App.tsx` and `AuthController.java`
-2. **Test authentication** - Register a new user and login  
-3. **Modify the HomePage** - It has a DaisyUI card component ready to customize
-4. **Add new features** - The hot reload environment makes development fast
-5. **Check the database** - Use `./start-dev.sh --with-pgadmin` to explore the schema
+- **Full-Stack-Entwicklung** mit modernen Technologien
+- **Saubere Architektur** nach KISS-Prinzip
+- **Sichere Authentifizierung** und Datenschutz
+- **Responsive Design** für alle Geräte
+- **Professionelle Dokumentation**
+- **Containerisierte Entwicklung**
 
-**Happy coding!** 🚀
+**Entwicklungszeit:** ~33 Arbeitstage (263 Stunden)
+**Technologien:** 12+ moderne Frameworks/Tools
+**Features:** 30+ funktionale Anforderungen
 
-For questions or issues, check the troubleshooting section or create an issue in the repository.
+---
+
+**Happy Coding!** 🚀
